@@ -15,6 +15,7 @@ evidência em `docs/deliveries/`.
 | BOOT-006 | Frontend com Vite, Tailwind e shadcn, sem telas | idem |
 | BOOT-007 | CI, scripts de setup/smoke e READMEs | idem |
 | DOCS-001 | Estrutura de docs, ADRs, requisitos e templates | idem |
+| DOMAIN-001 | Analisar o tema Saúde Conectada 2026 | `docs/tema-saude-conectada.md` |
 | AI-001 | Validar a chave Gemini real | `docs/deliveries/0001-bootstrap.md` — `provider: "gemini"` com `gemini-3.5-flash-lite` |
 
 ## Ready

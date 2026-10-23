@@ -1,7 +1,9 @@
 # Domínio — template
 
-> Preencher no evento, depois da apresentação do tema. Não inventar conteúdo
-> antes disso.
+> **Tema definido:** [Saúde Conectada 2026 — Da Atenção Primária à Alta Complexidade](../tema-saude-conectada.md).
+> Use a análise do tema como ponto de partida e preencha este documento com o
+> recorte escolhido pelo time. Não invente dados, métricas ou personas como se
+> fossem oficiais.
 
 ## Problema
 

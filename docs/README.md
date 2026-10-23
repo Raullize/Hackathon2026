@@ -7,6 +7,7 @@ verdade; os documentos apontam para eles em vez de duplicar detalhes.
 
 | Documento | Para quê |
 | --- | --- |
+| [`tema-saude-conectada.md`](./tema-saude-conectada.md) | Análise do tema Saúde Conectada 2026 e implicações de produto |
 | [`architecture.md`](./architecture.md) | Desenho dos módulos, fluxos de auth/chat e limites |
 | [`testing.md`](./testing.md) | Estratégia de testes e comandos |
 | [`demo-runbook.md`](./demo-runbook.md) | Checklist operacional da demo |
