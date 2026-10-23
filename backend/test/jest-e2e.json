@@ -1,0 +1,18 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "setupFiles": ["<rootDir>/test/setup-e2e.ts"],
+  "transform": {
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "tsconfig": "<rootDir>/tsconfig.json"
+      }
+    ]
+  },
+  "moduleNameMapper": {
+    "^@hackathon/contracts$": "<rootDir>/../packages/contracts/src/index.ts"
+  }
+}

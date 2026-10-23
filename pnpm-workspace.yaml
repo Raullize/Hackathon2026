@@ -1,0 +1,20 @@
+packages:
+  - backend
+  - frontend
+  - packages/*
+
+allowBuilds:
+  "@google/genai": true
+  "@parcel/watcher": true
+  "@prisma/client": true
+  "@prisma/engines": true
+  "@scarf/scarf": false
+  argon2: true
+  esbuild: true
+  prisma: true
+  protobufjs: true
+  unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - "@google/genai@2.31.0"
+  - dotenv@18.0.9

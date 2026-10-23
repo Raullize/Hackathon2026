@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "chore/**"
+      - "feat/**"
+      - "fix/**"
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, typecheck, test and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: hackathon
+          POSTGRES_PASSWORD: hackathon
+          POSTGRES_DB: hackathon
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U hackathon -d hackathon"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://hackathon:hackathon@localhost:5432/hackathon?schema=public
+      JWT_SECRET: ci-test-secret-at-least-32-characters-long
+      JWT_EXPIRES_IN: 8h
+      CORS_ORIGIN: http://localhost:5173
+      LLM_PROVIDER: mock
+      GEMINI_MODEL: gemini-2.5-flash-lite
+      GEMINI_MAX_OUTPUT_TOKENS: 512
+      GEMINI_TEMPERATURE: 0.7
+      LLM_TIMEOUT_MS: 20000
+      THROTTLE_TTL: 60000
+      THROTTLE_LIMIT: 20
+      VITE_API_URL: http://localhost:3000/api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create local env for scripts
+        run: cp .env.example .env
+
+      - name: Build contracts
+        run: pnpm --filter @hackathon/contracts build
+
+      - name: Generate Prisma Client
+        run: pnpm --filter @hackathon/backend db:generate
+
+      - name: Apply migrations
+        run: pnpm --filter @hackathon/backend db:deploy
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: E2E tests
+        run: pnpm test:e2e
+
+      - name: Build
+        run: pnpm build

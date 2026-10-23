@@ -1,0 +1,6 @@
+{
+  "tool": "ai-guardrails",
+  "versioned": "yes",
+  "mode": "3",
+  "packs": "0,1,2,3,4,5"
+}

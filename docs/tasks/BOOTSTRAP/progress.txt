@@ -1,0 +1,9 @@
+2026-10-22 23:05 PERCEIVE Repo greenfield, apenas .agents e regulamento; branch chore/bootstrap-hackathon-starter criada.
+2026-10-22 23:10 ACT Fundação do monorepo, workspace pnpm, contratos Zod e compose do PostgreSQL.
+2026-10-22 23:20 ACT Prisma schema User, migration init, seed demo e health.
+2026-10-22 23:24 ACT Auth com Argon2id, JWT, DTOs Zod, Swagger e testes unitários.
+2026-10-22 23:26 ACT Chat autenticado com GeminiProvider, MockProvider, prompt e testes.
+2026-10-22 23:29 ACT Frontend Vite, Tailwind 4, shadcn e arquitetura sem telas.
+2026-10-22 23:29 RECORD pnpm lint, typecheck, test (8), test:e2e (4), build e smoke ok.
+2026-10-22 23:30 RECORD Docs, ADRs, requisitos, kanban e delivery criados.
+Pendente: push e execução remota do CI; teste com GEMINI_API_KEY real.

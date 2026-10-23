@@ -1,0 +1,41 @@
+{
+  "name": "hackathon-2026-starter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Template full-stack para hackathon: NestJS + Prisma + Postgres + React + Tailwind + shadcn/ui",
+  "packageManager": "pnpm@11.3.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "predev": "pnpm --filter @hackathon/contracts build",
+    "dev": "pnpm --parallel --filter @hackathon/contracts --filter @hackathon/backend --filter @hackathon/frontend dev",
+    "dev:backend": "pnpm --filter @hackathon/backend dev",
+    "dev:frontend": "pnpm --filter @hackathon/frontend dev",
+    "prebuild": "pnpm --filter @hackathon/contracts build",
+    "build": "pnpm --filter @hackathon/backend build && pnpm --filter @hackathon/frontend build",
+    "lint": "eslint backend/src backend/test frontend/src packages/contracts/src scripts",
+    "typecheck": "pnpm -r typecheck",
+    "pretest": "pnpm --filter @hackathon/contracts build",
+    "test": "pnpm --filter @hackathon/backend test && pnpm --filter @hackathon/frontend test",
+    "test:backend": "pnpm --filter @hackathon/backend test",
+    "test:e2e": "pnpm --filter @hackathon/backend test:e2e",
+    "test:frontend": "pnpm --filter @hackathon/frontend test",
+    "db:generate": "pnpm --filter @hackathon/backend db:generate",
+    "db:migrate": "pnpm --filter @hackathon/backend db:migrate",
+    "db:deploy": "pnpm --filter @hackathon/backend db:deploy",
+    "db:seed": "pnpm --filter @hackathon/backend db:seed",
+    "db:studio": "pnpm --filter @hackathon/backend db:studio",
+    "smoke": "node scripts/smoke.mjs",
+    "docker:up": "docker compose up -d db",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.13.0",
+    "globals": "17.13.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.0"
+  }
+}
