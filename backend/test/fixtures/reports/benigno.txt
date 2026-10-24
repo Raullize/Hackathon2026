@@ -1,0 +1,7 @@
+LAUDO DE ANATOMOPATOLOGIA — FICTÍCIO PARA DEMO
+Paciente: Helena Simulada Rocha
+CNS: 000000000000006
+Material: biópsia de mama esquerda.
+Diagnóstico: fibroadenoma, negativo para malignidade.
+Data do laudo: 24/10/2026.
+Observação: dados fictícios, sem valor clínico.

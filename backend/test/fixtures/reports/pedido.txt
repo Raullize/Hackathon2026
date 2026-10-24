@@ -1,0 +1,6 @@
+SOLICITAÇÃO FICTÍCIA PARA DEMO
+Paciente: Rita Teste Oliveira
+CNS: 000000000000003
+Solicito biópsia de mama por BI-RADS 4.
+Data do pedido: 12/10/2026.
+Dados fictícios, sem valor clínico.

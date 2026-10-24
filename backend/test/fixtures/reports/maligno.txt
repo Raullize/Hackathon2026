@@ -1,0 +1,7 @@
+LAUDO DE ANATOMOPATOLOGIA — FICTÍCIO PARA DEMO
+Paciente: Maria Fictícia da Silva
+CNS: 000000000000001
+Material: biópsia de mama direita.
+Diagnóstico: carcinoma ductal invasivo de mama.
+Data do laudo: 24/10/2026.
+Observação: dados fictícios, sem valor clínico.
