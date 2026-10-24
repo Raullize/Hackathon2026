@@ -72,6 +72,7 @@ export const caseEventTypeSchema = z.enum([
   'CORRECTION',
   'ALERT_ACKNOWLEDGED',
   'CONTACT_LOGGED',
+  'PATIENT_NOTIFIED',
 ]);
 
 export const caseCreateSchema = z.object({
@@ -165,6 +166,16 @@ export const contactLoggedEventSchema = z.object({
   note: z.string().trim().max(500).optional(),
 });
 
+export const patientChannelSchema = z.enum(['SMS', 'EMAIL', 'WHATSAPP']);
+
+export const patientNotifiedEventSchema = z.object({
+  type: z.literal('PATIENT_NOTIFIED'),
+  ...caseEventBase,
+  channel: patientChannelSchema,
+  text: z.string().trim().min(1).max(1000),
+  stepLabel: z.string().trim().max(120).optional(),
+});
+
 export const caseEventInputSchema = z.discriminatedUnion('type', [
   caseCreatedEventSchema,
   examScheduledEventSchema,
@@ -177,6 +188,7 @@ export const caseEventInputSchema = z.discriminatedUnion('type', [
   correctionEventSchema,
   alertAcknowledgedEventSchema,
   contactLoggedEventSchema,
+  patientNotifiedEventSchema,
 ]);
 
 export const caseBadgeSchema = z.discriminatedUnion('type', [
@@ -221,6 +233,13 @@ export const outcome60Schema = z.enum([
   'NOT_APPLICABLE',
 ]);
 
+export const patientNotificationViewSchema = z.object({
+  channel: patientChannelSchema,
+  text: z.string(),
+  stepLabel: z.string().nullable(),
+  occurredAt: isoDateSchema,
+});
+
 export const caseViewSchema = z.object({
   id: z.string().uuid(),
   fullName: z.string(),
@@ -243,6 +262,7 @@ export const caseViewSchema = z.object({
   outcome60: outcome60Schema.nullable(),
   closedAt: isoDateSchema.nullable(),
   allowedEventTypes: z.array(caseEventTypeSchema),
+  lastPatientNotification: patientNotificationViewSchema.nullable(),
 });
 
 export const caseEventViewSchema = z.object({
@@ -404,6 +424,7 @@ export type TreatmentType = z.infer<typeof treatmentTypeSchema>;
 export type ExceptionReason = z.infer<typeof exceptionReasonSchema>;
 export type CloseReason = z.infer<typeof closeReasonSchema>;
 export type ContactChannel = z.infer<typeof contactChannelSchema>;
+export type PatientChannel = z.infer<typeof patientChannelSchema>;
 export type Malignancy = z.infer<typeof malignancySchema>;
 export type CaseCreate = z.infer<typeof caseCreateSchema>;
 export type CaseEventInput = z.infer<typeof caseEventInputSchema>;

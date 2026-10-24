@@ -70,6 +70,7 @@ const eventLabel: Partial<Record<CaseEventType, string>> = {
   CORRECTION: 'Correção',
   ALERT_ACKNOWLEDGED: 'Ciente de alerta',
   CONTACT_LOGGED: 'Cobrança registrada',
+  PATIENT_NOTIFIED: 'Aviso enviado à paciente',
 };
 
 const actionLabel: Partial<Record<CaseEventType, string>> = {
@@ -766,12 +767,12 @@ export function CaseDetailPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Alertas do caso</CardTitle>
+              <CardTitle>Notificações do caso</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {(detail.alerts as Alert[]).length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  Nenhum alerta ativo.
+                  Nenhuma notificação ativa.
                 </p>
               ) : (
                 (detail.alerts as Alert[]).map((alert) => (

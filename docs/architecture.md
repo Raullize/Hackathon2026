@@ -110,7 +110,8 @@ Pontos que afetam a arquitetura:
 - **Intake:** a navegadora cola o texto do pedido; a IA pré-preenche data, gatilho e
   exame; ela confirma. Sem PII no texto da IA; PDF é UI no MVP.
 - **Descoberta tardia e cobrança:** `source` no `CASE_CREATED`, selo `LATE_ENTRY`,
-  `CONTACT_LOGGED` para ligação/e-mail/WhatsApp e métricas de atraso de cadastro.
+  `CONTACT_LOGGED` para cobrança interna e `PATIENT_NOTIFIED` para o aviso simulado
+  à paciente; métricas de atraso de cadastro.
 - **Responsividade:** todos os fluxos devem funcionar de 360px a 1440px, com
   calendário em lista no celular e link da paciente mobile-first.
 

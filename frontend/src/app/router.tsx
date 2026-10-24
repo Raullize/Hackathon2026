@@ -4,7 +4,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import { AppShell } from '@/components/layout/app-shell';
-import { AlertsPage } from '@/pages/alerts-page';
+import { NotificationsPage } from '@/pages/notifications-page';
 import { CalendarPage } from '@/pages/calendar-page';
 import { CaseDetailPage } from '@/pages/case-detail-page';
 import { ClosedPage } from '@/pages/closed-page';
@@ -24,7 +24,8 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <CalendarPage /> },
           { path: 'casos/novo', element: <NewCasePage /> },
-          { path: 'alertas', element: <AlertsPage /> },
+          { path: 'notificacoes', element: <NotificationsPage /> },
+          { path: 'alertas', element: <Navigate to="/notificacoes" replace /> },
           { path: 'concluidos', element: <ClosedPage /> },
           { path: 'casos/:id', element: <CaseDetailPage /> },
         ],

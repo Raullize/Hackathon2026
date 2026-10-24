@@ -152,6 +152,63 @@ describe('Cases (e2e)', () => {
     expect(page2.body.cases[0].id).not.toBe(page1.body.cases[0].id);
   });
 
+  it('records a mock patient notification', async () => {
+    const created = await createCase().expect(201);
+    const id = created.body.id as string;
+
+    await request(app.getHttpServer())
+      .post(`/api/cases/${id}/events`)
+      .set(auth())
+      .send({
+        type: 'PATIENT_NOTIFIED',
+        occurredAt: '2026-10-24',
+        channel: 'SMS',
+        text: 'Seu exame está marcado para 26/10/2026.',
+        stepLabel: 'Exame agendado',
+      })
+      .expect(201);
+
+    const detail = await request(app.getHttpServer())
+      .get(`/api/cases/${id}`)
+      .set(auth())
+      .expect(200);
+
+    expect(
+      detail.body.timeline.some(
+        (event: { type: string }) => event.type === 'PATIENT_NOTIFIED',
+      ),
+    ).toBe(true);
+    expect(detail.body.lastPatientNotification).toMatchObject({
+      channel: 'SMS',
+      stepLabel: 'Exame agendado',
+      text: 'Seu exame está marcado para 26/10/2026.',
+    });
+
+    const list = await request(app.getHttpServer())
+      .get('/api/cases?scope=open&q=Maria%20Teste')
+      .set(auth())
+      .expect(200);
+    const listed = list.body.cases.find(
+      (item: { id: string }) => item.id === id,
+    );
+    expect(listed.lastPatientNotification).toMatchObject({ channel: 'SMS' });
+  });
+
+  it('rejects a patient notification with a forbidden term', async () => {
+    const created = await createCase().expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/api/cases/${created.body.id}/events`)
+      .set(auth())
+      .send({
+        type: 'PATIENT_NOTIFIED',
+        occurredAt: '2026-10-24',
+        channel: 'SMS',
+        text: 'Seu exame de câncer está marcado.',
+      })
+      .expect(400);
+  });
+
   it('searches names without accents and by CNS digits', async () => {
     const created = await createCase({
       fullName: 'Sônia Acento da Silva',

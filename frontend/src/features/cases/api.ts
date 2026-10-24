@@ -9,6 +9,7 @@ import type {
   CaseView,
   ContactChannel,
   Metrics,
+  PatientChannel,
   PatientView,
   ReportExtractionView,
 } from '@careflow/contracts';
@@ -106,6 +107,22 @@ export function logContact(
     occurredAt,
     channel,
     note,
+  });
+}
+
+export function notifyPatient(
+  caseId: string,
+  channel: PatientChannel,
+  text: string,
+  stepLabel: string,
+  occurredAt: string,
+): Promise<void> {
+  return appendCaseEvent(caseId, {
+    type: 'PATIENT_NOTIFIED',
+    occurredAt,
+    channel,
+    text,
+    stepLabel,
   });
 }
 

@@ -20,6 +20,7 @@ const NON_STATE_EVENTS: CaseEventType[] = [
   'CORRECTION',
   'ALERT_ACKNOWLEDGED',
   'CONTACT_LOGGED',
+  'PATIENT_NOTIFIED',
 ];
 
 export class InvalidTransitionError extends Error {

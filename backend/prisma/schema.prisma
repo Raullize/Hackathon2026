@@ -37,6 +37,7 @@ enum CaseEventType {
   CORRECTION
   ALERT_ACKNOWLEDGED
   CONTACT_LOGGED
+  PATIENT_NOTIFIED
 }
 
 model User {

@@ -29,6 +29,7 @@ function caseView(overrides: Partial<CaseView>): CaseView {
     outcome60: null,
     closedAt: null,
     allowedEventTypes: [],
+    lastPatientNotification: null,
     ...overrides,
   };
 }

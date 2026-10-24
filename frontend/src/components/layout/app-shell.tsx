@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { to: '/', label: 'Calendário', icon: CalendarDays, end: true },
   { to: '/casos/novo', label: 'Novo caso', icon: Plus },
-  { to: '/alertas', label: 'Alertas', icon: Bell },
+  { to: '/notificacoes', label: 'Notificações', icon: Bell },
   { to: '/concluidos', label: 'Concluídos', icon: CheckCircle2 },
 ];
 

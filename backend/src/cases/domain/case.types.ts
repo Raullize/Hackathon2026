@@ -31,7 +31,8 @@ export type CaseEventType =
   | 'CASE_CLOSED_EXCEPTION'
   | 'CORRECTION'
   | 'ALERT_ACKNOWLEDGED'
-  | 'CONTACT_LOGGED';
+  | 'CONTACT_LOGGED'
+  | 'PATIENT_NOTIFIED';
 
 export type TreatmentType = 'SURGERY' | 'CHEMOTHERAPY' | 'RADIOTHERAPY';
 

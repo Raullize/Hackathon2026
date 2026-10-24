@@ -226,6 +226,18 @@ export class CasesService {
 
     this.assertEventDates(input, current, today);
 
+    if (
+      input.type === 'PATIENT_NOTIFIED' &&
+      (containsForbiddenPatientWord(input.text) ||
+        (input.stepLabel
+          ? containsForbiddenPatientWord(input.stepLabel)
+          : false))
+    ) {
+      throw new BadRequestException(
+        'Mensagem à paciente contém termo proibido',
+      );
+    }
+
     if (input.type === 'CORRECTION') {
       this.validateCorrection(found.events, input, current, today);
     }
@@ -491,6 +503,41 @@ export class CasesService {
       outcome60: computed.outcome60,
       closedAt: computed.closedAt,
       allowedEventTypes: computed.allowedEventTypes,
+      lastPatientNotification: this.lastPatientNotification(item.events),
+    };
+  }
+
+  private lastPatientNotification(
+    events: CaseEventRecord[],
+  ): CaseView['lastPatientNotification'] {
+    const event = [...events]
+      .filter((item) => item.type === 'PATIENT_NOTIFIED')
+      .sort(
+        (a, b) =>
+          a.recordedAt.localeCompare(b.recordedAt) || a.id.localeCompare(b.id),
+      )
+      .at(-1);
+
+    if (!event) return null;
+
+    const channel = event.payload.channel;
+    const text = event.payload.text;
+    const stepLabel = event.payload.stepLabel;
+
+    if (
+      channel !== 'EMAIL' &&
+      channel !== 'SMS' &&
+      channel !== 'WHATSAPP'
+    ) {
+      return null;
+    }
+    if (typeof text !== 'string') return null;
+
+    return {
+      channel,
+      text,
+      stepLabel: typeof stepLabel === 'string' ? stepLabel : null,
+      occurredAt: event.occurredAt,
     };
   }
 

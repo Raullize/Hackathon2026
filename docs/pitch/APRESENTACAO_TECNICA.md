@@ -214,12 +214,13 @@ Mostre:
 Frase: “O link é somente leitura, o token é hasheado no banco e não há login da
 paciente neste MVP.”
 
-### 4.6 Alertas
+### 4.6 Notificações
 
-Abra **Alertas**:
+Abra **Notificações**:
 
-- mostre destinatário, motivo e ação;
-- use **Notificar** e escolha SMS, e-mail ou WhatsApp;
+- mostre os avisos à paciente com passo marcado e use **Avisar paciente**;
+- revise a mensagem e escolha SMS, e-mail ou WhatsApp;
+- mostre os alertas de prazo e use **Notificar** para o destinatário interno;
 - mostre o feedback visual na linha e o toast;
 - use **Ciente** para registrar o reconhecimento.
 
@@ -550,8 +551,9 @@ depurar. Containers da aplicação e reverse proxy entram no roadmap de deploy.
 
 ## 15. O que não está implementado
 
-- Envio real de SMS, e-mail e WhatsApp. O botão **Notificar** simula e registra
-  `CONTACT_LOGGED`.
+- Envio real de SMS, e-mail e WhatsApp. **Notificar** registra `CONTACT_LOGGED` para
+  o destinatário interno; **Avisar paciente** registra `PATIENT_NOTIFIED` com o
+  texto mock revisado pela navegadora.
 - Integração com SISCAN, GERCON, e-SUS ou RNDS.
 - Rate limiting, auditoria de leitura e política formal de retenção.
 - PDF: o anexo é selecionado na UI, mas não é processado.
