@@ -672,7 +672,7 @@ tabela 10.3 quando houver.
 { provider: 'gemini' | 'mock', fallbackReason | null, suggestion: CaseIntakeSuggestion }
 
 // CaseIntakeSuggestion
-{ requestedAt: 'YYYY-MM-DD', trigger: 'BIRADS_5' | 'BIRADS_4' | 'CLINICAL_SUSPICION', examLabel: string, evidenceQuote: string }
+{ requestedAt: 'YYYY-MM-DD' | null, trigger: 'BIRADS_5' | 'BIRADS_4' | 'CLINICAL_SUSPICION', examLabel: string, evidenceQuote: string }
 ```
 
 `fullName`, `cns` e `birthDate` nunca saem em nenhuma resposta. O detalhe mostra a

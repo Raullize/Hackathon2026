@@ -1,0 +1,7 @@
+2026-10-24 04:10 PERCEIVE D30-003 concluída; intake do pedido ainda ausente.
+2026-10-24 04:11 ACT Contratos de intake e sanitizador de CPF/CNS/nome rotulado.
+2026-10-24 04:12 ACT MockCaseIntakeExtractor e GeminiCaseIntakeExtractor.
+2026-10-24 04:13 ACT Endpoint POST /api/case-intake/extractions.
+2026-10-24 04:14 TEST Unitários de sanitizador/mock e e2e do endpoint.
+2026-10-24 04:15 RECORD lint, typecheck, 61 unit backend + 1 frontend, 15 e2e e build verdes.
+Pendente: commit e D30-004 (telas).

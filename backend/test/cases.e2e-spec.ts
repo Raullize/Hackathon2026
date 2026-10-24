@@ -259,6 +259,35 @@ describe('Cases (e2e)', () => {
       .expect(409);
   });
 
+
+  it('extracts an intake from sanitized request text', async () => {
+    await request(app.getHttpServer())
+      .post('/api/case-intake/extractions')
+      .send({ requestText: 'BI-RADS 5' })
+      .expect(401);
+
+    const extracted = await request(app.getHttpServer())
+      .post('/api/case-intake/extractions')
+      .set(auth())
+      .send({
+        requestText:
+          'Paciente: Maria Teste. CPF 123.456.789-00. CNS 123 456 789 012 345. Solicitação de biópsia de mama por BI-RADS 5. Data do pedido: 01/10/2026.',
+      })
+      .expect(201);
+
+    expect(extracted.body).toMatchObject({
+      provider: 'mock',
+      suggestion: {
+        requestedAt: '2026-10-01',
+        trigger: 'BIRADS_5',
+        examLabel: 'biópsia',
+      },
+    });
+    expect(JSON.stringify(extracted.body)).not.toContain('123.456.789-00');
+    expect(JSON.stringify(extracted.body)).not.toContain('123 456 789 012 345');
+    expect(JSON.stringify(extracted.body)).not.toContain('Maria Teste');
+  });
+
   it('creates a late-entry case with the original day zero', async () => {
     const created = await createCase({
       requestedAt: '2026-09-01',

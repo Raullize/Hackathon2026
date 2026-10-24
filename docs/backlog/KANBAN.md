@@ -20,6 +20,7 @@ evidência em `docs/deliveries/`.
 | D30-001 | Contratos, schema Prisma, migration e `computeCaseStatus` com testes de prazo, silêncio, selos, cores, transições, correções e descoberta tardia | `docs/deliveries/0002-d30-001-motor-de-prazos.md` |
 | D30-002 | API de casos e eventos, `Clock`, `source`, descoberta tardia e endpoints de demo | `docs/deliveries/0003-d30-002-api-casos.md` |
 | D30-003 | Extração de laudo com filtro, mock, Gemini, fallback e confirmação | `docs/deliveries/0004-d30-003-extracao-laudo.md` |
+| D30-007 | Extração de intake do pedido (texto; sem PII; PDF só UI) | `docs/deliveries/0005-d30-007-intake.md` |
 
 ## Ready
 
@@ -35,7 +36,6 @@ Histórias do MVP Dia 30, na ordem dos PRs. Spec:
 
 | ID | Story | Observação |
 | --- | --- | --- |
-| D30-007 | Extração de intake do pedido (texto; PDF só UI) | RF-033; depois da D30-002; antes da D30-004; sem PII |
 | D30-004 | Telas de login, intake, calendário e detalhe do caso, responsivas de 360px a 1440px | RF-022, RF-023, RF-032, RF-033, RF-034; absorve o FEAT-001; nunca cortar o calendário |
 | D30-005 | Alertas, mensagens (SMS/e-mail; WhatsApp só visão), link da paciente, cobrança e Concluídos com as métricas | RF-024 a RF-029, RF-035; ordem de corte: métricas, escada, link público |
 | D30-006 | Seed, reset e roteiro da demo | RF-031; incluir caso de descoberta tardia; `docs/pitch/DEMO_SCRIPT.md` |

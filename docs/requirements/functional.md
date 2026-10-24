@@ -34,7 +34,7 @@
 | RF-030 | Relógio de demo | Com `DEMO_MODE=true`, `POST /api/demo/clock/advance {days}`, `POST /api/demo/clock/reset` e `GET /api/demo/status` deslocam e mostram a data simulada; sem `DEMO_MODE`, `404` | Backlog |
 | RF-031 | Seed e reset da demo | Com `DEMO_MODE=true`, `POST /api/demo/reset` recarrega os casos fictícios que cobrem as cores, os estados e um caso de descoberta tardia, incluindo a personagem principal no dia 18 de 30, e zera o relógio | Backlog |
 | RF-032 | Telas de login | Login e logout da navegadora no frontend, usando RF-002 a RF-004; rotas do calendário exigem sessão; `/p/:accessToken` não exige | Backlog |
-| RF-033 | Extração de intake | `POST /api/case-intake/extractions` com `{ requestText }` devolve sugestão de `requestedAt`, `trigger`, `examLabel`, `evidenceQuote` e `provider`; sem nome, CNS ou data de nascimento no texto da IA; a navegadora confirma; PDF é UI no MVP, só texto é funcional | Backlog |
+| RF-033 | Extração de intake | `POST /api/case-intake/extractions` com `{ requestText }` devolve sugestão de `requestedAt` (pode ser null), `trigger`, `examLabel`, `evidenceQuote` e `provider`; sem nome, CNS ou data de nascimento no texto da IA; a navegadora confirma; PDF é UI no MVP, só texto é funcional | Backlog |
 | RF-034 | Descoberta tardia | Se `CASE_CREATED.recordedAt > requestedAt + 30`, o caso recebe selo `LATE_ENTRY`, entra vermelho, alerta coordenação e não reinicia o prazo; `source` e tempo até cadastro são registrados | Backlog |
 | RF-035 | Registro de cobrança | `CONTACT_LOGGED` registra canal (`PHONE`, `EMAIL`, `SMS`, `WHATSAPP`), observação e horário; não muda estado nem zera silêncio; ligação é manual, demais canais são simulados no MVP | Backlog |
 

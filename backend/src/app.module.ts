@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
+import { CaseIntakeModule } from './case-intake/case-intake.module';
 import { CasesModule } from './cases/cases.module';
 import { ChatModule } from './chat/chat.module';
 import { ClockModule } from './clock/clock.module';
@@ -33,6 +34,7 @@ import { PrismaModule } from './prisma/prisma.module';
     HealthModule,
     ChatModule,
     CasesModule,
+    CaseIntakeModule,
     DemoModule,
   ],
   providers: [

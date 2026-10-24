@@ -300,10 +300,14 @@ export const reportExtractionViewSchema = z.object({
 });
 
 export const caseIntakeSuggestionSchema = z.object({
-  requestedAt: isoDateSchema,
+  requestedAt: isoDateSchema.nullable(),
   trigger: caseTriggerSchema,
   examLabel: z.string().trim().min(1).max(80),
   evidenceQuote: z.string().trim().min(1).max(2000),
+});
+
+export const caseIntakeRequestSchema = z.object({
+  requestText: z.string().trim().min(1).max(16000),
 });
 
 export const caseIntakeViewSchema = z.object({
@@ -338,3 +342,4 @@ export type ReportExtractionRequest = z.infer<typeof reportExtractionRequestSche
 export type ReportExtractionView = z.infer<typeof reportExtractionViewSchema>;
 export type CaseIntakeSuggestion = z.infer<typeof caseIntakeSuggestionSchema>;
 export type CaseIntakeView = z.infer<typeof caseIntakeViewSchema>;
+export type CaseIntakeRequest = z.infer<typeof caseIntakeRequestSchema>;
