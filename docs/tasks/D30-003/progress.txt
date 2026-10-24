@@ -1,0 +1,7 @@
+2026-10-24 04:02 PERCEIVE D30-002 concluída; extração de laudo ainda ausente.
+2026-10-24 04:03 ACT Filtro de CPF/CNS/nome, MockReportExtractor e GeminiReportExtractor.
+2026-10-24 04:04 ACT Repository de ReportExtraction e endpoint POST /api/cases/:id/report-extractions.
+2026-10-24 04:05 ACT Confirmação consome extração, grava sugestão/confirmado/changedFields e bloqueia duplo clique.
+2026-10-24 04:06 TEST Unitários de filtro, mock e service; e2e de extração e confirmação.
+2026-10-24 04:08 RECORD lint, typecheck, 58 unit backend + 1 frontend, 14 e2e e build verdes.
+Pendente: commit e D30-007 (intake).

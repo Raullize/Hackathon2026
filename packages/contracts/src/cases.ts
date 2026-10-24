@@ -276,13 +276,20 @@ export const demoAdvanceSchema = z.object({
   days: z.number().int().min(1).max(60),
 });
 
-export const reportSuggestionSchema = z.object({
+export const reportSuggestionCoreSchema = z.object({
   examType: z.string().trim().min(1).max(80),
   reportDate: isoDateSchema.nullable(),
   malignancy: malignancySchema,
   confidence: z.enum(['high', 'medium', 'low']),
   evidenceQuote: z.string().trim().min(1).max(2000),
+});
+
+export const reportSuggestionSchema = reportSuggestionCoreSchema.extend({
   provider: z.enum(['gemini', 'mock']),
+});
+
+export const reportExtractionRequestSchema = z.object({
+  reportText: z.string().trim().min(1).max(16000),
 });
 
 export const reportExtractionViewSchema = z.object({
@@ -325,7 +332,9 @@ export type CaseEventView = z.infer<typeof caseEventViewSchema>;
 export type CaseDetail = z.infer<typeof caseDetailSchema>;
 export type CaseListResponse = z.infer<typeof caseListResponseSchema>;
 export type DemoAdvance = z.infer<typeof demoAdvanceSchema>;
+export type ReportSuggestionCore = z.infer<typeof reportSuggestionCoreSchema>;
 export type ReportSuggestion = z.infer<typeof reportSuggestionSchema>;
+export type ReportExtractionRequest = z.infer<typeof reportExtractionRequestSchema>;
 export type ReportExtractionView = z.infer<typeof reportExtractionViewSchema>;
 export type CaseIntakeSuggestion = z.infer<typeof caseIntakeSuggestionSchema>;
 export type CaseIntakeView = z.infer<typeof caseIntakeViewSchema>;

@@ -17,6 +17,7 @@ import {
 import { Clock } from '../clock/clock';
 import {
   CASE_REPOSITORY,
+  ExtractionConsumptionError,
   type CaseRepository,
   type CaseScope,
   type CaseWithEvents,
@@ -30,6 +31,11 @@ import { applyCorrections, InvalidCorrectionError } from './domain/corrections';
 import { computeCaseStatus } from './domain/compute-case-status';
 import { diffDays } from './domain/dates';
 import { applyEvent, InvalidTransitionError } from './domain/transitions';
+import {
+  REPORT_EXTRACTION_REPOSITORY,
+  type ReportExtractionRecord,
+  type ReportExtractionRepository,
+} from '../report-extraction/report-extraction.repository';
 
 const IGNORED_NAME_PARTS = new Set(['da', 'de', 'do', 'das', 'dos', 'e']);
 
@@ -83,6 +89,8 @@ export class CasesService {
   constructor(
     @Inject(CASE_REPOSITORY)
     private readonly repository: CaseRepository,
+    @Inject(REPORT_EXTRACTION_REPOSITORY)
+    private readonly extractions: ReportExtractionRepository,
     private readonly clock: Clock,
   ) {}
 
@@ -129,7 +137,9 @@ export class CasesService {
       throw new NotFoundException('Caso não encontrado');
     }
 
-    return this.toDetail(found, this.clock.today());
+    const today = this.clock.today();
+    const extractions = await this.extractions.findByCaseId(id);
+    return this.toDetail(found, today, extractions);
   }
 
   async appendEvent(
@@ -149,7 +159,7 @@ export class CasesService {
 
     const today = this.clock.today();
     const current = computeCaseStatus(found.case, found.events, today);
-    const payload = asPayload(input);
+    let payload = asPayload(input);
     let nextStatus: ComputedCase['status'];
 
     try {
@@ -167,6 +177,38 @@ export class CasesService {
 
     if (input.type === 'CORRECTION') {
       this.validateCorrection(found.events, input, current, today);
+    }
+
+    let consumeExtractionId: string | undefined;
+
+    if (input.type === 'REPORT_CONFIRMED') {
+      const extraction = await this.extractions.findById(input.extractionId);
+
+      if (!extraction || extraction.caseId !== id) {
+        throw new ConflictException('Extração inválida para este caso');
+      }
+
+      if (extraction.consumedAt) {
+        throw new ConflictException('Extração já consumida');
+      }
+
+      const confirmed = {
+        examType: input.examType,
+        reportDate: input.reportDate,
+        malignancy: input.malignancy,
+        evidenceQuote: input.evidenceQuote,
+      };
+      const changedFields = (
+        ['examType', 'reportDate', 'malignancy', 'evidenceQuote'] as const
+      ).filter((field) => extraction.suggestion[field] !== confirmed[field]);
+
+      payload = {
+        ...payload,
+        suggestion: extraction.suggestion,
+        confirmed,
+        changedFields,
+      };
+      consumeExtractionId = input.extractionId;
     }
 
     const recordedAt = this.clock.now();
@@ -196,18 +238,28 @@ export class CasesService {
       }
     }
 
-    const updated = await this.repository.appendEvent({
-      caseId: id,
-      type: input.type,
-      occurredAt: input.occurredAt,
-      recordedAt,
-      userId,
-      payload,
-      correctsEventId:
-        input.type === 'CORRECTION' ? input.correctsEventId : null,
-      status: nextStatus,
-      requestedAt,
-    });
+    let updated: CaseWithEvents;
+
+    try {
+      updated = await this.repository.appendEvent({
+        caseId: id,
+        type: input.type,
+        occurredAt: input.occurredAt,
+        recordedAt,
+        userId,
+        payload,
+        correctsEventId:
+          input.type === 'CORRECTION' ? input.correctsEventId : null,
+        status: nextStatus,
+        requestedAt,
+        consumeExtractionId,
+      });
+    } catch (error) {
+      if (error instanceof ExtractionConsumptionError) {
+        throw new ConflictException('Extração já consumida');
+      }
+      throw error;
+    }
 
     return this.toView(updated, today);
   }
@@ -365,7 +417,11 @@ export class CasesService {
     };
   }
 
-  private toDetail(item: CaseWithEvents, today: IsoDate): CaseDetail {
+  private toDetail(
+    item: CaseWithEvents,
+    today: IsoDate,
+    extractions: ReportExtractionRecord[],
+  ): CaseDetail {
     const view = this.toView(item, today);
     const timeline: CaseEventView[] = item.events.map((event) => ({
       id: event.id,
@@ -384,7 +440,12 @@ export class CasesService {
       timeline,
       messages: [],
       alerts: [],
-      extractions: [],
+      extractions: extractions.map((extraction) => ({
+        extractionId: extraction.id,
+        provider: extraction.provider,
+        fallbackReason: extraction.fallbackReason,
+        suggestion: extraction.suggestion,
+      })),
     };
   }
 }

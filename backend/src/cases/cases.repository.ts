@@ -9,6 +9,13 @@ import type {
 
 export const CASE_REPOSITORY = Symbol('CASE_REPOSITORY');
 
+export class ExtractionConsumptionError extends Error {
+  constructor() {
+    super('Extraction already consumed or not found');
+    this.name = 'ExtractionConsumptionError';
+  }
+}
+
 export interface CaseData {
   id: string;
   fullName: string;
@@ -48,6 +55,7 @@ export interface AppendEventData {
   correctsEventId?: string | null;
   status: CaseStatus;
   requestedAt?: IsoDate;
+  consumeExtractionId?: string;
 }
 
 export type CaseScope = 'open' | 'closed';

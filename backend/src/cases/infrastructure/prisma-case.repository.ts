@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, type Case as PrismaCase, type CaseEvent as PrismaCaseEvent } from '@prisma/client';
 import { Clock } from '../../clock/clock';
 import { PrismaService } from '../../prisma/prisma.service';
-import type {
-  CaseData,
-  CaseRepository,
-  CaseScope,
-  CaseWithEvents,
-  CreateCaseData,
-  AppendEventData,
+import {
+  ExtractionConsumptionError,
+  type AppendEventData,
+  type CaseData,
+  type CaseRepository,
+  type CaseScope,
+  type CaseWithEvents,
+  type CreateCaseData,
 } from '../cases.repository';
 import type {
   CaseEventType,
@@ -138,7 +139,7 @@ export class PrismaCaseRepository implements CaseRepository {
 
   async appendEvent(data: AppendEventData): Promise<CaseWithEvents> {
     await this.prisma.$transaction(async (tx) => {
-      await tx.caseEvent.create({
+      const event = await tx.caseEvent.create({
         data: {
           caseId: data.caseId,
           type: data.type,
@@ -149,6 +150,24 @@ export class PrismaCaseRepository implements CaseRepository {
           payload: data.payload as Prisma.InputJsonValue,
         },
       });
+
+      if (data.consumeExtractionId) {
+        const consumed = await tx.reportExtraction.updateMany({
+          where: {
+            id: data.consumeExtractionId,
+            caseId: data.caseId,
+            consumedAt: null,
+          },
+          data: {
+            consumedAt: data.recordedAt,
+            consumedByEventId: event.id,
+          },
+        });
+
+        if (consumed.count === 0) {
+          throw new ExtractionConsumptionError();
+        }
+      }
 
       await tx.case.update({
         where: { id: data.caseId },

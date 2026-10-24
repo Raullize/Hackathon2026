@@ -158,17 +158,26 @@ describe('Cases (e2e)', () => {
       })
       .expect(201);
 
+    const extracted = await request(app.getHttpServer())
+      .post(`/api/cases/${id}/report-extractions`)
+      .set(auth())
+      .send({
+        reportText:
+          'Fibroadenoma, negativo para malignidade. Data: 03/10/2026.',
+      })
+      .expect(201);
+
     const confirmed = await request(app.getHttpServer())
       .post(`/api/cases/${id}/events`)
       .set(auth())
       .send({
         type: 'REPORT_CONFIRMED',
         occurredAt: '2026-10-03',
-        extractionId: randomUUID(),
-        examType: 'anatomopatológico',
-        reportDate: '2026-10-03',
-        malignancy: 'benign',
-        evidenceQuote: 'negativo para malignidade',
+        extractionId: extracted.body.extractionId,
+        examType: extracted.body.suggestion.examType,
+        reportDate: extracted.body.suggestion.reportDate,
+        malignancy: extracted.body.suggestion.malignancy,
+        evidenceQuote: extracted.body.suggestion.evidenceQuote,
       })
       .expect(201);
 
@@ -179,6 +188,75 @@ describe('Cases (e2e)', () => {
       outcome30: 'MET',
       outcome60: 'NOT_APPLICABLE',
     });
+  });
+
+
+  it('extracts and confirms a report, consuming the extraction once', async () => {
+    const created = await createCase().expect(201);
+    const id = created.body.id as string;
+
+    await request(app.getHttpServer())
+      .post(`/api/cases/${id}/events`)
+      .set(auth())
+      .send({
+        type: 'REPORT_RECEIVED',
+        occurredAt: '2026-10-03',
+      })
+      .expect(201);
+
+    const extracted = await request(app.getHttpServer())
+      .post(`/api/cases/${id}/report-extractions`)
+      .set(auth())
+      .send({
+        reportText:
+          'Anatomopatológico. Carcinoma ductal invasivo. Data: 03/10/2026.',
+      })
+      .expect(201);
+
+    expect(extracted.body).toMatchObject({
+      provider: 'mock',
+      suggestion: {
+        examType: 'anatomopatológico',
+        reportDate: '2026-10-03',
+        malignancy: 'malignant',
+        provider: 'mock',
+      },
+    });
+
+    const confirmation = {
+      type: 'REPORT_CONFIRMED',
+      occurredAt: '2026-10-03',
+      extractionId: extracted.body.extractionId,
+      examType: extracted.body.suggestion.examType,
+      reportDate: extracted.body.suggestion.reportDate,
+      malignancy: extracted.body.suggestion.malignancy,
+      evidenceQuote: extracted.body.suggestion.evidenceQuote,
+    };
+
+    const confirmed = await request(app.getHttpServer())
+      .post(`/api/cases/${id}/events`)
+      .set(auth())
+      .send(confirmation)
+      .expect(201);
+
+    expect(confirmed.body).toMatchObject({
+      status: 'DIAGNOSIS_CONFIRMED',
+      clock: 'D60',
+      outcome30: 'MET',
+    });
+
+    const detail = await request(app.getHttpServer())
+      .get(`/api/cases/${id}`)
+      .set(auth())
+      .expect(200);
+
+    expect(detail.body.extractions).toHaveLength(1);
+
+    await request(app.getHttpServer())
+      .post(`/api/cases/${id}/events`)
+      .set(auth())
+      .send(confirmation)
+      .expect(409);
   });
 
   it('creates a late-entry case with the original day zero', async () => {

@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
+import { ReportExtractionModule } from '../report-extraction/report-extraction.module';
 import { CasesController } from './cases.controller';
 import { CASE_REPOSITORY } from './cases.repository';
 import { CasesService } from './cases.service';
 import { PrismaCaseRepository } from './infrastructure/prisma-case.repository';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, ReportExtractionModule],
   controllers: [CasesController],
   providers: [
     CasesService,
