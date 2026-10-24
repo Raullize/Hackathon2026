@@ -10,7 +10,6 @@ export interface ReportExtractionRecord {
   provider: 'gemini' | 'mock';
   fallbackReason: string | null;
   suggestion: ReportSuggestion;
-  demoRawText: string | null;
   createdById: string;
   createdAt: Date;
   consumedAt: Date | null;
@@ -21,7 +20,6 @@ export interface CreateReportExtractionData {
   provider: 'gemini' | 'mock';
   fallbackReason: string | null;
   suggestion: ReportSuggestion;
-  demoRawText: string | null;
   createdById: string;
 }
 

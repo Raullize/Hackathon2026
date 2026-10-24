@@ -20,15 +20,14 @@
     "db:studio": "dotenv run -f ../.env -- prisma studio"
   },
   "dependencies": {
-    "@google/genai": "2.31.0",
     "@careflow/contracts": "workspace:*",
+    "@google/genai": "2.31.0",
     "@nestjs/common": "11.2.7",
     "@nestjs/config": "4.0.4",
     "@nestjs/core": "11.2.7",
     "@nestjs/jwt": "11.0.2",
     "@nestjs/platform-express": "11.2.7",
     "@nestjs/swagger": "11.4.7",
-    "@nestjs/throttler": "6.7.1",
     "@prisma/client": "6.19.3",
     "argon2": "0.45.1",
     "cookie-parser": "1.4.7",

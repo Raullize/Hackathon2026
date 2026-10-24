@@ -7,7 +7,6 @@
 - `GEMINI_API_KEY` somente no backend; nunca em `VITE_*`.
 - `.env` fora do git; apenas `.env.example` versionado.
 - Validação de entrada com Zod em auth e casos.
-- Rate limit global e limites próprios para extração e link público.
 - Erros não expõem stack trace, token ou conteúdo de mensagem.
 - Cookie `HttpOnly`, `SameSite=Lax` e `Secure` em produção.
 
@@ -41,9 +40,9 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
 - **RNF-002** Filtro de identificadores antes de qualquer extrator de laudo, inclusive
   na demo: CPF, CNS e o nome da paciente viram `[CPF]`, `[CNS]` e `[NOME]`. O filtro
   reduz o risco, mas não garante anonimização.
-- **RNF-003** O texto bruto do laudo só é guardado com `DEMO_MODE=true`, num campo
-  marcado para ser apagado (`demoRawText`), que o reset de demo apaga. A regra de
-  produção é `[DECISÃO PENDENTE]` (aviso de LGPD em `domain.md`).
+- **RNF-003** O texto bruto do laudo não é persistido; só a sugestão estruturada é
+  guardada. A regra para laudo real segue `[DECISÃO PENDENTE]` (aviso de LGPD em
+  `domain.md`).
 - **RNF-004** Texto de laudo (bruto ou filtrado), token da paciente e `birthDate`
   nunca aparecem em log, mensagem de erro ou resposta da API. `fullName` só aparece
   nas respostas autenticadas da navegadora; `cns` só no detalhe autenticado e na busca
@@ -55,19 +54,16 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
 
 - **RNF-006** Token de 32 bytes aleatórios por caso; o banco guarda só o hash SHA-256; o
   token é mostrado uma única vez.
-- **RNF-007** Rate limit próprio em `GET /api/public/p/:token`, separado do limite geral:
-  10 requisições a cada 60 s por IP `[SUPOSIÇÃO]`; excedeu, `429`.
 - **RNF-008** Resposta `404` idêntica para token inexistente, revogado ou expirado, sem
   revelar qual é o caso.
 - **RNF-009** O link vale até 30 dias depois do fechamento do caso `[SUPOSIÇÃO]`.
 
-## Dia 30 — Modo demo
+## Dia 30 — Relógio de simulação
 
-- **RNF-010** `DEMO_MODE=true` liga o módulo `demo` (`/api/demo/*`), o deslocamento do
-  relógio e o `demoRawText`. Sem ele, as rotas de demo retornam `404` e o deslocamento é
-  ignorado.
-- **RNF-011** `DEMO_MODE=true` com `NODE_ENV=production` falha na validação do
-  ambiente, porque o reset apaga as tabelas do CareFlow `[DECISÃO PENDENTE]`.
+- **RNF-010** O deslocamento do relógio e as rotas `/api/demo/*` ficam sempre
+  disponíveis, sem variável de ambiente. O reset exige autenticação.
+- **RNF-011** O reset de dados recria os 11 casos fictícios e zera o relógio; não
+  apaga usuários.
 - **RNF-012** Sem cron e sem `@nestjs/schedule`: estado, cores, alertas, mensagens e
   métricas são calculados na leitura (ADR 0006).
 
@@ -87,7 +83,6 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
   (`REPORT_EXTRACTION_TIMEOUT_MS`, padrão 8000 ms `[SUPOSIÇÃO]`). Ao estourar, cai para o
   mock (regra local), registrando o motivo.
 - **RNF-017** A saída do extrator é validada por Zod; saída inválida cai para o mock.
-- **RNF-018** A extração tem rate limit mais rígido que a API geral.
 
 ## Dia 30 — Acessibilidade, responsividade e celular
 

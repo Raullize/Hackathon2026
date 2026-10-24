@@ -46,7 +46,7 @@ Conferir contra o repositório antes de subir ao palco; esta lista só vale para
 estiver na `main`.
 
 - **Base:** monorepo, contratos Zod, auth (cadastro/login/me/logout), health,
-  Swagger, rate limit, testes e CI.
+  Swagger, testes e CI.
 - **Especificação do CareFlow (na `main`):** spec, requisitos RF-011 a RF-035, ADR 0006,
   plano da D30-001 e roteiro da demo.
 

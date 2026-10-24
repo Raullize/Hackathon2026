@@ -7,7 +7,7 @@
 
 - **Implementado:** monorepo, contratos Zod e CI.
 - **Implementado:** auth completa (cadastro/login/me/logout).
-- **Implementado:** health, Swagger, rate limit e testes.
+- **Implementado:** health, Swagger e testes.
 - **Implementado (documentação):** spec do MVP do CareFlow, requisitos RF-011 a RF-035,
   ADR 0006 e roteiro da demo.
 

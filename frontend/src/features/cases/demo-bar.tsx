@@ -57,9 +57,9 @@ export function DemoBar() {
       apiFetch<{ cases: number }>('/demo/reset', { method: 'POST' }),
     onSuccess: async (data) => {
       await invalidate();
-      toast.success(`Demo recarregada com ${data.cases} casos.`);
+      toast.success(`Dados restaurados com ${data.cases} casos.`);
     },
-    onError: () => toast.error('Não foi possível recarregar a demo.'),
+    onError: () => toast.error('Não foi possível restaurar os dados.'),
   });
 
   if (status.isError || !status.data) {
@@ -136,7 +136,7 @@ export function DemoBar() {
           onClick={() => resetDemo.mutate()}
           disabled={resetDemo.isPending}
         >
-          Recarregar demo
+          Restaurar dados
         </Button>
       </div>
 

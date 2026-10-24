@@ -38,7 +38,6 @@ function createService(options: {
   const values: Partial<AppEnv> = {
     LLM_PROVIDER: options.provider,
     GEMINI_API_KEY: options.hasKey ? 'key' : undefined,
-    DEMO_MODE: false,
   };
   const config = {
     get: jest.fn((key: keyof AppEnv) => values[key]),

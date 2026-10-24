@@ -1,16 +1,11 @@
-import { ConfigService } from '@nestjs/config';
-import type { AppEnv } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
 import { ClockService } from './clock.service';
 
-function createClock(demoMode = false): ClockService {
+function createClock(): ClockService {
   const prisma = {
     demoClockState: { findUnique: jest.fn().mockResolvedValue({ offsetDays: 0 }) },
   } as unknown as PrismaService;
-  const config = {
-    get: jest.fn((key: keyof AppEnv) => (key === 'DEMO_MODE' ? demoMode : undefined)),
-  } as unknown as ConfigService<AppEnv, true>;
-  return new ClockService(prisma, config);
+  return new ClockService(prisma);
 }
 
 describe('ClockService', () => {

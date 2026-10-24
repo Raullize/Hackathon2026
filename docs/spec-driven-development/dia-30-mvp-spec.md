@@ -564,7 +564,6 @@ model ReportExtraction {
   provider      String                     // "gemini" | "mock"
   fallbackReason String?  @map("fallback_reason") // "timeout" | "invalid_output" | "provider_error" | "no_api_key"
   suggestion    Json                       // ReportSuggestion validada por Zod
-  demoRawText   String?   @map("demo_raw_text") // DEMO_ONLY: só com DEMO_MODE=true; apagar no reset
   createdById   String    @map("created_by_id") @db.Uuid
   createdAt     DateTime  @default(now()) @map("created_at")
   consumedAt    DateTime? @map("consumed_at")     // preenchido pelo REPORT_CONFIRMED
@@ -621,22 +620,21 @@ tabela 10.3 quando houver.
 | `GET /api/cases?scope=open\|closed` | JWT | — | 200 `{ today, cases: CaseView[] }` | 400 (scope inválido), 401 |
 | `GET /api/cases/:id` | JWT | — | 200 `CaseDetail` | 401, 404 |
 | `POST /api/cases/:id/events` | JWT | `CaseEventInput` (`discriminatedUnion('type')`) | 201 `CaseView` | 400, 401, 404, 409 |
-| `POST /api/cases/:id/report-extractions` | JWT | `{ reportText }` | 201 `ReportExtractionView` | 400, 401, 404, 409, 429 |
-| `POST /api/case-intake/extractions` | JWT | `{ requestText }` | 201 `CaseIntakeView` | 400, 401, 409, 429 |
+| `POST /api/cases/:id/report-extractions` | JWT | `{ reportText }` | 201 `ReportExtractionView` | 400, 401, 404, 409 |
+| `POST /api/case-intake/extractions` | JWT | `{ requestText }` | 201 `CaseIntakeView` | 400, 401, 409 |
 | `POST /api/cases/:id/access-tokens` | JWT | — | 201 `{ token, path }` (mostrado uma única vez) | 401, 404, 409 (caso fechado há mais de 30 dias) |
 | `GET /api/alerts` | JWT | — | 200 `Alert[]` | 401 |
 | `GET /api/metrics` | JWT | — | 200 `Metrics` | 401 |
-| `GET /api/public/p/:token` | Nenhuma | — | 200 `PatientView` | 404, 429 |
-| `GET /api/demo/status` | JWT | — | 200 `{ today, offsetDays }` | 401, 404 sem DEMO_MODE |
-| `POST /api/demo/clock/advance` | JWT | `{ days }` (inteiro de 1 a 60 `[SUPOSIÇÃO]`) | 200 `{ today, offsetDays }` | 400, 401, 404 sem DEMO_MODE |
-| `POST /api/demo/clock/reset` | JWT | — | 200 `{ today, offsetDays: 0 }` | 401, 404 sem DEMO_MODE |
-| `POST /api/demo/reset` | JWT | — | 200 `{ cases }` (recarrega o seed e zera o relógio `[SUPOSIÇÃO]`) | 401, 404 sem DEMO_MODE |
+| `GET /api/public/p/:token` | Nenhuma | — | 200 `PatientView` | 404 |
+| `GET /api/demo/status` | JWT | — | 200 `{ today, offsetDays }` | 401 |
+| `POST /api/demo/clock/advance` | JWT | `{ days }` (inteiro de 1 a 60 `[SUPOSIÇÃO]`) | 200 `{ today, offsetDays }` | 400, 401 |
+| `POST /api/demo/clock/reset` | JWT | — | 200 `{ today, offsetDays: 0 }` | 401 |
+| `POST /api/demo/reset` | JWT | — | 200 `{ cases }` (recarrega o seed e zera o relógio `[SUPOSIÇÃO]`) | 401 |
 
 - O "Ciente" de alerta é um evento: `POST /api/cases/:id/events` com
   `{ type: "ALERT_ACKNOWLEDGED", alertKey }`.
-- Sem `DEMO_MODE=true`, o módulo `demo` não é registrado e todas as rotas
-  `/api/demo/*` devolvem 404, mesmo com token.
-- Exigir JWT nas rotas de demo é escolha conservadora `[DECISÃO PENDENTE]`.
+- As rotas `/api/demo/*` ficam sempre disponíveis, mas exigem JWT.
+- O reset exige autenticação e recria os dados fictícios.
 
 ### 10.2 Formas principais
 
@@ -686,12 +684,11 @@ nome, CNS e palavra proibida.
 | 400 | `VALIDATION_ERROR` | Payload fora do schema Zod, data fora das regras (seção 5.3), `scope` inválido, correção de campo não corrigível |
 | 401 | `UNAUTHORIZED` | Sem token ou token inválido (comportamento atual) |
 | 404 | `CASE_NOT_FOUND` | Caso inexistente |
-| 404 | `NOT_FOUND` | Token da paciente inexistente, revogado ou expirado (mesma resposta nos três casos); rotas de demo sem DEMO_MODE |
+| 404 | `NOT_FOUND` | Token da paciente inexistente, revogado ou expirado (mesma resposta nos três casos) |
 | 409 | `INVALID_TRANSITION` | Evento não permitido no estado atual, ou evento em caso fechado |
 | 409 | `EXTRACTION_ALREADY_CONSUMED` | `REPORT_CONFIRMED` com extração já usada (duplo clique) |
 | 409 | `EXTRACTION_NOT_FOUND_FOR_CASE` | `extractionId` de outro caso ou inexistente `[SUPOSIÇÃO: 409, e não 404, para não confundir com o caso]` |
 | 409 | `ALERT_NOT_ACTIVE` | "Ciente" de alerta que não está ativo ou já foi marcado |
-| 429 | `TOO_MANY_REQUESTS` | Rate limit (link da paciente e extração) |
 
 Duplo clique na confirmação: a primeira chamada consome a extração e move o estado; a
 segunda devolve 409.
@@ -806,9 +803,8 @@ probabilidade estatística.
 
 - O laudo é dado pessoal sensível de saúde (LGPD, art. 11). A demo usa só laudos
   fictícios.
-- O texto bruto só é guardado com `DEMO_MODE=true`, em `demoRawText`, campo marcado
-  para ser apagado (o reset de demo apaga). Sem `DEMO_MODE`, o texto não é guardado; a
-  regra de produção é `[DECISÃO PENDENTE]`.
+- O texto bruto do laudo não é persistido; só a sugestão estruturada é guardada. A
+  regra para laudo real é `[DECISÃO PENDENTE]`.
 - Nunca registrar o texto do laudo (bruto ou filtrado) em log, nem em mensagem de erro.
 
 ### 11.8 Extração de intake do pedido
@@ -866,8 +862,6 @@ probabilidade estatística.
 - O link é gerado sob demanda, não no cadastro `[SUPOSIÇÃO]`.
 - Rota do frontend `/p/:accessToken`; API `GET /api/public/p/:token`.
 - 404 igual (mesmo corpo) para token inexistente, revogado ou expirado.
-- Rate limit próprio, por IP: 10 requisições a cada 60 s `[SUPOSIÇÃO]`, com o
-  `@Throttle` do Nest.
 - Só leitura. Mostra:
   - o próximo passo e a data;
   - "Dia X de 30" ou "Dia X de 60" e o vencimento;
@@ -941,16 +935,13 @@ traz numerador e denominador.
 - As métricas de IA aparecem também separadas por origem (Gemini e regra local).
 - Ordem de corte 1: o mini painel. A API pode ficar; a tela é a primeira a sair.
 
-## 16. Seed e demo
+## 16. Seed e dados fictícios
 
-### 16.1 Modo demo
+### 16.1 Relógio de simulação
 
-- `DEMO_MODE=true` liga o módulo `demo`, o deslocamento do relógio e o
-  `demoRawText`. A variável entra no `env.ts` e no `.env.example` no D30-002.
-- `DEMO_MODE=true` com `NODE_ENV=production` falha na validação do ambiente, porque o
-  reset apaga as tabelas `[DECISÃO PENDENTE]`.
+- O deslocamento do relógio e as rotas `/api/demo/*` ficam sempre disponíveis.
 - `POST /api/demo/reset` faz o truncate só das tabelas do CareFlow, recarrega o seed e
-  zera o relógio.
+  zera o relógio. A rota exige autenticação.
 
 ### 16.2 Seed
 
@@ -1010,12 +1001,12 @@ riscos (seção 20).
 
 | Módulo | Conteúdo | Observação |
 | --- | --- | --- |
-| `clock` | `Clock` (porta), `SystemClock`, leitura do `DemoClockState` | Global. Sem `DEMO_MODE`, o deslocamento é sempre 0 |
+| `clock` | `Clock` (porta), `SystemClock`, leitura do `DemoClockState` | Global; o deslocamento vem do banco |
 | `cases` | `domain/` (`computeCaseStatus`, transições, `DEADLINE_RULES`, datas, alertas, mensagens, métricas, todas funções puras), `CasesController`, `AlertsController`, `MetricsController`, porta `CaseRepository` e `PrismaCaseRepository` | O domínio não importa Prisma nem Nest |
 | `report-extraction` | Porta `ReportExtractor`, `GeminiReportExtractor`, `MockReportExtractor`, `IdentifierFilter`, controller de `report-extractions` | Usa o padrão de fallback da extração |
 | `case-intake` | Porta `CaseIntakeExtractor`, `GeminiCaseIntakeExtractor`, `MockCaseIntakeExtractor`, controller de `case-intake/extractions` | Texto sem PII; PDF só UI no MVP |
-| `patient-access` | `GET /api/public/p/:token`, emissão e revogação de token | Throttle próprio |
-| `demo` | `/api/demo/*`, reset e seed | Registrado só com `DEMO_MODE=true` (por exemplo, com `ConditionalModule.registerWhen` do `@nestjs/config`, a confirmar na versão instalada) |
+| `patient-access` | `GET /api/public/p/:token`, emissão e revogação de token | Somente leitura e token com hash |
+| `demo` | `/api/demo/*`, reset e seed | Sempre registrado; reset exige JWT |
 
 - **Comunicação:** templates calculados no domínio; envio real por **SMS e e-mail**
   fica fora do MVP. WhatsApp é apenas visão de pitch, não integração implementada
@@ -1081,11 +1072,9 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 
 ### 18.3 Backend e2e (Jest + Supertest)
 
-- Todo endpoint novo: caminho feliz, 400, 401, 404, 409 e 429 onde se aplicam.
+- Todo endpoint novo: caminho feliz, 400, 401, 404 e 409 onde se aplicam.
 - `Clock` sobrescrito no `TestingModule`.
-- Os testes de `/api/demo/clock` numa suíte própria, com `DEMO_MODE=true`, que zera o
-  relógio no `afterEach`.
-- Uma suíte sem `DEMO_MODE` prova que `/api/demo/*` devolve 404.
+- Os testes de `/api/demo/clock` numa suíte própria, que zera o relógio no `afterEach`.
 - Truncate só das tabelas do CareFlow no `beforeAll`.
 - `LLM_PROVIDER=mock`, como o setup e2e atual já força.
 - Duplo clique: duas confirmações seguidas → 201 e 409.
@@ -1104,7 +1093,7 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 - Agrupamento por semana (segunda a domingo), "Vencidos" e "Depois".
 - Ordem dentro da coluna (cor, dias restantes, gatilho).
 - Rótulos em texto ("No prazo", "Atenção", "Vencido") e `aria-label` do card.
-- Barra de demo só aparece com `GET /api/demo/status` em 200.
+- Controle de data aparece com `GET /api/demo/status` em 200.
 - Responsividade: o calendário usa lista vertical abaixo de 768px; detalhe e
   formulários empilham; a página pública não tem overflow horizontal; alvos de toque
   com 44px.
@@ -1112,8 +1101,7 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 
 ### 18.5 Smoke e checklist manual
 
-- `scripts/smoke.mjs` estendido com a história inteira da demo pela API (precisa de
-  `DEMO_MODE=true`).
+- `scripts/smoke.mjs` cobre health, login, casos, alertas e métricas pela API.
 - Checklist manual da UI, com print, em `docs/deliveries/`: calendário, teclado,
   detalhe, confirmação do laudo e link da paciente.
 - **Responsividade:** validar em 360×640, 768×1024, 1280×800 e 1440×900; sem overflow
@@ -1127,7 +1115,7 @@ Sete histórias, uma por PR, nesta ordem. Cada PR cita os RFs que entrega.
 | Story | Entrega | RFs |
 | --- | --- | --- |
 | D30-001 | Contratos Zod, modelo Prisma, migration e `computeCaseStatus` com as regras de prazo, silêncio, selos, cores, transições, `source`, `LATE_ENTRY` e `CONTACT_LOGGED` | RF-012 a RF-018, RF-033 a RF-035 |
-| D30-002 | API de casos e eventos, `Clock`, descoberta tardia, endpoints de demo, `DEMO_MODE` e `REPORT_EXTRACTION_TIMEOUT_MS` no `env.ts` | RF-011, RF-017, RF-018, RF-030, RF-034 |
+| D30-002 | API de casos e eventos, `Clock`, descoberta tardia, endpoints de demo, `REPORT_EXTRACTION_TIMEOUT_MS` no `env.ts` | RF-011, RF-017, RF-018, RF-030, RF-034 |
 | D30-003 | `ReportExtractor` (mock, Gemini e filtro) e o fluxo de confirmação | RF-019, RF-020, RF-021 |
 | D30-007 | Extração de intake do pedido (texto; PDF só UI) | RF-033 |
 | D30-004 | Telas de login, intake, calendário e detalhe (absorve o FEAT-001) | RF-022, RF-023, RF-032, RF-033, RF-034 |
@@ -1163,7 +1151,7 @@ Se o tempo apertar, sai nesta ordem:
 | `Case` ser nome reservado no Prisma | Migration não gera | `prisma validate` no primeiro passo do D30-001; alternativa `CareCase` |
 | Filtro de identificadores incompleto | Dado pessoal vai para o Gemini | Demo só com laudo fictício; regra de produção pendente |
 | 60 dias sem evento intermediário | Todo caso em `DIAGNOSIS_CONFIRMED` fica amarelo por silêncio depois de 7 dias | Assumido como "silêncio é alerta"; `TREATMENT_SCHEDULED` pendente |
-| Deslocamento de relógio vazar para fora da demo | Datas erradas | O deslocamento só vale com `DEMO_MODE=true`, e `DEMO_MODE` é bloqueado em produção |
+| Deslocamento de relógio vazar para fora do ambiente de teste | Datas erradas | O reset zera o relógio antes de recarregar os dados |
 | 24 h para 6 PRs | Histórias incompletas | Ordem de corte da seção 19 |
 
 ## 21. Pendências
@@ -1180,7 +1168,6 @@ Se o tempo apertar, sai nesta ordem:
 - Mock com palavras dos dois grupos → `inconclusive`.
 - `fullName` fora das respostas públicas; visível só para a navegadora autenticada.
 - JWT nas rotas de demo.
-- `DEMO_MODE` bloqueado com `NODE_ENV=production`.
 - Denominadores das métricas de prazo (vencidos abertos dentro; `CLOSED_EXCEPTION` fora,
   contado à parte).
 - Mensagem nova quando uma correção muda um valor já "enviado".
@@ -1197,7 +1184,7 @@ Se o tempo apertar, sai nesta ordem:
 
 - Os limites de `DEADLINE_RULES` (7, 14, 7, 3 e 30 dias).
 - O link valer 30 dias depois do fechamento.
-- O rate limit do link (10 por minuto) e o limite de 16.000 caracteres do laudo.
+- O limite de 16.000 caracteres do laudo.
 - O timeout de 8000 ms.
 
 ## 22. Decisões da entrevista de 23/10/2026
@@ -1242,8 +1229,8 @@ Respostas do time em três rodadas. Onde uma rodada corrige a anterior, vale a m
 - Sem cron e sem `@nestjs/schedule`: função pura, `Clock` injetável e deslocamento no
   banco (ADR 0006).
 - `/api/demo/clock/advance`, `/api/demo/clock/reset`, `/api/demo/reset` e
-  `/api/demo/status`, só com `DEMO_MODE=true`; fora disso, 404.
-- Barra de demo com "+1 dia", "+7 dias", "Resetar" e a data simulada.
+  `/api/demo/status`, sempre disponíveis com autenticação.
+- Controle de data com "+1 dia", "+7 dias", "Zerar", "Restaurar dados" e a data simulada.
 - `REPORT_EXTRACTION_TIMEOUT_MS` com padrão de 8000 ms `[SUPOSIÇÃO]`; no código, só no
   D30-002.
 - Plano B: `LLM_PROVIDER=mock` assumido, vídeo gravado e reset antes de subir ao palco.
@@ -1268,7 +1255,7 @@ Respostas do time em três rodadas. Onde uma rodada corrige a anterior, vale a m
 - Mock por palavra-chave e regex de data.
 - A navegadora edita todos os campos; `REPORT_CONFIRMED` guarda a sugestão, o valor
   confirmado e os campos alterados.
-- Texto bruto só em `DEMO_MODE`; filtro de CPF, CNS e nome antes do Gemini, mesmo na
+- Texto bruto não é persistido; filtro de CPF, CNS e nome antes do Gemini, mesmo na
   demo.
 - Selo de origem: "Gemini" ou "regra local".
 
@@ -1284,7 +1271,7 @@ Respostas do time em três rodadas. Onde uma rodada corrige a anterior, vale a m
 
 - Login só da navegadora, sem roles.
 - Link `/p/:accessToken`: 32 bytes, hash no banco, mostrado uma vez, revogável, 404
-  igual, rate limit próprio, só leitura, vale mais 30 dias depois do fechamento
+  igual, só leitura, vale mais 30 dias depois do fechamento
   `[SUPOSIÇÃO]`.
 - Templates fixos, com teste das palavras proibidas; a IA nunca escreve para a paciente.
 - Escada: amarelo ou silêncio → navegadora; faltam 3 dias ou menos → regulação

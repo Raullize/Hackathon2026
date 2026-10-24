@@ -103,7 +103,6 @@ model ReportExtraction {
   provider          String
   fallbackReason    String?   @map("fallback_reason")
   suggestion        Json
-  demoRawText       String?   @map("demo_raw_text")
   createdById       String    @map("created_by_id") @db.Uuid
   createdAt         DateTime  @default(now()) @map("created_at")
   consumedAt        DateTime? @map("consumed_at")

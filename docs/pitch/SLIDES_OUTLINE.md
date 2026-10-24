@@ -51,7 +51,7 @@
 
 ## 6. Qualidade e segurança
 
-- Zod, JWT, Argon2id, rate limit (inclusive no link da paciente), testes escritos antes
+- Zod, JWT, Argon2id, testes escritos antes
   e CI.
 - IA só sugere; a navegadora confirma. Filtro de CPF, CNS e nome antes do Gemini; demo
   só com laudos fictícios.

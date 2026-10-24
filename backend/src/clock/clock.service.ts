@@ -1,7 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import type { IsoDate } from '../cases/domain/case.types';
-import type { AppEnv } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
 import { Clock } from './clock';
 
@@ -12,18 +10,11 @@ const MS_PER_DAY = 86_400_000;
 export class ClockService extends Clock implements OnModuleInit {
   private offsetDays = 0;
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly config: ConfigService<AppEnv, true>,
-  ) {
+  constructor(private readonly prisma: PrismaService) {
     super();
   }
 
   async onModuleInit(): Promise<void> {
-    if (!this.config.get('DEMO_MODE', { infer: true })) {
-      return;
-    }
-
     const state = await this.prisma.demoClockState.findUnique({
       where: { id: 1 },
     });

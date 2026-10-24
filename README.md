@@ -114,7 +114,6 @@ limites variáveis; falhas de quota caem para a regra local.
 - `GEMINI_API_KEY` fica no backend, nunca em variável `VITE_`.
 - Senhas usam Argon2id.
 - Auth com JWT de 8h, sem refresh token nesta fase.
-- Rate limit global, com limites próprios para extração e link da paciente.
 - Logs não devem conter token, senha, laudo ou dados pessoais.
 
 ## Troubleshooting

@@ -28,8 +28,8 @@ problemas:
   - `today()` devolve `YYYY-MM-DD` em `America/Sao_Paulo`, com `Intl.DateTimeFormat`;
   - `now()` é o instante real mais o deslocamento de demo.
 - O deslocamento de demo fica no banco (`DemoClockState.offsetDays`) e só vale com
-  `DEMO_MODE=true`. É alterado por `POST /api/demo/clock/advance {days}` e
-  `POST /api/demo/clock/reset`; sem `DEMO_MODE`, essas rotas retornam 404.
+  do banco. É alterado por `POST /api/demo/clock/advance {days}` e
+  `POST /api/demo/clock/reset`.
 - `Case.status` é só um cache das transições explícitas (eventos). Cor e alerta nunca
   são gravados.
 

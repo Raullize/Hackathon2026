@@ -28,7 +28,6 @@ flowchart LR
 flowchart TB
   Main[main.ts] --> App[AppModule]
   App --> Config[ConfigModule + Zod]
-  App --> Throttler[ThrottlerModule]
   App --> Prisma[PrismaModule]
   App --> Auth[AuthModule]
   App --> Health[HealthModule]

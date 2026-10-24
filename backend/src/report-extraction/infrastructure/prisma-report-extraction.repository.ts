@@ -17,7 +17,6 @@ function mapExtraction(
     provider: extraction.provider as 'gemini' | 'mock',
     fallbackReason: extraction.fallbackReason,
     suggestion: reportSuggestionSchema.parse(extraction.suggestion),
-    demoRawText: extraction.demoRawText,
     createdById: extraction.createdById,
     createdAt: extraction.createdAt,
     consumedAt: extraction.consumedAt,
@@ -39,7 +38,6 @@ export class PrismaReportExtractionRepository
         provider: data.provider,
         fallbackReason: data.fallbackReason,
         suggestion: data.suggestion,
-        demoRawText: data.demoRawText,
         createdById: data.createdById,
       },
     });

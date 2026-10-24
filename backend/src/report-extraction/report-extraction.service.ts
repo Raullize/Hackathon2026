@@ -97,9 +97,6 @@ export class ReportExtractionService {
       provider,
       fallbackReason,
       suggestion: fullSuggestion,
-      demoRawText: this.config.get('DEMO_MODE', { infer: true })
-        ? reportText
-        : null,
       createdById: userId,
     });
 

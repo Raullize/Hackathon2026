@@ -39,7 +39,7 @@ class SeedClock extends Clock {
 async function main(): Promise<void> {
   const email = (process.env.SEED_USER_EMAIL ?? 'demo@careflow.dev').toLowerCase();
   const password = process.env.SEED_USER_PASSWORD ?? 'demo1234';
-  const name = process.env.SEED_USER_NAME ?? 'Demo User';
+  const name = process.env.SEED_USER_NAME ?? 'Usuário Demo';
 
   const passwordHash = await argon2.hash(password, { type: argon2.argon2id });
 
