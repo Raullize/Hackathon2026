@@ -103,7 +103,8 @@ pnpm db:deploy
 pnpm db:seed
 ```
 
-Isso apaga dados locais. Não usar em produção.
+O `db:seed` agora também recarrega os 11 casos fictícios. Isso apaga dados
+locais. Não usar em produção.
 
 ## Erros comuns
 

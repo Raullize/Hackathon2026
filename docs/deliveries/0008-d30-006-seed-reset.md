@@ -8,6 +8,7 @@
 ## Entregue
 
 - `DemoSeedService` com 11 casos fictícios relativos ao dia atual do `Clock`.
+- `pnpm db:seed` também cria os 11 casos, além do usuário de login.
 - Cenários cobertos: Maria no dia 18 e verde; Joana vermelha com exceção
   `NO_CAPACITY`; Clara em `EXAM_DONE`; Lúcia com laudo aguardando confirmação;
   Beatriz em tratamento; Teresa com 60 dias vencido; Vera encerrada; Nora com

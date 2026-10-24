@@ -15,8 +15,8 @@ de relógio para a apresentação.
 
 ## Critérios de aceite
 
-- [x] Seed com 11 casos fictícios, incluindo Maria (dia 18), caso vermelho com
-  exceção e caso de descoberta tardia (Nora).
+- [x] `pnpm db:seed` e `POST /api/demo/reset` criam 11 casos fictícios, incluindo
+  Maria (dia 18), caso vermelho com exceção e descoberta tardia (Nora).
 - [x] `POST /api/demo/reset` apaga dados de casos e recarrega o seed na mesma
   transação.
 - [x] Reset zera o relógio antes de calcular as datas do seed.

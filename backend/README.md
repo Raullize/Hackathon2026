@@ -48,7 +48,7 @@ Swagger: http://localhost:3000/docs
 | `pnpm --filter @careflow/backend test:e2e` | E2E (precisa do banco) |
 | `pnpm db:migrate` | Migration de desenvolvimento |
 | `pnpm db:deploy` | Aplica migrations existentes |
-| `pnpm db:seed` | Usuário demo |
+| `pnpm db:seed` | Usuário demo + 11 casos fictícios |
 | `pnpm db:studio` | Prisma Studio |
 
 ## Endpoints

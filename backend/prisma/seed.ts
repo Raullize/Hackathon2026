@@ -2,10 +2,39 @@ import { resolve } from 'node:path';
 import { config } from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import argon2 from 'argon2';
+import { Clock } from '../src/clock/clock';
+import { DemoSeedService } from '../src/demo/demo-seed.service';
+import { PrismaService } from '../src/prisma/prisma.service';
+import type { IsoDate } from '../src/cases/domain/case.types';
 
 config({ path: resolve(__dirname, '../../.env') });
 
 const prisma = new PrismaClient();
+
+class SeedClock extends Clock {
+  now(): Date {
+    return new Date();
+  }
+
+  today(): IsoDate {
+    return this.toLocalDate(this.now());
+  }
+
+  toLocalDate(date: Date): IsoDate {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Sao_Paulo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(date);
+  }
+
+  getOffsetDays(): number {
+    return 0;
+  }
+
+  setOffsetDays(): void {}
+}
 
 async function main(): Promise<void> {
   const email = (process.env.SEED_USER_EMAIL ?? 'demo@careflow.dev').toLowerCase();
@@ -20,7 +49,10 @@ async function main(): Promise<void> {
     create: { name, email, passwordHash },
   });
 
-  console.log(`Seed concluído: ${user.email}`);
+  const demo = new DemoSeedService(prisma as unknown as PrismaService, new SeedClock());
+  const cases = await demo.seed(user.id);
+
+  console.log(`Seed concluído: ${user.email} (${cases} casos fictícios)`);
 }
 
 main()
