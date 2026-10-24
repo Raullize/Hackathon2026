@@ -14,6 +14,7 @@ verdade; os documentos apontam para eles em vez de duplicar detalhes.
 | [`architecture.md`](./architecture.md) | Desenho dos módulos, fluxos de auth/casos e limites |
 | [`testing.md`](./testing.md) | Estratégia de testes e comandos |
 | [`demo-runbook.md`](./demo-runbook.md) | Checklist operacional da demo |
+| [`pitch/APRESENTACAO_TECNICA.md`](./pitch/APRESENTACAO_TECNICA.md) | Roteiro e perguntas para a banca técnica |
 | [`backlog/KANBAN.md`](./backlog/KANBAN.md) | Kanban oficial do projeto |
 | [`deliveries/0001-bootstrap.md`](./deliveries/0001-bootstrap.md) | Evidências da entrega inicial |
 
