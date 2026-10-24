@@ -1,5 +1,7 @@
 # D30-001 — Modelo do caso e motor de prazos
 
+**Status:** concluído na branch `feat/d30-001-domain`.
+
 ## Objetivo
 
 Calcular, numa função pura e testada (`computeCaseStatus(case, events, today)`), o
@@ -27,42 +29,42 @@ seções 4 a 7, 9 e 18.
 
 ## Critérios de aceite
 
-- [ ] Os exemplos numéricos da seção 5.5 da spec passam como testes em tabela.
-- [ ] Bordas: dia 30 amarelo e dia 31 vermelho; faltam 8 (verde) e 7 (amarelo); no D60,
+- [x] Os exemplos numéricos da seção 5.5 da spec passam como testes em tabela.
+- [x] Bordas: dia 30 amarelo e dia 31 vermelho; faltam 8 (verde) e 7 (amarelo); no D60,
   15 e 14; `reportDate = requestedAt + 30` cumpriu e `+ 31` não; `treatmentStartedAt =
   reportDate + 60` cumpriu e `+ 61` não.
-- [ ] Silêncio: 6 dias verde, 7 dias amarelo; "Ciente" e `CORRECTION` não zeram; data
+- [x] Silêncio: 6 dias verde, 7 dias amarelo; "Ciente" e `CORRECTION` não zeram; data
   agendada hoje não dá selo; data de ontem sem registro dá o selo "Data passou sem
   registro" e amarelo; vermelho com silêncio continua vermelho, com o selo.
-- [ ] Exceção não muda a cor; `CASE_CLOSED_EXCEPTION` registra "cumpriu até o
+- [x] Exceção não muda a cor; `CASE_CLOSED_EXCEPTION` registra "cumpriu até o
   encerramento" ou "não cumpriu"; caso fechado não tem cor.
-- [ ] Laudo inconclusivo leva a `EXAM_TO_RESCHEDULE` sem reiniciar os 30 dias.
-- [ ] Correção de `requestedAt` ou `reportDate` muda o cálculo; correção de
+- [x] Laudo inconclusivo leva a `EXAM_TO_RESCHEDULE` sem reiniciar os 30 dias.
+- [x] Correção de `requestedAt` ou `reportDate` muda o cálculo; correção de
   `malignancy` é rejeitada.
-- [ ] Matriz de transições: todo par (estado, evento) fora da tabela 4.3 é rejeitado
+- [x] Matriz de transições: todo par (estado, evento) fora da tabela 4.3 é rejeitado
   com um erro de domínio que o D30-002 traduz em `409`.
-- [ ] `LATE_ENTRY`: `CASE_CREATED.recordedAt > requestedAt + 30` gera o selo, sem
+- [x] `LATE_ENTRY`: `CASE_CREATED.recordedAt > requestedAt + 30` gera o selo, sem
   reiniciar o prazo.
-- [ ] `CONTACT_LOGGED` aceita canais do enum, não muda estado e não zera silêncio.
-- [ ] `caseIntakeSuggestionSchema` tem `requestedAt`, `trigger`, `examLabel`,
+- [x] `CONTACT_LOGGED` aceita canais do enum, não muda estado e não zera silêncio.
+- [x] `caseIntakeSuggestionSchema` tem `requestedAt`, `trigger`, `examLabel`,
   `evidenceQuote` e `provider`, sem nome/CNS/data de nascimento.
-- [ ] Golden fixture da Maria: em `T`, dia 18 de 30, verde; em `T+7`, dia 25, faltam 5,
+- [x] Golden fixture da Maria: em `T`, dia 18 de 30, verde; em `T+7`, dia 25, faltam 5,
   amarelo, com os selos de data passada e de silêncio; depois do laudo maligno com
   `reportDate = T+7`, 30 dias cumpriu e D60 vencendo em `T+67`.
-- [ ] Teste que quebra de propósito: uma versão com vencimento em `requestedAt + 29`
+- [x] Teste que quebra de propósito: uma versão com vencimento em `requestedAt + 29`
   roda contra as asserções da Maria e de borda e **reprova**.
-- [ ] Limites em `DEADLINE_RULES`, numa constante central, marcados `[SUPOSIÇÃO]` no
+- [x] Limites em `DEADLINE_RULES`, numa constante central, marcados `[SUPOSIÇÃO]` no
   comentário.
-- [ ] `computeCaseStatus` e o domínio não importam Prisma nem Nest.
-- [ ] Schema Prisma com `Case`, `CaseEvent`, `ReportExtraction`, `PatientAccessToken` e
+- [x] `computeCaseStatus` e o domínio não importam Prisma nem Nest.
+- [x] Schema Prisma com `Case`, `CaseEvent`, `ReportExtraction`, `PatientAccessToken` e
   `DemoClockState`; `prisma validate` passa e a migration é gerada.
-- [ ] Contratos Zod em `packages/contracts` (datas `YYYY-MM-DD`, `CaseEventInput` como
+- [x] Contratos Zod em `packages/contracts` (datas `YYYY-MM-DD`, `CaseEventInput` como
   `discriminatedUnion('type')`, `CaseView` com `source` e `LATE_ENTRY`,
   `reportSuggestionSchema`, `caseIntakeSuggestionSchema`, `CONTACT_LOGGED`) exportados e
   com build verde.
-- [ ] `reportSuggestionSchema.confidence` é enum `high|medium|low`, nunca número; a
+- [x] `reportSuggestionSchema.confidence` é enum `high|medium|low`, nunca número; a
   spec e o ADR 0008 deixam claro que é heurística, não probabilidade do Gemini.
-- [ ] Suíte, lint, typecheck e build verdes; evidência em `docs/deliveries/`.
+- [x] Suíte, lint, typecheck e build verdes; evidência em `docs/deliveries/`.
 
 ## Plano
 

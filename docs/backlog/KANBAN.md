@@ -17,6 +17,7 @@ evidência em `docs/deliveries/`.
 | DOCS-001 | Estrutura de docs, ADRs, requisitos e templates | idem |
 | DOMAIN-001 | Analisar o tema Saúde Conectada 2026 | `docs/tema-saude-conectada.md` |
 | AI-001 | Validar a chave Gemini real | `docs/deliveries/0001-bootstrap.md` — `provider: "gemini"` com `gemini-3.5-flash-lite` |
+| D30-001 | Contratos, schema Prisma, migration e `computeCaseStatus` com testes de prazo, silêncio, selos, cores, transições, correções e descoberta tardia | `docs/deliveries/0002-d30-001-motor-de-prazos.md` |
 
 ## Ready
 
@@ -24,7 +25,6 @@ evidência em `docs/deliveries/`.
 | --- | --- | --- |
 | PITCH-001 | Preencher pitch com o tema do evento | problema, solução, impacto, negócio e demo sem números inventados |
 | OPS-002 | Definir protocolo de entrada da UBS | canal oficial, responsável, SLA de mesmo dia, fallback e rotina de conferência; documentar em `OPERATIONS.md` |
-| D30-001 | Contratos Zod, modelo Prisma, migration e `computeCaseStatus` com os testes das regras de prazo | RF-012 a RF-018 e RF-033 a RF-035; inclui `source`, `LATE_ENTRY`, `CONTACT_LOGGED` e intake; plano em `docs/tasks/D30-001/plan.md` |
 
 ## Backlog
 

@@ -7,6 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum CaseStatus {
+  SUSPECTED
+  EXAM_SCHEDULED
+  EXAM_DONE
+  EXAM_TO_RESCHEDULE
+  REPORT_PENDING_CONFIRMATION
+  DIAGNOSIS_CONFIRMED
+  TREATMENT_STARTED
+  DISCARDED
+  CLOSED_EXCEPTION
+}
+
+enum CaseTrigger {
+  BIRADS_4
+  BIRADS_5
+  CLINICAL_SUSPICION
+}
+
+enum CaseEventType {
+  CASE_CREATED
+  EXAM_SCHEDULED
+  EXAM_DONE
+  REPORT_RECEIVED
+  REPORT_CONFIRMED
+  TREATMENT_STARTED
+  EXCEPTION_NOTED
+  CASE_CLOSED_EXCEPTION
+  CORRECTION
+  ALERT_ACKNOWLEDGED
+  CONTACT_LOGGED
+}
+
 model User {
   id           String   @id @default(uuid()) @db.Uuid
   name         String
@@ -15,5 +47,94 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
+  cases               Case[]               @relation("CaseCreatedBy")
+  caseEvents          CaseEvent[]          @relation("CaseEventUser")
+  reportExtractions   ReportExtraction[]   @relation("ReportExtractionCreatedBy")
+  patientAccessTokens PatientAccessToken[] @relation("PatientAccessTokenCreatedBy")
+
   @@map("users")
+}
+
+model Case {
+  id          String      @id @default(uuid()) @db.Uuid
+  fullName    String      @map("full_name")
+  initials    String
+  cns         String
+  birthDate   DateTime    @map("birth_date") @db.Date
+  trigger     CaseTrigger
+  requestedAt DateTime    @map("requested_at") @db.Date
+  status      CaseStatus  @default(SUSPECTED)
+  createdById String      @map("created_by_id") @db.Uuid
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  createdBy    User                 @relation("CaseCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  events       CaseEvent[]
+  extractions  ReportExtraction[]
+  accessTokens PatientAccessToken[]
+
+  @@index([status, requestedAt])
+  @@map("cases")
+}
+
+model CaseEvent {
+  id              String        @id @default(uuid()) @db.Uuid
+  caseId          String        @map("case_id") @db.Uuid
+  type            CaseEventType
+  occurredAt      DateTime      @map("occurred_at") @db.Date
+  recordedAt      DateTime      @map("recorded_at")
+  userId          String        @map("user_id") @db.Uuid
+  correctsEventId String?       @map("corrects_event_id") @db.Uuid
+  payload         Json
+
+  case          Case        @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  user          User        @relation("CaseEventUser", fields: [userId], references: [id], onDelete: Restrict)
+  correctsEvent CaseEvent?  @relation("CaseEventCorrections", fields: [correctsEventId], references: [id], onDelete: SetNull)
+  corrections   CaseEvent[] @relation("CaseEventCorrections")
+
+  @@index([caseId, recordedAt])
+  @@index([correctsEventId])
+  @@map("case_events")
+}
+
+model ReportExtraction {
+  id                String    @id @default(uuid()) @db.Uuid
+  caseId            String    @map("case_id") @db.Uuid
+  provider          String
+  fallbackReason    String?   @map("fallback_reason")
+  suggestion        Json
+  demoRawText       String?   @map("demo_raw_text")
+  createdById       String    @map("created_by_id") @db.Uuid
+  createdAt         DateTime  @default(now()) @map("created_at")
+  consumedAt        DateTime? @map("consumed_at")
+  consumedByEventId String?   @unique @map("consumed_by_event_id") @db.Uuid
+
+  case      Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  createdBy User @relation("ReportExtractionCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([caseId, createdAt])
+  @@map("report_extractions")
+}
+
+model PatientAccessToken {
+  id          String    @id @default(uuid()) @db.Uuid
+  caseId      String    @map("case_id") @db.Uuid
+  tokenHash   String    @unique @map("token_hash")
+  createdById String    @map("created_by_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at")
+  revokedAt   DateTime? @map("revoked_at")
+
+  case      Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  createdBy User @relation("PatientAccessTokenCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([caseId])
+  @@map("patient_access_tokens")
+}
+
+model DemoClockState {
+  id         Int      @id @default(1)
+  offsetDays Int      @default(0) @map("offset_days")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("demo_clock_state")
 }

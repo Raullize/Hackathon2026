@@ -1,0 +1,8 @@
+2026-10-24 03:40 PERCEIVE D30-001 é o primeiro item do backlog; domínio, contratos e schema ainda não existem.
+2026-10-24 03:42 ACT Prisma schema com Case, CaseEvent, ReportExtraction, PatientAccessToken e DemoClockState; prisma validate ok; migration 20261024064337_dia30_cases aplicada.
+2026-10-24 03:43 TEST Escritos dates, transitions, corrections, compute-case-status e golden-maria; primeira execução falhou por módulos ausentes (test-first).
+2026-10-24 03:47 ACT Implementados applyCorrections, transitions, computeCaseStatus e DEADLINE_RULES; 35 testes de domínio verdes.
+2026-10-24 03:48 TEST Mutação: D30.days=29 fez 7 testes falharem; restaurado para 30 e os 35 voltaram a passar.
+2026-10-24 03:49 RECORD pnpm lint, typecheck, test (43 backend + 1 frontend), test:e2e (4) e build verdes.
+2026-10-24 03:52 RECORD Commit autorizado para a D30-001 na branch feat/d30-001-domain.
+Pendente: D30-002 (API/eventos/Clock), D30-003, D30-007, D30-004, D30-005 e D30-006.
