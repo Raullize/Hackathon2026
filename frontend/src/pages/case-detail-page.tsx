@@ -1,11 +1,10 @@
 import { useState, type FormEvent } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Copy, Link2 } from 'lucide-react';
 import type {
   AccessTokenResponse,
   Alert,
-  CaseDetail,
   CaseEventInput,
   CaseEventType,
   ReportExtractionView,
@@ -36,12 +35,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { ApiError, apiFetch } from '@/lib/api-client';
+import { ApiError } from '@/lib/api-client';
+import {
+  appendCaseEvent,
+  createPatientLink,
+  extractReport,
+} from '@/features/cases/api';
+import { caseKeys, useCaseDetail } from '@/features/cases/hooks';
 import { cn } from '@/lib/utils';
 import {
   formatDateBr,
   todayInSaoPaulo,
-} from './calendar-utils';
+} from '@/features/cases/calendar-utils';
 import {
   alertReasonLabel,
   alertRecipientLabel,
@@ -51,7 +56,7 @@ import {
   colorLabel,
   statusLabel,
   triggerLabel,
-} from './labels';
+} from '@/features/cases/labels';
 
 const eventLabel: Partial<Record<CaseEventType, string>> = {
   CASE_CREATED: 'Caso criado',
@@ -131,24 +136,16 @@ export function CaseDetailPage() {
   const [link, setLink] = useState<AccessTokenResponse | null>(null);
   const [linkOpen, setLinkOpen] = useState(false);
 
-  const detailQuery = useQuery({
-    queryKey: ['case', id],
-    queryFn: () => apiFetch<CaseDetail>(`/cases/${id}`),
-    enabled: Boolean(id),
-  });
+  const detailQuery = useCaseDetail(id);
 
   const invalidate = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['case', id] });
-    await queryClient.invalidateQueries({ queryKey: ['cases'] });
-    await queryClient.invalidateQueries({ queryKey: ['alerts'] });
+    await queryClient.invalidateQueries({ queryKey: caseKeys.detail(id) });
+    await queryClient.invalidateQueries({ queryKey: caseKeys.all });
+    await queryClient.invalidateQueries({ queryKey: caseKeys.alerts });
   };
 
   const eventMutation = useMutation({
-    mutationFn: (event: CaseEventInput) =>
-      apiFetch(`/cases/${id}/events`, {
-        method: 'POST',
-        body: JSON.stringify(event),
-      }),
+    mutationFn: (event: CaseEventInput) => appendCaseEvent(id as string, event),
     onSuccess: async () => {
       await invalidate();
       setAction('');
@@ -161,10 +158,7 @@ export function CaseDetailPage() {
   });
 
   const linkMutation = useMutation({
-    mutationFn: () =>
-      apiFetch<AccessTokenResponse>(`/cases/${id}/access-tokens`, {
-        method: 'POST',
-      }),
+    mutationFn: () => createPatientLink(id as string),
     onSuccess: (data) => {
       setLink(data);
       setLinkOpen(true);
@@ -173,11 +167,7 @@ export function CaseDetailPage() {
   });
 
   const extractionMutation = useMutation({
-    mutationFn: () =>
-      apiFetch<ReportExtractionView>(`/cases/${id}/report-extractions`, {
-        method: 'POST',
-        body: JSON.stringify({ reportText }),
-      }),
+    mutationFn: () => extractReport(id as string, reportText),
     onSuccess: (data) => {
       setExtraction(data);
       setConfirmExamType(data.suggestion.examType);

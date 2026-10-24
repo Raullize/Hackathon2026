@@ -1,6 +1,6 @@
 import { Bell, Check, Mail, MessageCircle, MessageSquare, Send } from 'lucide-react';
 import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import type { Alert, ContactChannel } from '@careflow/contracts';
 import { toast } from 'sonner';
@@ -16,13 +16,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ApiError, apiFetch } from '@/lib/api-client';
+import { ApiError } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
-import { formatDateBr, todayInSaoPaulo } from './calendar-utils';
+import { formatDateBr, todayInSaoPaulo } from '@/features/cases/calendar-utils';
+import { useAlerts, caseKeys } from '@/features/cases/hooks';
+import { acknowledgeAlert, logContact } from '@/features/cases/api';
 import {
   alertReasonLabel as reasonLabel,
   alertRecipientLabel as recipientLabel,
-} from './labels';
+} from '@/features/cases/labels';
 
 const channels: Array<{
   value: Extract<ContactChannel, 'SMS' | 'EMAIL' | 'WHATSAPP'>;
@@ -46,23 +48,13 @@ export function AlertsPage() {
   const [sent, setSent] = useState<
     Record<string, { channel: ContactChannel; at: string }>
   >({});
-  const query = useQuery({
-    queryKey: ['alerts'],
-    queryFn: () => apiFetch<Alert[]>('/alerts'),
-  });
+  const query = useAlerts();
 
   const acknowledge = useMutation({
     mutationFn: (alert: Alert) =>
-      apiFetch(`/cases/${alert.caseId}/events`, {
-        method: 'POST',
-        body: JSON.stringify({
-          type: 'ALERT_ACKNOWLEDGED',
-          occurredAt: todayInSaoPaulo(),
-          alertKey: alert.key,
-        }),
-      }),
+      acknowledgeAlert(alert.caseId, alert.key, todayInSaoPaulo()),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['alerts'] });
+      await queryClient.invalidateQueries({ queryKey: caseKeys.alerts });
       toast.success('Alerta marcado como ciente.');
     },
     onError: (error) =>
@@ -79,15 +71,12 @@ export function AlertsPage() {
       alert: Alert;
       channel: ContactChannel;
     }) => {
-      await apiFetch(`/cases/${alert.caseId}/events`, {
-        method: 'POST',
-        body: JSON.stringify({
-          type: 'CONTACT_LOGGED',
-          occurredAt: todayInSaoPaulo(),
-          channel,
-          note: `Notificação de alerta: ${reasonLabel[alert.reason]}`,
-        }),
-      });
+      await logContact(
+        alert.caseId,
+        channel,
+        `Notificação de alerta: ${reasonLabel[alert.reason]}`,
+        todayInSaoPaulo(),
+      );
       return { alert, channel };
     },
     onSuccess: async ({ alert, channel }) => {
@@ -101,7 +90,7 @@ export function AlertsPage() {
           }),
         },
       }));
-      await queryClient.invalidateQueries({ queryKey: ['alerts'] });
+      await queryClient.invalidateQueries({ queryKey: caseKeys.alerts });
       const label = channels.find((item) => item.value === channel)?.label;
       toast.success(`${label} enviado para ${recipientLabel[alert.recipient]}.`);
     },

@@ -1,17 +1,16 @@
 import { Plus, Search } from 'lucide-react';
 import { useDeferredValue, useState } from 'react';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import type { CaseListResponse, CaseView } from '@careflow/contracts';
+import type { CaseView } from '@careflow/contracts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { apiFetch } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
-import { CaseCard } from './case-card';
-import { DemoBar } from './demo-bar';
-import { casesUrl, formatDateBr, groupCases } from './calendar-utils';
+import { CaseCard } from '@/features/cases/components/case-card';
+import { DemoBar } from '@/features/cases/components/demo-bar';
+import { formatDateBr, groupCases } from '@/features/cases/calendar-utils';
+import { useOpenCases } from '@/features/cases/hooks';
 
 function Column({
   title,
@@ -61,11 +60,7 @@ function Column({
 export function CalendarPage() {
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
-  const query = useQuery({
-    queryKey: ['cases', 'open', deferredSearch],
-    queryFn: () => apiFetch<CaseListResponse>(casesUrl('open', deferredSearch)),
-    placeholderData: keepPreviousData,
-  });
+  const query = useOpenCases(deferredSearch);
 
   if (query.isLoading) {
     return (

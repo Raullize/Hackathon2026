@@ -1,21 +1,14 @@
 import { Check, Route } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import type { PatientView } from '@careflow/contracts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { apiFetch } from '@/lib/api-client';
-import { formatDateBr } from './calendar-utils';
+import { formatDateBr } from '@/features/cases/calendar-utils';
+import { usePublicPatient } from '@/features/cases/hooks';
 import { cn } from '@/lib/utils';
 
 export function PatientPage() {
   const { token } = useParams<{ token: string }>();
-  const query = useQuery({
-    queryKey: ['public-patient', token],
-    queryFn: () => apiFetch<PatientView>(`/public/p/${token}`),
-    enabled: Boolean(token),
-    retry: false,
-  });
+  const query = usePublicPatient(token);
 
   if (query.isLoading) {
     return (

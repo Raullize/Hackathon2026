@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   CalendarClock,
   ChevronUp,
@@ -7,37 +7,29 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { apiFetch } from '@/lib/api-client';
-import { formatDateBr } from './calendar-utils';
-
-interface DemoStatus {
-  today: string;
-  offsetDays: number;
-}
+import {
+  advanceClock,
+  resetClock as resetClockRequest,
+  resetDemoData,
+} from '../demo-api';
+import { caseKeys, useClockStatus } from '../hooks';
+import { formatDateBr } from '../calendar-utils';
 
 export function DemoBar() {
   const queryClient = useQueryClient();
   const [collapsed, setCollapsed] = useState(false);
-  const status = useQuery({
-    queryKey: ['demo-status'],
-    queryFn: () => apiFetch<DemoStatus>('/demo/status'),
-    retry: false,
-  });
+  const status = useClockStatus();
 
   const invalidate = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['demo-status'] });
-    await queryClient.invalidateQueries({ queryKey: ['cases'] });
+    await queryClient.invalidateQueries({ queryKey: caseKeys.clock });
+    await queryClient.invalidateQueries({ queryKey: caseKeys.all });
     await queryClient.invalidateQueries({ queryKey: ['case'] });
-    await queryClient.invalidateQueries({ queryKey: ['alerts'] });
-    await queryClient.invalidateQueries({ queryKey: ['metrics'] });
+    await queryClient.invalidateQueries({ queryKey: caseKeys.alerts });
+    await queryClient.invalidateQueries({ queryKey: caseKeys.metrics });
   };
 
   const advance = useMutation({
-    mutationFn: (days: number) =>
-      apiFetch<DemoStatus>('/demo/clock/advance', {
-        method: 'POST',
-        body: JSON.stringify({ days }),
-      }),
+    mutationFn: (days: number) => advanceClock(days),
     onSuccess: async () => {
       await invalidate();
       toast.success('Relógio avançado.');
@@ -46,15 +38,13 @@ export function DemoBar() {
   });
 
   const resetClock = useMutation({
-    mutationFn: () =>
-      apiFetch<DemoStatus>('/demo/clock/reset', { method: 'POST' }),
+    mutationFn: () => resetClockRequest(),
     onSuccess: invalidate,
     onError: () => toast.error('Não foi possível resetar o relógio.'),
   });
 
   const resetDemo = useMutation({
-    mutationFn: () =>
-      apiFetch<{ cases: number }>('/demo/reset', { method: 'POST' }),
+    mutationFn: () => resetDemoData(),
     onSuccess: async (data) => {
       await invalidate();
       toast.success(`Dados restaurados com ${data.cases} casos.`);

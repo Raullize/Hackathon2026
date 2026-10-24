@@ -4,19 +4,20 @@ import {
   Search,
 } from 'lucide-react';
 import { useDeferredValue, useEffect, useState } from 'react';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import type { CaseListResponse, MetricValue, Metrics } from '@careflow/contracts';
+import type { MetricValue } from '@careflow/contracts';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { apiFetch } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
-import { casesUrl, formatDateBr } from './calendar-utils';
-
-const PAGE_SIZE = 8;
+import { formatDateBr } from '@/features/cases/calendar-utils';
+import {
+  CLOSED_PAGE_SIZE,
+  useClosedCases,
+  useMetrics,
+} from '@/features/cases/hooks';
 
 function percent(metric: MetricValue): string {
   if (metric.value === null) return '—';
@@ -77,21 +78,11 @@ export function ClosedPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const deferredSearch = useDeferredValue(search);
-  const casesQuery = useQuery({
-    queryKey: ['cases', 'closed', deferredSearch, page],
-    queryFn: () =>
-      apiFetch<CaseListResponse>(
-        casesUrl('closed', deferredSearch, page, PAGE_SIZE),
-      ),
-    placeholderData: keepPreviousData,
-  });
-  const metricsQuery = useQuery({
-    queryKey: ['metrics'],
-    queryFn: () => apiFetch<Metrics>('/metrics'),
-  });
+  const casesQuery = useClosedCases(deferredSearch, page);
+  const metricsQuery = useMetrics();
 
   const total = casesQuery.data?.total ?? 0;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(total / CLOSED_PAGE_SIZE));
 
   useEffect(() => {
     if (page > totalPages) {
@@ -120,8 +111,8 @@ export function ClosedPage() {
 
   const metrics = metricsQuery.data;
   const cases = casesQuery.data?.cases ?? [];
-  const start = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
-  const end = Math.min(page * PAGE_SIZE, total);
+  const start = total === 0 ? 0 : (page - 1) * CLOSED_PAGE_SIZE + 1;
+  const end = Math.min(page * CLOSED_PAGE_SIZE, total);
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 md:px-8 md:py-8">

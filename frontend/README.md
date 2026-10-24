@@ -44,9 +44,10 @@ src/
 ├── components/
 │   ├── layout/          # AppShell
 │   └── ui/              # shadcn: button, card, input, select, dialog, etc.
+├── pages/               # composição das telas por rota
 ├── features/
-│   ├── auth/            # AuthProvider e login
-│   └── cases/           # calendário, intake e detalhe
+│   ├── auth/            # contexto e API de autenticação
+│   └── cases/           # API, hooks, utilitários e componentes
 ├── lib/                 # api-client, env, utils
 └── test/                # setup do Vitest
 ```
@@ -69,5 +70,5 @@ pnpm --filter @careflow/frontend test
 pnpm --filter @careflow/frontend build
 ```
 
-Os testes atuais cobrem login, visibilidade da senha, agrupamento do calendário,
-formatação de datas e URL de paginação.
+Os testes atuais cobrem login, visibilidade da senha, agrupamento do calendário
+e formatação de datas.

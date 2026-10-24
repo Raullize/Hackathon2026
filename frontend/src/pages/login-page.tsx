@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ApiError } from '@/lib/api-client';
-import { useAuth } from './auth-context';
+import { useAuth } from '@/features/auth/auth-context';
 
 export function LoginPage() {
   const { user, login } = useAuth();

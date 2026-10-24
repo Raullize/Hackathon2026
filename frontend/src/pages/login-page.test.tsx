@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { LoginPage } from './login-page';
 
-vi.mock('./auth-context', () => ({
+vi.mock('@/features/auth/auth-context', () => ({
   useAuth: () => ({
     user: null,
     login: vi.fn(),

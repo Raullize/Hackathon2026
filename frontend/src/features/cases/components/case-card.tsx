@@ -3,7 +3,7 @@ import type { CaseView } from '@careflow/contracts';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { formatDateBr } from './calendar-utils';
+import { formatDateBr } from '../calendar-utils';
 import {
   badgeLabel,
   colorAccentClasses,
@@ -11,7 +11,7 @@ import {
   colorDotClasses,
   colorLabel,
   triggerLabel,
-} from './labels';
+} from '../labels';
 
 export function CaseCard({ item }: { item: CaseView }) {
   const color = item.color ?? 'green';

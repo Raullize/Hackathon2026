@@ -4,7 +4,6 @@ import {
   formatDateBr,
   groupCases,
   startOfWeekMonday,
-  casesUrl,
 } from './calendar-utils';
 
 function caseView(overrides: Partial<CaseView>): CaseView {
@@ -74,16 +73,6 @@ describe('calendar-utils', () => {
       'yellow',
       'green',
     ]);
-  });
-
-  it('builds the cases query with optional search', () => {
-    expect(casesUrl('open', '')).toBe('/cases?scope=open');
-    expect(casesUrl('closed', 'Maria Silva')).toBe(
-      '/cases?scope=closed&q=Maria+Silva',
-    );
-    expect(casesUrl('closed', '', 2, 8)).toBe(
-      '/cases?scope=closed&page=2&pageSize=8',
-    );
   });
 
   it('formats dates for the UI', () => {

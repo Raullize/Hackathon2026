@@ -7,8 +7,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { AuthResponse, PublicUser } from '@careflow/contracts';
-import { apiFetch } from '@/lib/api-client';
+import type { PublicUser } from '@careflow/contracts';
+import { getCurrentUser, loginRequest, logoutRequest } from './api';
 
 interface AuthContextValue {
   user: PublicUser | null;
@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
 
-    apiFetch<PublicUser>('/auth/me')
+    getCurrentUser()
       .then((me) => {
         if (active) setUser(me);
       })
@@ -43,16 +43,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const response = await apiFetch<AuthResponse>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+    const response = await loginRequest(email, password);
     setUser(response.user);
   }, []);
 
   const logout = useCallback(async () => {
     try {
-      await apiFetch('/auth/logout', { method: 'POST' });
+      await logoutRequest();
     } finally {
       setUser(null);
     }

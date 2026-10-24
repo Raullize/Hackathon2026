@@ -5,10 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   caseCreateSchema,
   type CaseCreate,
-  type CaseIntakeView,
   type CaseSource,
   type CaseTrigger,
-  type CaseView,
 } from '@careflow/contracts';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -29,7 +27,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ApiError, apiFetch } from '@/lib/api-client';
+import { ApiError } from '@/lib/api-client';
+import { createCase, extractCaseIntake } from '@/features/cases/api';
 
 const initialForm: CaseCreate = {
   fullName: '',
@@ -56,11 +55,7 @@ export function NewCasePage() {
   }
 
   const extractMutation = useMutation({
-    mutationFn: () =>
-      apiFetch<CaseIntakeView>('/case-intake/extractions', {
-        method: 'POST',
-        body: JSON.stringify({ requestText }),
-      }),
+    mutationFn: () => extractCaseIntake(requestText),
     onSuccess: (data) => {
       setExamLabel(data.suggestion.examLabel);
       setEvidenceQuote(data.suggestion.evidenceQuote);
@@ -85,11 +80,7 @@ export function NewCasePage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (input: CaseCreate) =>
-      apiFetch<CaseView>('/cases', {
-        method: 'POST',
-        body: JSON.stringify(input),
-      }),
+    mutationFn: (input: CaseCreate) => createCase(input),
     onSuccess: async (created) => {
       await queryClient.invalidateQueries({ queryKey: ['cases'] });
       toast.success('Caso cadastrado.');
