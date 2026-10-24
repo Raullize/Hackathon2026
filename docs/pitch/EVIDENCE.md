@@ -11,8 +11,6 @@
 
 ## 1. A ideia em uma frase
 
-> **A lei tem prazo. O SUS não tem relógio.**
-
 Quando a UBS registra uma **suspeita de câncer**, começa a contar um relógio
 compartilhado por UBS, regulação, hospital e pela própria paciente. Cada etapa tem
 prazo: exame agendado → exame feito → laudo pronto → laudo visto → consulta
