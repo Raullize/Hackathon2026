@@ -31,6 +31,9 @@ import { applyCorrections, InvalidCorrectionError } from './domain/corrections';
 import { computeCaseStatus } from './domain/compute-case-status';
 import { diffDays } from './domain/dates';
 import { applyEvent, InvalidTransitionError } from './domain/transitions';
+import { buildAlerts } from './domain/alerts';
+import { containsForbiddenPatientWord } from './domain/messages';
+import { buildMessages } from './domain/messages';
 import {
   REPORT_EXTRACTION_REPOSITORY,
   type ReportExtractionRecord,
@@ -285,6 +288,23 @@ export class CasesService {
           'scheduledFor não pode ser antes do pedido',
         );
       }
+      if (
+        containsForbiddenPatientWord(input.examLabel) ||
+        containsForbiddenPatientWord(input.location)
+      ) {
+        throw new BadRequestException(
+          'Exame/local contém termo não permitido para a paciente',
+        );
+      }
+    }
+
+    if (
+      input.type === 'EXAM_DONE' &&
+      containsForbiddenPatientWord(input.examLabel)
+    ) {
+      throw new BadRequestException(
+        'Exame contém termo não permitido para a paciente',
+      );
     }
 
     if (input.type === 'REPORT_CONFIRMED') {
@@ -367,6 +387,14 @@ export class CasesService {
           'scheduledFor não pode ser antes do pedido',
         );
       }
+      if (
+        containsForbiddenPatientWord(parsed.data.examLabel) ||
+        containsForbiddenPatientWord(parsed.data.location)
+      ) {
+        throw new BadRequestException(
+          'Exame/local contém termo não permitido para a paciente',
+        );
+      }
     }
 
     if (parsed.data.type === 'REPORT_CONFIRMED') {
@@ -438,8 +466,8 @@ export class CasesService {
       ...view,
       ageYears: ageYears(item.case.birthDate, today),
       timeline,
-      messages: [],
-      alerts: [],
+      messages: buildMessages(item.events, view.status, today),
+      alerts: buildAlerts(item.case, item.events, today),
       extractions: extractions.map((extraction) => ({
         extractionId: extraction.id,
         provider: extraction.provider,

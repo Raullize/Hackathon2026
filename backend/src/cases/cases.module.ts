@@ -16,6 +16,6 @@ import { PrismaCaseRepository } from './infrastructure/prisma-case.repository';
       useClass: PrismaCaseRepository,
     },
   ],
-  exports: [CasesService],
+  exports: [CasesService, CASE_REPOSITORY],
 })
 export class CasesModule {}

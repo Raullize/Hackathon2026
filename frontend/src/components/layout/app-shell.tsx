@@ -42,6 +42,28 @@ export function AppShell() {
               >
                 Novo caso
               </NavLink>
+              <NavLink
+                to="/alertas"
+                className={({ isActive }) =>
+                  cn(
+                    'rounded-md px-2 py-1 text-muted-foreground transition-colors hover:text-foreground',
+                    isActive && 'bg-muted text-foreground',
+                  )
+                }
+              >
+                Alertas
+              </NavLink>
+              <NavLink
+                to="/concluidos"
+                className={({ isActive }) =>
+                  cn(
+                    'rounded-md px-2 py-1 text-muted-foreground transition-colors hover:text-foreground',
+                    isActive && 'bg-muted text-foreground',
+                  )
+                }
+              >
+                Concluídos
+              </NavLink>
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm">

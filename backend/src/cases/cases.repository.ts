@@ -64,5 +64,6 @@ export interface CaseRepository {
   create(data: CreateCaseData): Promise<CaseWithEvents>;
   findById(id: string): Promise<CaseWithEvents | null>;
   findMany(scope: CaseScope): Promise<CaseWithEvents[]>;
+  findAll(): Promise<CaseWithEvents[]>;
   appendEvent(data: AppendEventData): Promise<CaseWithEvents>;
 }

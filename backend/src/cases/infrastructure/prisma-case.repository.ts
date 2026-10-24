@@ -137,6 +137,19 @@ export class PrismaCaseRepository implements CaseRepository {
     return cases.map((caseRecord) => this.mapWithEvents(caseRecord));
   }
 
+  async findAll(): Promise<CaseWithEvents[]> {
+    const cases = await this.prisma.case.findMany({
+      include: {
+        events: {
+          orderBy: [{ recordedAt: 'asc' }, { id: 'asc' }],
+        },
+      },
+      orderBy: [{ requestedAt: 'asc' }, { createdAt: 'asc' }],
+    });
+
+    return cases.map((caseRecord) => this.mapWithEvents(caseRecord));
+  }
+
   async appendEvent(data: AppendEventData): Promise<CaseWithEvents> {
     await this.prisma.$transaction(async (tx) => {
       const event = await tx.caseEvent.create({

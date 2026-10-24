@@ -1,4 +1,4 @@
-import type { CaseBadge, CaseStatus, CaseTrigger } from '@careflow/contracts';
+import type { Alert, CaseBadge, CaseStatus, CaseTrigger } from '@careflow/contracts';
 
 export const colorLabel: Record<string, string> = {
   green: 'No prazo',
@@ -44,3 +44,20 @@ export function badgeLabel(badge: CaseBadge): string {
       return `Descoberta tardia (${badge.daysLate} dias)`;
   }
 }
+
+export const alertReasonLabel: Record<Alert['reason'], string> = {
+  DEADLINE_WARNING: 'Prazo em atenção',
+  SILENCE: 'Sem notícia',
+  MISSED_DATE: 'Data passou sem registro',
+  NEAR_DUE: 'Perto de vencer',
+  OVERDUE: 'Vencido',
+  LATE_ENTRY: 'Descoberta tardia',
+  OVERDUE_NO_CAPACITY: 'Vencido sem vaga',
+};
+
+export const alertRecipientLabel: Record<Alert['recipient'], string> = {
+  NAVIGATOR: 'Navegadora',
+  REGULATION: 'Regulação municipal',
+  COORDINATION: 'Coordenação e SMS',
+  CRS2: '2ª CRS',
+};

@@ -33,6 +33,9 @@ O frontend abre em `http://localhost:5173` e usa o proxy do Vite para `/api` em
 | `/` | Calendário de casos abertos |
 | `/casos/novo` | Intake e cadastro |
 | `/casos/:id` | Detalhe, timeline e ações |
+| `/alertas` | Alertas da navegadora |
+| `/concluidos` | Casos fechados e métricas |
+| `/p/:token` | Visão pública e somente leitura da paciente |
 
 ## Estrutura
 

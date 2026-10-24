@@ -255,10 +255,17 @@ export const caseEventViewSchema = z.object({
   payload: z.record(z.string(), z.unknown()),
 });
 
+export const patientMessageSchema = z.object({
+  id: z.string(),
+  occurredAt: isoDateSchema,
+  text: z.string(),
+  channels: z.array(z.enum(['SMS', 'EMAIL'])),
+});
+
 export const caseDetailSchema = caseViewSchema.extend({
   ageYears: z.number().int().nonnegative(),
   timeline: z.array(caseEventViewSchema),
-  messages: z.array(z.unknown()),
+  messages: z.array(patientMessageSchema),
   alerts: z.array(z.unknown()),
   extractions: z.array(z.unknown()),
 });
@@ -274,6 +281,70 @@ export const caseListQuerySchema = z.object({
 
 export const demoAdvanceSchema = z.object({
   days: z.number().int().min(1).max(60),
+});
+
+export const alertReasonSchema = z.enum([
+  'DEADLINE_WARNING',
+  'SILENCE',
+  'MISSED_DATE',
+  'NEAR_DUE',
+  'OVERDUE',
+  'LATE_ENTRY',
+  'OVERDUE_NO_CAPACITY',
+]);
+
+export const alertRecipientSchema = z.enum([
+  'NAVIGATOR',
+  'REGULATION',
+  'COORDINATION',
+  'CRS2',
+]);
+
+export const alertSchema = z.object({
+  key: z.string(),
+  caseId: z.string().uuid(),
+  initials: z.string(),
+  reason: alertReasonSchema,
+  recipient: alertRecipientSchema,
+  action: z.string(),
+  clock: z.enum(['D30', 'D60']).nullable(),
+  referenceDate: isoDateSchema,
+  acknowledgedAt: isoDateSchema.nullable(),
+  acknowledgedBy: z.string().nullable(),
+});
+
+export const patientViewSchema = z.object({
+  state: z.enum(['OPEN', 'CLOSED']),
+  nextStep: nextStepSchema.nullable(),
+  day: z.number().int().nullable(),
+  dayTotal: z.union([z.literal(30), z.literal(60)]).nullable(),
+  dueDate: isoDateSchema.nullable(),
+  rights: z.array(z.string()),
+  messages: z.array(patientMessageSchema),
+  guidance: z.string().nullable(),
+});
+
+export const accessTokenResponseSchema = z.object({
+  token: z.string(),
+  path: z.string(),
+});
+
+export const metricValueSchema = z.object({
+  numerator: z.number().int().nonnegative(),
+  denominator: z.number().int().nonnegative(),
+  value: z.number().nullable(),
+});
+
+export const metricsSchema = z.object({
+  today: isoDateSchema,
+  withoutInformation: metricValueSchema,
+  diagnoses30: metricValueSchema,
+  treatments60: metricValueSchema,
+  aiPrimary: metricValueSchema,
+  aiSecondary: metricValueSchema,
+  lateEntry: metricValueSchema,
+  averageRequestToRegistrationDays: z.number().nullable(),
+  closedExceptionCount: z.number().int().nonnegative(),
 });
 
 export const reportSuggestionCoreSchema = z.object({
@@ -333,8 +404,14 @@ export type Outcome30 = z.infer<typeof outcome30Schema>;
 export type Outcome60 = z.infer<typeof outcome60Schema>;
 export type CaseView = z.infer<typeof caseViewSchema>;
 export type CaseEventView = z.infer<typeof caseEventViewSchema>;
+export type PatientMessage = z.infer<typeof patientMessageSchema>;
 export type CaseDetail = z.infer<typeof caseDetailSchema>;
 export type CaseListResponse = z.infer<typeof caseListResponseSchema>;
+export type Alert = z.infer<typeof alertSchema>;
+export type PatientView = z.infer<typeof patientViewSchema>;
+export type AccessTokenResponse = z.infer<typeof accessTokenResponseSchema>;
+export type MetricValue = z.infer<typeof metricValueSchema>;
+export type Metrics = z.infer<typeof metricsSchema>;
 export type DemoAdvance = z.infer<typeof demoAdvanceSchema>;
 export type ReportSuggestionCore = z.infer<typeof reportSuggestionCoreSchema>;
 export type ReportSuggestion = z.infer<typeof reportSuggestionSchema>;

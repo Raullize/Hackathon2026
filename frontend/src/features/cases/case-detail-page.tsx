@@ -2,6 +2,8 @@ import { useState, type FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import type {
+  AccessTokenResponse,
+  Alert,
   CaseDetail,
   CaseEventInput,
   CaseEventType,
@@ -26,6 +28,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { ApiError, apiFetch } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import {
@@ -33,6 +42,8 @@ import {
   todayInSaoPaulo,
 } from './calendar-utils';
 import {
+  alertReasonLabel,
+  alertRecipientLabel,
   badgeLabel,
   colorClasses,
   colorLabel,
@@ -115,6 +126,8 @@ export function CaseDetailPage() {
   const [confirmMalignancy, setConfirmMalignancy] =
     useState<Malignancy>('inconclusive');
   const [confirmEvidence, setConfirmEvidence] = useState('');
+  const [link, setLink] = useState<AccessTokenResponse | null>(null);
+  const [linkOpen, setLinkOpen] = useState(false);
 
   const detailQuery = useQuery({
     queryKey: ['case', id],
@@ -125,6 +138,7 @@ export function CaseDetailPage() {
   const invalidate = async () => {
     await queryClient.invalidateQueries({ queryKey: ['case', id] });
     await queryClient.invalidateQueries({ queryKey: ['cases'] });
+    await queryClient.invalidateQueries({ queryKey: ['alerts'] });
   };
 
   const eventMutation = useMutation({
@@ -140,6 +154,18 @@ export function CaseDetailPage() {
       setScheduledFor('');
       setLocation('');
       toast.success('Evento registrado.');
+    },
+    onError: (error) => toast.error(asErrorMessage(error)),
+  });
+
+  const linkMutation = useMutation({
+    mutationFn: () =>
+      apiFetch<AccessTokenResponse>(`/cases/${id}/access-tokens`, {
+        method: 'POST',
+      }),
+    onSuccess: (data) => {
+      setLink(data);
+      setLinkOpen(true);
     },
     onError: (error) => toast.error(asErrorMessage(error)),
   });
@@ -281,9 +307,19 @@ export function CaseDetailPage() {
             {statusLabel[detail.status]}
           </p>
         </div>
-        <Badge className={cn('border px-3 py-1', colorClasses[color])}>
-          {colorLabel[color]}
-        </Badge>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => linkMutation.mutate()}
+            disabled={linkMutation.isPending}
+          >
+            Gerar link da paciente
+          </Button>
+          <Badge className={cn('border px-3 py-1', colorClasses[color])}>
+            {colorLabel[color]}
+          </Badge>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
@@ -671,14 +707,110 @@ export function CaseDetailPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Mensagens e alertas</CardTitle>
+              <CardTitle>Mensagens simuladas</CardTitle>
+              <CardDescription>
+                SMS/e-mail simulados, sem envio real.
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Mensagens e alertas entram na próxima etapa.
-              </p>
+            <CardContent className="space-y-2">
+              {detail.messages.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  Nenhuma mensagem ainda.
+                </p>
+              ) : (
+                detail.messages.map((message) => (
+                  <div key={message.id} className="rounded-md border p-2 text-xs">
+                    <p>{message.text}</p>
+                    <p className="mt-1 text-muted-foreground">
+                      {formatDateBr(message.occurredAt)} ·{' '}
+                      {message.channels.join('/')}
+                    </p>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Alertas do caso</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {(detail.alerts as Alert[]).length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  Nenhum alerta ativo.
+                </p>
+              ) : (
+                (detail.alerts as Alert[]).map((alert) => (
+                  <div key={alert.key} className="rounded-md border p-3 text-sm">
+                    <p className="font-medium">{alertReasonLabel[alert.reason]}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {alertRecipientLabel[alert.recipient]} · {alert.action}
+                    </p>
+                    {alert.acknowledgedAt ? (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Ciente em {formatDateBr(alert.acknowledgedAt)}
+                      </p>
+                    ) : (
+                      <Button
+                        className="mt-2"
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          submitEvent({
+                            type: 'ALERT_ACKNOWLEDGED',
+                            occurredAt: todayInSaoPaulo(),
+                            alertKey: alert.key,
+                          })
+                        }
+                        disabled={eventMutation.isPending}
+                      >
+                        Ciente
+                      </Button>
+                    )}
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+
+          <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Link da paciente</DialogTitle>
+                <DialogDescription>
+                  O link é mostrado uma única vez. Compartilhe apenas com a
+                  paciente.
+                </DialogDescription>
+              </DialogHeader>
+              {link ? (
+                <div className="space-y-3">
+                  <code className="block break-all rounded-md bg-muted p-3 text-xs">
+                    {link.path}
+                  </code>
+                  <Button
+                    type="button"
+                    className="w-full"
+                    onClick={() => {
+                      const url = `${window.location.origin}${link.path}`;
+                      void navigator.clipboard?.writeText(url);
+                      toast.success('Link copiado.');
+                    }}
+                  >
+                    Copiar link
+                  </Button>
+                  <a
+                    className="block text-center text-sm underline"
+                    href={link.path}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Abrir visão da paciente
+                  </a>
+                </div>
+              ) : null}
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </main>

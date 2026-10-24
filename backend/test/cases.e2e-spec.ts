@@ -89,8 +89,8 @@ describe('Cases (e2e)', () => {
       id: created.body.id,
       ageYears: expect.any(Number),
       timeline: expect.any(Array),
-      messages: [],
-      alerts: [],
+      messages: expect.any(Array),
+      alerts: expect.any(Array),
       extractions: [],
     });
     expect(detail.body).not.toHaveProperty('fullName');
@@ -143,6 +143,23 @@ describe('Cases (e2e)', () => {
       .expect(201);
 
     expect(contact.body.status).toBe('EXAM_SCHEDULED');
+  });
+
+
+  it('rejects patient-facing exam text with forbidden words', async () => {
+    const created = await createCase().expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/api/cases/${created.body.id}/events`)
+      .set(auth())
+      .send({
+        type: 'EXAM_SCHEDULED',
+        occurredAt: '2026-10-02',
+        examLabel: 'carcinoma',
+        scheduledFor: '2026-10-20',
+        location: 'Hospital',
+      })
+      .expect(400);
   });
 
   it('closes D30 and computes the outcome after a benign report', async () => {
@@ -286,6 +303,108 @@ describe('Cases (e2e)', () => {
     expect(JSON.stringify(extracted.body)).not.toContain('123.456.789-00');
     expect(JSON.stringify(extracted.body)).not.toContain('123 456 789 012 345');
     expect(JSON.stringify(extracted.body)).not.toContain('Maria Teste');
+  });
+
+
+  it('generates and reads a patient link, revoking the previous one', async () => {
+    const created = await createCase().expect(201);
+    const id = created.body.id as string;
+
+    const first = await request(app.getHttpServer())
+      .post(`/api/cases/${id}/access-tokens`)
+      .set(auth())
+      .expect(201);
+
+    expect(first.body.path).toBe(`/p/${first.body.token}`);
+
+    const publicView = await request(app.getHttpServer())
+      .get(`/api/public/p/${first.body.token}`)
+      .expect(200);
+
+    expect(publicView.body).toMatchObject({
+      state: 'OPEN',
+      rights: expect.any(Array),
+      messages: expect.any(Array),
+      guidance: null,
+    });
+    expect(JSON.stringify(publicView.body)).not.toContain('Maria Teste');
+    expect(JSON.stringify(publicView.body)).not.toMatch(
+      /câncer|cancer|tumor|maligno|carcinoma/i,
+    );
+
+    const second = await request(app.getHttpServer())
+      .post(`/api/cases/${id}/access-tokens`)
+      .set(auth())
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .get(`/api/public/p/${first.body.token}`)
+      .expect(404);
+
+    await request(app.getHttpServer())
+      .get(`/api/public/p/${second.body.token}`)
+      .expect(200);
+
+    await request(app.getHttpServer())
+      .get('/api/public/p/token-invalido')
+      .expect(404);
+  });
+
+  it('returns computed alerts and metrics', async () => {
+    const created = await createCase({ requestedAt: '2026-09-01' }).expect(201);
+
+    const alerts = await request(app.getHttpServer())
+      .get('/api/alerts')
+      .set(auth())
+      .expect(200);
+
+    expect(Array.isArray(alerts.body)).toBe(true);
+    expect(alerts.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          caseId: created.body.id,
+          reason: 'LATE_ENTRY',
+          recipient: 'COORDINATION',
+        }),
+      ]),
+    );
+    for (const alert of alerts.body) {
+      expect(alert.key).toContain(`${alert.caseId}:${alert.reason}:`);
+    }
+
+    const metrics = await request(app.getHttpServer())
+      .get('/api/metrics')
+      .set(auth())
+      .expect(200);
+
+    expect(metrics.body.today).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    for (const key of [
+      'withoutInformation',
+      'diagnoses30',
+      'treatments60',
+      'aiPrimary',
+      'aiSecondary',
+      'lateEntry',
+    ]) {
+      expect(metrics.body[key].numerator).toBeGreaterThanOrEqual(0);
+      expect(metrics.body[key].denominator).toBeGreaterThanOrEqual(0);
+    }
+    expect(metrics.body.closedExceptionCount).toBeGreaterThanOrEqual(0);
+  });
+
+  it('returns messages in case detail without forbidden words', async () => {
+    const created = await createCase().expect(201);
+
+    const detail = await request(app.getHttpServer())
+      .get(`/api/cases/${created.body.id}`)
+      .set(auth())
+      .expect(200);
+
+    expect(detail.body.messages).toHaveLength(1);
+    expect(detail.body.messages[0].channels).toEqual(['SMS', 'EMAIL']);
+    expect(JSON.stringify(detail.body.messages)).not.toMatch(
+      /câncer|cancer|tumor|maligno|carcinoma|maligna|neoplasia/i,
+    );
   });
 
   it('creates a late-entry case with the original day zero', async () => {
