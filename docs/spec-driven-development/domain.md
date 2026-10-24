@@ -118,7 +118,7 @@ Personas de trabalho, a validar na entrevista (regulamento, item 6.4).
 | Parte | Proposta | Situação no repositório |
 | --- | --- | --- |
 | Frontend (React) | Calendário com um card por paciente, na semana do vencimento | React + Vite + shadcn configurados, ainda sem telas |
-| Backend (NestJS) | Motor de regras. Cron jobs (`@nestjs/schedule`) varrem o banco, simulam a passagem dos dias na demo, calculam os prazos e mudam os status | NestJS pronto. `@nestjs/schedule` não está instalado: é dependência nova, pedir OK antes |
+| Backend (NestJS) | Motor de regras sem cron, clock derivado (ADR 0006): uma função pura calcula prazos, cores e alertas na leitura, e um `Clock` com deslocamento de demo simula a passagem dos dias | NestJS pronto. Sem dependência nova |
 | IA | LLM recebe o laudo em texto livre e sugere um JSON; a navegadora confirma | Provedor Gemini com fallback mock já existe (ADR 0004) |
 | Banco | PostgreSQL + Prisma (decidido) | Já configurado no starter, com migrations e CI |
 | Paciente | Disparos de WhatsApp simulados | Nada pronto |
@@ -149,6 +149,7 @@ Personas de trabalho, a validar na entrevista (regulamento, item 6.4).
 | 23/10/2026 | A IA só sugere; a navegadora confirma antes de o caso mudar de estado | Erro na leitura de um laudo de câncer é grave |
 | 23/10/2026 | O Dia 30 "antecipa" o atraso; não usar "preditivo" | O aviso vem da conta das datas, não de um modelo de previsão |
 | 23/10/2026 | Não usar a frase "O SUS não tem relógio" | — |
+| 23/10/2026 | Sem cron: clock derivado, com o estado calculado na leitura (ADR 0006) | Evita dependência nova, deixa a demo andar na hora e as regras testáveis com data fixa |
 
 ## Métricas de sucesso
 
