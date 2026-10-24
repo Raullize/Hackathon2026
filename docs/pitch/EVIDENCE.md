@@ -29,6 +29,10 @@ Prazos legais que o relógio conta:
 | Suspeita → exames de diagnóstico | 30 dias | Lei 12.732/2012, art. 2º, § 3º (incluído pela Lei 13.896/2019) |
 | Laudo patológico → primeiro tratamento | 60 dias | Lei 12.732/2012, art. 2º |
 
+**Linha piloto: câncer de mama** (seção 12). O laudo da mamografia dá um gatilho
+objetivo (BI-RADS 4 ou 5), existe lei de navegação só para mama (Lei 14.450/2022) e o
+INCA publica dados por estado.
+
 ## 2. Encaixe no tema (slides oficiais)
 
 | Slide | O que o slide diz | Como o Dia 30 responde |
@@ -147,10 +151,12 @@ Problemas de base que travam qualquer relógio:
 | Dado | Número | Fonte | Confiança |
 | --- | --- | --- | --- |
 | Custo do 1º ano de tratamento do câncer de mama por estágio (EUA) | Estádio 0: US$ 60.637 · I/II: US$ 82.121 · III: US$ 129.387 · IV: **US$ 134.682** (cerca de 2,2x o estádio 0). Em 24 meses: US$ 71.909 vs. US$ 182.655 | Blumen et al., 2016 (planos privados dos EUA, dados de 2010) | 🟢 (mas é EUA, setor privado) |
+| Custo do 1º ano de tratamento do câncer de mama no SUS, por estádio | I: R$ 5,9 mil · II: R$ 10,2 mil · III: R$ 14,1 mil · IV: R$ 8,1 mil. **Não cresce em linha reta** (o IV custa menos que o III). Use "o estádio III custa cerca de 2,4 vezes o estádio I" | Tese da UFRGS (valores da época do estudo, sem correção) | 🟡 |
 | Coordenar pela atenção primária sai mais barato (não é câncer) | Resolver um encaminhamento na APS custou R$ 239,22, contra R$ 759,26 quando virou consulta especializada | RegulaSUS (UFRGS/SES-RS) | 🟢 |
 | Quem paga | Estados e municípios precisam implementar a navegação (Lei 14.758/2023 e Portaria 6.592/2025) | — | 🟢 (norma) |
 
-`[DADO FALTANDO]` Custo do tratamento por estágio no SUS, em reais.
+`[DADO FALTANDO]` Custo por estágio no SUS com dados recentes. Por enquanto, só a tese
+da UFRGS (🟡).
 
 ## 11. Contexto local
 
@@ -159,11 +165,132 @@ Problemas de base que travam qualquer relógio:
 | Em 21/09/2026, o MPRS anunciou um acordo entre nove municípios, Charqueadas entre eles, sobre o Hospital Regional de São Jerônimo, que recebia casos de baixa complexidade que a atenção básica poderia resolver. A maioria das prefeituras escolheu **fortalecer a atenção básica**, e o Dia 30 é uma ferramenta de coordenação para ela | MPRS | 🟢 |
 | O RS é o estado com mais municípios onde o câncer é a 1ª causa de morte (168) | Observatório de Oncologia, via imprensa | 🟡 |
 
-`[DADO FALTANDO]` Para onde Charqueadas encaminha biópsia e tratamento oncológico
-(qual UNACON ou CACON de referência), quantos casos por ano, e se o município já
-tem navegador de câncer.
+Pelo Plano Estadual de Oncologia (Resolução CIB/RS 265/20), Charqueadas fica na 2ª
+Coordenadoria Regional de Saúde (Região 9, Carbonífera/Costa Doce), e a referência
+oncológica é o **Hospital Ana Nery**, em Santa Cruz do Sul 🟡 (matriz de 2020;
+confirmar se mudou).
 
-## 12. Frases prontas para o pitch
+`[DADO FALTANDO]` Onde Charqueadas faz mamografia e biópsia hoje, quantos casos tem
+por ano, e se o município já tem navegador de câncer.
+
+## 12. Câncer de mama: a linha piloto
+
+Por que mama: o laudo dá um gatilho objetivo (BI-RADS 4 ou 5), existe lei de
+navegação só para mama (Lei 14.450/2022, seção 5), o INCA publica dados por estado e
+o pitch acontece no Outubro Rosa.
+
+### Os números principais
+
+| Dado | Número | Fonte | Confiança |
+| --- | --- | --- | --- |
+| Tratamento em até 60 dias, **RS** (2020–2024) | **44,4%**: mais da metade passou do prazo. **Paraná: 60,3%**, o melhor do país. Santa Catarina: 43,0% | INCA, *Controle do câncer de mama no Brasil: dados e números 2025*, Figura 26 (Painel-Oncologia, casos com informação) | 🟢 (o número do RS só aparece no mapa, não no texto) |
+| Tratamento em até 60 dias, Brasil | 47,3% (2020) · 43,4% (2021) · 39,3% (2022) · 39,7% (2023) · **47,8% (2024)**. Em 2024, **52,2% passaram de 60 dias**. Nas palavras do INCA: "a maioria dos casos [...] recebeu o primeiro tratamento com mais de 60 dias" | INCA 2025, Figura 24 | 🟢 |
+| Mamografias de rastreamento BI-RADS 4 ou 5 (mulheres de 50 a 69 anos, 2024) | Brasil: **20.913** (0,9%, cerca de 57 por dia). **RS: 1.211** (0,8%, cerca de 1 a cada 130 exames) | INCA 2025, Tabela 11 | 🟢 |
+| Risco de câncer por categoria | BI-RADS 3: até 2% · BI-RADS 4: de 2% a 94% · **BI-RADS 5: 95% ou mais** | INCA 2025, Quadro 2 | 🟢 |
+| Como se mede a Lei dos 30 dias | O INCA usa um "**indicador proxy**": o tempo da biópsia ao laudo anatomopatológico. A espera entre o BI-RADS e a biópsia fica fora da medida | INCA 2025 | 🟢 |
+| Mortes por câncer de mama, **RS** (2023) | **1.536**, cerca de 4 por dia. Taxa ajustada de 14,89 por 100 mil mulheres, a **3ª maior do país** (Roraima 17,38; Rio de Janeiro 16,50). Brasil: 20.165 | INCA 2025, Tabela 2 | 🟢 |
+| Casos novos por ano, **RS** (estimativa 2023–2025) | **3.720** (taxa bruta de 62,67 por 100 mil mulheres) | INCA 2025, Tabela 1 | 🟢 |
+| SISCAN no RS | Implantado em menos de 90% dos serviços de mamografia. Por isso, o INCA não calculou a cobertura de rastreamento do RS (nem a de AP, PI e SP) | INCA 2025 | 🟢 |
+
+### Onde o tempo se perde no RS
+
+| Trecho | RS | Brasil | Fonte | Confiança |
+| --- | --- | --- | --- | --- |
+| Pedido → laudo da mamografia de rastreamento (2024) | **34,3% levam mais de 60 dias**; só 35,7% saem em até 30 dias (4º pior estado) | 26,4% passam de 60 dias; 49,6% saem em até 30 | INCA 2025, Tabela 12 | 🟢 |
+| BI-RADS 4/5 → biópsia | **Ninguém publica** | Ver seção 7: mediana de 132 dias da detecção ao diagnóstico; 206 dias da mamografia alterada ao tratamento no Rio de Janeiro | — | — |
+| Biópsia → laudo anatomopatológico (2024) | **88,3% em até 30 dias** (1.325 exames) | 64,8% | INCA 2025, Tabela 22 | 🟢 |
+| Laudo → primeiro tratamento | **44,4% em até 60 dias** (2020–2024) | Entre 39% e 48% por ano | INCA 2025, Figuras 24 e 26 | 🟢 |
+| Hospital Nossa Senhora da Conceição (Porto Alegre), diagnóstico → tratamento, casos diagnosticados e tratados no hospital | **66,1%** em menos de 60 dias (1.584 de 2.398); 68,4% em 2012 e 66,4% em 2022: **dez anos sem melhora** | — | GHC, informe de março de 2026 | 🟢 |
+
+> ⚠️ Os tempos do RS que vêm do SISCAN cobrem só os serviços que usam o sistema
+> (menos de 90% no estado).
+
+O Plano Estadual de Oncologia (Resolução CIB/RS 265/20) diz que "O Estado conta com
+171 mamógrafos disponíveis para o SUS, capacidade suficiente para atendimento da
+demanda estimada de cobertura da população". Os nós críticos que ele lista para mama
+vêm depois do exame 🟢 (documento de 2020):
+
+- "Ausência de referências regionais de encaminhamento para as mulheres que
+  apresentarem alterações no exame"
+- "Acesso insuficiente aos exames de biópsia"
+- "Tempo elevado de espera para atendimento da mulher no serviço de referência"
+- "Baixo índice de utilização do Protocolo de encaminhamento para Mastologia"
+
+**Leitura:** no RS, o laboratório não é o gargalo (88,3% dos laudos de biópsia em até
+30 dias) e, pelo Plano Estadual, o mamógrafo também não. O tempo se perde nas filas:
+do pedido ao laudo da mamografia, do exame alterado até a biópsia (que ninguém mede)
+e do laudo até o tratamento. Os dois últimos trechos são os que o Dia 30 cobre.
+
+### Porto Alegre já monitora, e mesmo assim perde informação
+
+Boletim Outubro Rosa 2024 da SMS de Porto Alegre, dados de jan–ago/2024 🟢 (ver
+também a seção 8):
+
+- A vigilância recebe as mamografias BI-RADS 4 e 5 de oito prestadores do SUS e
+  avisa a UBS, que faz busca ativa.
+- Tempo do diagnóstico até o tratamento nos casos de mama: **47%** em até 60 dias,
+  **21%** depois e **32% sem informação**.
+- Mulheres com BI-RADS 4/5 vinculadas à UBS: 66% com acompanhamento especializado.
+  Sem vínculo: **53% sem acompanhamento**.
+- **Como usar:** a capital precisou de uma equipe de vigilância para não perder essas
+  mulheres, e um terço dos casos ainda fica sem informação. O Dia 30 leva essa
+  vigilância a um município do tamanho de Charqueadas, com o prazo da lei.
+  `[SUPOSIÇÃO]` Charqueadas não tem estrutura equivalente; confirmar na entrevista.
+
+### Tempo é vida, em mama
+
+| Dado | Número | Fonte | Confiança |
+| --- | --- | --- | --- |
+| Atraso até a cirurgia | Cada 30 dias a mais: risco de morte **9% a 10% maior** (HR 1,09–1,10); no estádio I, HR 1,13–1,16 | Bleicher et al., *JAMA Oncology* 2016 (bases SEER-Medicare e NCDB, EUA) | 🟢 |
+| Estágio ao diagnóstico, Brasil | **Cerca de 40%** em estádio III ou IV em 2021 e 2022; eram 41,2% em 2000 | INCA 2025 (Registros Hospitalares de Câncer) | 🟢 |
+| Estágio inicial, RS | 29,2% em in situ ou estádio I (2018–2022), acima da média nacional (25,0%) | INCA 2025 | 🟢 |
+| SUS vs. privado, São Paulo (65.543 mulheres, 2000–2020) | Estádio I: **21%** no SUS vs. 41% no privado. Sobrevida em 10 anos no estádio III: 39,6% vs. 55,6% | Coorte da Fundação Oncocentro de São Paulo, via imprensa (mar/2026) | 🟡 |
+| Sobrevida em 5 anos (2010–2014) | Brasil 75,2% vs. EUA 90,2% | CONCORD-3, citado em *Frontiers in Oncology* 2023 | 🟡 |
+
+### Navegação funciona, em mama
+
+| Dado | Número | Fonte | Confiança |
+| --- | --- | --- | --- |
+| Navegação depois de exame alterado (EUA, vários tipos de câncer, mama incluída) | Acelerou a resolução diagnóstica (aHR 1,51, na janela de 91 a 365 dias) e o início do tratamento (aHR 1,43). O ganho foi **maior onde o atraso era maior** | Freund et al., *JNCI* 2014 (Patient Navigation Research Program) | 🟢 |
+| Piloto do Instituto Avon em São João de Meriti (RJ), 2019–2020 | Tratamento em até 60 dias subiu de **27% para 84%** | Relatório do projeto, via imprensa | 🟡 |
+
+### Vai chegar mais suspeita na fila
+
+| Dado | Fonte | Confiança |
+| --- | --- | --- |
+| A Lei 15.284/2025 garante mamografia a partir dos 40 anos, mesmo sem sintoma, conforme as diretrizes do Ministério da Saúde | Planalto | 🟢 |
+| O Ministério da Saúde ampliou o rastreamento ativo para 50 a 74 anos (antes, 50 a 69) e garantiu o exame de 40 a 49 anos sob demanda (anúncio de 23/09/2025) | Imprensa (Jornal de Brasília) | 🟡 |
+| A oferta de biópsias e punções em 2024 "não seria suficiente para atender as mulheres sintomáticas, além de não considerar as mulheres oriundas do rastreamento" | INCA 2025 | 🟢 |
+
+`[SUPOSIÇÃO]` Mais mamografia sem mais biópsia aumenta a fila justamente no trecho
+que ninguém mede.
+
+### Charqueadas
+
+| Dado | Fonte | Confiança |
+| --- | --- | --- |
+| 35.012 habitantes. Razão de sexo de 115,6 homens para cada 100 mulheres, **a maior do RS** (provavelmente pelo complexo prisional `[SUPOSIÇÃO]`). Isso dá cerca de **16,2 mil mulheres** (cálculo nosso) | IBGE, Censo 2022 | 🟢 |
+| Cerca de **10 casos novos de câncer de mama por ano** | Cálculo com a taxa bruta do RS (62,67 por 100 mil mulheres) | `[SUPOSIÇÃO]` |
+| Região 9 (Carbonífera/Costa Doce), 2019: as mamografias de rastreamento chegaram a **45% da meta** | Plano Estadual de Oncologia (CIB/RS 265/20) | 🟢 (dado de 2019) |
+| Referência oncológica: Hospital Ana Nery, em Santa Cruz do Sul (seção 11) | Plano Estadual de Oncologia, matriz de 2020 | 🟡 |
+
+### Contrapontos (para a banca não pegar de surpresa)
+
+1. **O laboratório do RS é rápido** (88,3% dos laudos em até 30 dias). Não dizer que
+   "o RS demora em tudo".
+2. **O RS diagnostica cedo acima da média** (29,2% contra 25,0%). Não dizer que o RS
+   diagnostica tarde.
+3. **Falta biópsia, e o Dia 30 não cria vaga.** Ele mostra quem está mais perto de
+   estourar o prazo e com mais risco (no BI-RADS 5, o risco é de 95% ou mais) e gera
+   a prova para cobrar a vaga.
+4. **O volume em Charqueadas é pequeno** (algumas dezenas de suspeitas por ano
+   `[SUPOSIÇÃO]`). Se perguntarem "por que não uma planilha?": a planilha fica no
+   computador de uma pessoa; o Dia 30 é o mesmo relógio para UBS, regulação,
+   hospital e paciente.
+5. **"E os outros cânceres?"** O relógio é o mesmo. Mama é o piloto porque tem
+   gatilho objetivo, lei própria de navegação e o SISCAN.
+
+## 13. Frases prontas para o pitch
 
 | Frase | Base | Confiança |
 | --- | --- | --- |
@@ -174,27 +301,34 @@ tem navegador de câncer.
 | "Uma lei de 2023 manda ter um sistema que registre as suspeitas de câncer e mostre a posição na fila. O Dia 30 é esse sistema." | Lei 14.758/2023, art. 4º | 🟢 |
 | "O Reino Unido mede o relógio de cada paciente todo mês. Aqui, o painel oficial usa dados que podem levar até um ano para chegar." | NHS England; documentos do Painel-Oncologia | 🟢 |
 | "No RS, o câncer já é a principal causa de morte em 168 municípios." | Observatório de Oncologia | 🟡 (citar a fonte no slide) |
+| "Entre 2020 e 2024, mais da metade das gaúchas com câncer de mama começou o tratamento depois do prazo da lei. O Paraná, aqui do lado, chega a 60%." | INCA 2025, Figura 26 | 🟢 |
+| "Uma mulher com BI-RADS 5 tem 95% ou mais de chance de ter câncer. Para medir o prazo de 30 dias dela, o INCA usa só um pedaço do caminho: da biópsia ao laudo." | INCA 2025 | 🟢 |
+| "Em outubro, todo mundo pede a mamografia. O problema começa quando ela volta alterada." | Plano Estadual de Oncologia do RS (nós críticos depois do exame) | 🟢 (frase de abertura) |
 
-## 13. Números que NÃO devemos usar (ou só com ressalva)
+## 14. Números que NÃO devemos usar (ou só com ressalva)
 
 | Número | Por quê |
 | --- | --- |
 | ⛔ "35% a 50% dos exames nunca são retirados" | Contestado pela SBPC/ML, sem fonte primária. Use o caso de Caxias do Sul, citando a fonte |
-| ⛔ "43% dos cânceres de mama são diagnosticados nos estádios 3 e 4" | Apareceu em reportagem sem fonte primária identificada |
+| ⛔ "43% dos cânceres de mama são diagnosticados nos estádios 3 e 4" | Apareceu em reportagem sem fonte primária identificada. Use no lugar: **cerca de 40%** em estádio III ou IV (INCA 2025, dados de 2021–2022, seção 12) |
+| ⛔ "A cada 68 horas uma pessoa morre por câncer de mama em Porto Alegre" | Está no boletim de POA de 2024, mas não bate com os dados do próprio boletim: 128 mortes em 244 dias dão uma a cada 46 horas |
+| ⛔ Números do CFM e do TCU de 2018 sobre espera no câncer | Antigos. Use o INCA 2025 e o Painel-Oncologia |
 | ⛔ "Há mais cartões SUS do que brasileiros" | O dado verificado é de **registros** no cadastro (340 milhões), não de cartões |
 | ⚠️ Harlem, de 39% para 70% | Sem grupo controle. Serve como história, não como prova |
 | ⚠️ Números do Radar do Câncer | A página não diz de onde vêm os dados. Preferir o Painel-Oncologia ou estudos revisados por pares |
 
-## 14. Lacunas para fechar
+## 15. Lacunas para fechar
 
-- `[DADO FALTANDO]` Referência oncológica de Charqueadas: onde faz biópsia e onde trata.
-- `[DADO FALTANDO]` Percentual de cumprimento dos 60 dias no RS ou na região, no TabNet (PAINEL_ONCOLOGIABR).
+- `[DADO FALTANDO]` Onde Charqueadas faz mamografia e biópsia hoje, e quanto a mulher espera. Para o tratamento, o Plano Estadual de 2020 indica o Hospital Ana Nery (confirmar se mudou).
+- `[DADO FALTANDO]` Percentual de cumprimento dos 60 dias no RS ano a ano e na região, no TabNet (PAINEL_ONCOLOGIABR). Para mama, só temos o agregado 2020–2024 (44,4%). Pista ainda não lida: [boletim epidemiológico de câncer de mama do RS (out/2024)](https://admin.estado.rs.gov.br/upload/arquivos/202410/boletim-epidemiologico-cancer-de-mama-no-estado-do-rio-grande-do-sul-versao-final-2.pdf).
+- `[DADO FALTANDO]` Tempo do BI-RADS 4/5 até a biópsia no RS. Ninguém publica, e isso é parte do argumento.
 - `[DADO FALTANDO]` Se Charqueadas já tem navegador de câncer (Portaria 6.592/2025).
-- `[DADO FALTANDO]` Custo do tratamento por estágio no SUS.
+- `[DADO FALTANDO]` Custo por estágio no SUS com dados recentes (só temos a tese da UFRGS, 🟡).
 - `[DADO FALTANDO]` Se Charqueadas está entre os 168 municípios do RS onde o câncer é a 1ª causa de morte.
+- `[DADO FALTANDO]` O [boletim Outubro Rosa 2026 de Porto Alegre](https://www.prefeitura.poa.br/sites/default/files/usu_doc/hotsites/sms/vigilancia-em-saude/BE%20Outubro%20Rosa%202026.pdf) já saiu e ainda não foi lido: conferir se atualiza os números de 2024.
 - `[SUPOSIÇÃO]` O painel público do Painel-Oncologia é agregado e não serve para acompanhar paciente a paciente. Confirmar.
 
-## 15. Fontes
+## 16. Fontes
 
 **Leis e normas**
 
@@ -204,10 +338,12 @@ tem navegador de câncer.
 - [Lei 13.896/2019, vigência (Legjur)](https://www.legjur.com/legislacao/htm/lei_00138962019)
 - [Lei 14.758/2023, texto atualizado (Câmara)](https://www2.camara.leg.br/legin/fed/lei/2023/lei-14758-19-dezembro-2023-795082-normaatualizada-pl.html)
 - [Lei 14.450/2022 (Planalto)](https://planalto.gov.br/ccivil_03/_ato2019-2022/2022/Lei/L14450.htm)
+- [Lei 15.284/2025 (Planalto)](https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/L15284.htm)
 - [Portaria GM/MS 6.592/2025 (cópia do DOU)](https://sintse.tse.jus.br/documentos/2025/Fev/7/saude/portaria-no-6-592-de-4-de-fevereiro-de-2025-altera-a-portaria-de-consolidacao-no-5-de-28-de-setembro)
 - [Conass sobre a regulamentação da Política do Câncer](https://www.conass.org.br/?p=46708)
 - [Conass, Guia da Oficina PNPCC (set/2026)](https://www.conass.org.br/wp-content/uploads/2026/09/Guia-Oficina-PNPCC.pdf)
 - [Resolução CIB/RS 204/2020](https://saude.rs.gov.br/upload/arquivos/202010/23143254-cibr204-20.pdf)
+- [Resolução CIB/RS 265/20, Plano Estadual de Oncologia](https://saude.rs.gov.br/upload/arquivos/202012/18102403-cibr265-20.pdf)
 - [Protocolo de Acesso às OCI em oncologia, versão preliminar 2024 (MS/SAES, cópia do COSEMS-SP)](https://www.cosemssp.org.br/wp-content/uploads/2024/11/Protocolo-de-Acesso-Ofertas-Cuidados-Integra.pdf)
 - [Rio de Janeiro, Portaria S/SUBGERAL nº 10/2025, faturamento das OCI](https://saude.prefeitura.rio/wp-content/uploads/sites/47/2025/07/PORTARIA-SUBGERAL-No-10-DE-04-DE-JULHO-DE-2025-OCI.pdf)
 - [Conass, Módulo 4 da oficina da Rede de Prevenção e Controle do Câncer (set/2026)](https://www.conass.org.br/wp-content/uploads/2026/09/Modulo-04.pdf)
@@ -237,6 +373,13 @@ tem navegador de câncer.
 - [RegulaSUS, avaliação (UFRGS)](https://lume.ufrgs.br/handle/10183/274103)
 - [MPRS, acordo do Hospital Regional de São Jerônimo (21/09/2026)](https://www.mprs.mp.br/noticias/67284/)
 - [Porto Alegre, Boletim Epidemiológico Outubro Rosa 2024 (SMS/DVS)](https://prefeitura.poa.br/sites/default/files/usu_doc/hotsites/sms/vigilancia-em-saude/BE%20Outubro%20Rosa%202024.pdf)
+- [INCA, Controle do câncer de mama no Brasil: dados e números 2025](https://ninho.inca.gov.br/jspui/bitstream/123456789/17733/1/completo%20controle%20do%20Ca%20de%20mama_2025.pdf)
+- [GHC, informe de março de 2026 (câncer de mama no Hospital Conceição)](https://www3.ghc.com.br/files/arq.ptg.6.1.39623.pdf)
+- [Coorte da Fundação Oncocentro de São Paulo, SUS vs. privado (Medicina S/A)](https://medicinasa.com.br/?p=154910)
+- [Piloto de navegação do Instituto Avon (Medicina S/A)](https://medicinasa.com.br/sus-cancer-mama/)
+- [Ampliação do rastreamento para 50 a 74 anos (Jornal de Brasília)](https://jornaldebrasilia.com.br/noticias/saude/faixa-etaria-da-mamografia-e-ampliada-no-sus-exame-passa-a-ser-indicado-ate-os-74-anos/)
+- [IBGE, Censo 2022, população por idade e sexo no RS](https://biblioteca.ibge.gov.br/visualizacao/periodicos/3102/cd_2022_populacao_idade_sexo_rs.pdf)
+- [Tese da UFRGS, custo do câncer de mama por estádio no SUS](https://lume.ufrgs.br/handle/10183/76211)
 
 **Dados internacionais**
 
@@ -249,3 +392,6 @@ tem navegador de câncer.
 - [Harold Freeman e a navegação no Harlem (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC2527166)
 - [O'Malley & Reschovsky 2011](https://www.mathematica.org/publications/referral-and-consultation-communication-between-primary-care-and-specialist-physicians)
 - [Blumen et al. 2016, custo por estágio (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC4822976)
+- [Bleicher et al., *JAMA Oncology* 2016 (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC4788555/)
+- [Freund et al., *JNCI* 2014, Patient Navigation Research Program (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC4072900/)
+- [CONCORD-3 citado em *Frontiers in Oncology* 2023](https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2023.927748/full)
