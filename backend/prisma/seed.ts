@@ -49,6 +49,12 @@ async function main(): Promise<void> {
     create: { name, email, passwordHash },
   });
 
+  await prisma.demoClockState.upsert({
+    where: { id: 1 },
+    update: { offsetDays: 0 },
+    create: { id: 1, offsetDays: 0 },
+  });
+
   const demo = new DemoSeedService(prisma as unknown as PrismaService, new SeedClock());
   const cases = await demo.seed(user.id);
 

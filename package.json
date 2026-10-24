@@ -10,7 +10,7 @@
   "scripts": {
     "setup": "bash scripts/setup.sh",
     "predev": "pnpm --filter @careflow/contracts build",
-    "dev": "pnpm --parallel --filter @careflow/contracts --filter @careflow/backend --filter @careflow/frontend dev",
+    "dev": "pnpm --parallel --filter @careflow/backend --filter @careflow/frontend dev",
     "dev:backend": "pnpm --filter @careflow/backend dev",
     "dev:frontend": "pnpm --filter @careflow/frontend dev",
     "prebuild": "pnpm --filter @careflow/contracts build",

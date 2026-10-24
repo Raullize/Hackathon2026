@@ -494,11 +494,14 @@ export class DemoSeedService {
         });
 
         await tx.caseEvent.createMany({
-          data: seed.events.map((event) => ({
+          data: seed.events.map((event, index) => ({
             caseId: created.id,
             type: event.type,
             occurredAt: dbDate(event.occurredAt),
-            recordedAt: dbDate(event.recordedAt ?? event.occurredAt),
+            recordedAt: new Date(
+              dbDate(event.recordedAt ?? event.occurredAt).getTime() +
+                index * 60_000,
+            ),
             userId,
             payload: event.payload,
           })),
