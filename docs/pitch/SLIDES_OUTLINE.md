@@ -16,7 +16,8 @@
   volta alterada."
 - RS: só **44,4%** começaram o tratamento em até 60 dias (Paraná: 60,3%). INCA 2025.
 - Porto Alegre, que monitora: **32%** sem informação de tempo (jan–ago/2024).
-- Persona: a mulher com BI-RADS 4/5 e a navegadora da UBS.
+- Persona: a mulher com BI-RADS 4/5 e a navegadora (única usuária). O médico fica
+  fora do sistema.
 - Critério: Impacto Social.
 
 ## 3. Solução
@@ -25,6 +26,10 @@
   semana do prazo.
 - A IA lê o laudo, a navegadora confirma. A paciente vê o próximo passo, sem a
   palavra "câncer".
+- **Frase-âncora:** "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O
+  Dia 30 é a ferramenta."
+- O médico não muda nada: pede o exame pelo caminho de sempre. **Zero trabalho novo
+  para o médico.**
 - Diferencial: **antecipa** o atraso, em vez de medir depois.
 - Critério: Inovação.
 
@@ -32,8 +37,9 @@
 
 - Os 7 passos de `DEMO_SCRIPT.md`: Maria no dia 18, "+7 dias", laudo, "30 dias:
   cumpriu", mensagem e link da paciente, escada de alerta, métricas.
-- Dizer em voz alta o que é protótipo: dados fictícios, WhatsApp simulado, relógio de
-  demo.
+- Mostrar o layout responsivo no celular (link da paciente) e no desktop (calendário).
+- Dizer em voz alta o que é protótipo: dados fictícios, SMS/e-mail simulados, relógio
+  de demo. WhatsApp é visão.
 - Critério: Funcionalidade e Usabilidade.
 
 ## 5. Arquitetura
@@ -49,6 +55,7 @@
   e CI.
 - IA só sugere; a navegadora confirma. Filtro de CPF, CNS e nome antes do Gemini; demo
   só com laudos fictícios.
+- Só a navegadora acessa o painel; a paciente recebe um link de leitura.
 - Critério: Qualidade do Código e Avaliação Geral.
 
 ## 7. Impacto
@@ -64,7 +71,8 @@
 
 - Quem paga por lei: estados e municípios (navegação). Hipótese: assinatura por
   município ou região, mais implantação e integração.
-- Custo: Gemini no free tier hoje; o resto é `[DADO FALTANDO]`.
+- Custo: Gemini no free tier hoje; SMS/e-mail por mensagem; WhatsApp fora desta fase;
+  o resto é `[DADO FALTANDO]`.
 - Dizer que é hipótese a validar.
 - Critério: Modelo de Negócios.
 
@@ -72,6 +80,9 @@
 
 - Hoje (implementado) vs. protótipo vs. visão: piloto manual em Charqueadas, depois
   SISCAN/GERCON, depois RNDS.
+- RNDS: HL7 FHIR, Portal de Serviços do DATASUS, credenciamento do estabelecimento;
+  `[DADO FALTANDO]` modelo específico para laudo de mama.
+- Comunicação: SMS/e-mail no escopo; WhatsApp na visão.
 - Critério: Inovação e Apresentação.
 
 ## 10. Fechamento

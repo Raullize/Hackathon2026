@@ -21,15 +21,18 @@ informação."
 
 ## 0:30–0:50 — Solução (slide 3)
 
-"O prazo existe, mas ninguém tem um relógio. O que existe mede o atraso meses depois:
-o painel oficial usa dados que levam até um ano para chegar, e só começa a contar no
-laudo.
+"O prazo existe, mas ninguém tem um relógio. O painel oficial mede o atraso meses
+depois, e só começa a contar no laudo.
 
 O Dia 30 é um calendário compartilhado. Cada mulher é um card verde, amarelo ou
 vermelho, na semana em que vence o prazo da lei. Ele não mede o atraso depois. Ele
 antecipa."
 
-> Não dizer "preditivo". O aviso vem da conta das datas.
+"A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O Dia 30 é a ferramenta.
+E o médico não muda nada: ele pede o exame pelo caminho de sempre. Zero trabalho novo
+para o médico."
+
+> Não dizer "preditivo": o aviso vem da conta das datas.
 
 ## 0:50–3:50 — Demo (slide 4)
 
@@ -40,7 +43,8 @@ Seguir os 7 passos de `DEMO_SCRIPT.md`. Falas de apoio, nos pontos que mais pesa
 - **Passo 2:** "Passo sete dias. Dia 25, amarelo. A biópsia passou e ninguém
   registrou. O Dia 30 percebe antes do prazo vencer, e o alerta chega à navegadora."
 - **Passo 3:** "Aqui a IA lê o laudo e sugere. Quem confirma é a navegadora. Nada muda
-  de estado sem ela." (Dizer qual selo aparece: "Gemini" ou "regra local".)
+  de estado sem ela. O médico não registra nada; ele já pediu o exame pelo caminho de
+  sempre." (Dizer qual selo aparece: "Gemini" ou "regra local".)
 - **Passo 4:** "Trinta dias: cumprido. Começa o prazo de 60, e a equipe já sabe
   quando ele vence."
 - **Passo 5:** "A paciente recebe o próximo passo e os direitos dela. Sem a palavra
@@ -50,17 +54,17 @@ Seguir os 7 passos de `DEMO_SCRIPT.md`. Falas de apoio, nos pontos que mais pesa
 - **Passo 7:** "É assim que o município mede, no dia, o que hoje só aparece meses
   depois."
 
-Dizer em voz alta: "Os dados são fictícios, o WhatsApp é simulado e o relógio é de
-demonstração."
+Dizer em voz alta: "Os dados são fictícios, as mensagens de SMS/e-mail são simuladas e
+o relógio é de demonstração. WhatsApp é visão."
 
 ## 3:50–4:20 — Arquitetura e IA (slides 5 e 6)
 
-"Por baixo, é um backend em NestJS com Postgres. Não usamos tarefa agendada: o estado
-do caso é calculado na leitura, a partir das datas. Isso deixa as regras testáveis.
+"Por baixo, é um backend em NestJS com Postgres. A navegadora é a única usuária. Sem
+tarefa agendada: o estado é calculado na leitura, a partir das datas.
 
-A IA não é um chatbot. Ela só estrutura o laudo. Antes de chamar o Gemini, um filtro
-tira CPF, cartão SUS e nome. Se a IA falhar ou demorar, entra uma regra local. E a
-navegadora sempre confirma."
+A IA não é um chatbot. Ela só estrutura o laudo. Um filtro tira CPF, cartão SUS e nome
+antes do Gemini. Se a IA falhar ou demorar, entra uma regra local. E a navegadora
+sempre confirma."
 
 ## 4:20–4:45 — Impacto e roadmap (slides 7 a 9)
 
@@ -70,7 +74,8 @@ suspeitas de câncer. O Dia 30 é um protótipo desse sistema.
 O sistema mede o que importa: quantos diagnósticos em 30 dias, quantos tratamentos em
 60, quantos casos sem notícia. Ainda não medimos o efeito dele em pacientes reais.
 Hoje é protótipo. A visão é um piloto manual em Charqueadas, depois importar dados do
-SISCAN e do GERCON."
+SISCAN e do GERCON, e no futuro a RNDS em FHIR. `[DADO FALTANDO]` O modelo RNDS para
+laudo de mama ainda não está confirmado; não prometemos API do SISCAN nem do PEC."
 
 > Se perguntarem do modelo de negócio: quem paga por lei são estados e municípios
 > (navegação). Assinatura por município é hipótese a validar.
@@ -90,9 +95,13 @@ Respostas curtas em [`OPERATIONS.md`](./OPERATIONS.md), seção 9, e no fim do
   OCI paga o pacote e o SISCAN acompanha exames alterados. Nas nossas buscas, nenhuma
   conta o prazo da lei da suspeita até o tratamento para todos verem.
 - **"Por que não uma planilha?"** A planilha fica no computador de uma pessoa. O Dia 30
-  é o mesmo calendário para UBS, regulação, hospital e paciente, com alerta.
+  dá à navegadora um relógio com alertas e histórico; ela cobra UBS, regulação e
+  hospital, e a paciente tem um link de leitura.
 - **"Cria vaga?"** Não. Mostra quem está mais perto de estourar o prazo e gera a prova
   para cobrar a vaga.
+- **"Quem alimenta o sistema?"** A navegadora, que a lei já prevê, a partir da fila da
+  regulação e do SISCAN. O médico não muda nada. No futuro, importação do SISCAN e a RNDS (FHIR) podem reduzir essa digitação;
+  viabilidade a confirmar.
 - **"E se a IA errar?"** A navegadora confere e edita antes de confirmar; o sistema
   guarda a sugestão e o valor confirmado.
 - **"E a LGPD?"** Demo só com laudos fictícios; filtro de identificadores antes do

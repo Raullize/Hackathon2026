@@ -12,14 +12,14 @@
 | Idem, RS | 1.211 em 2024, cerca de 1 a cada 130 exames 🟢 | Idem |
 | Mulheres com câncer de mama no RS | 3.720 casos novos por ano (estimativa 2023–2025) 🟢 | Tratamento mais perto dos 60 dias (hoje 44,4%) |
 | Charqueadas | Cerca de 16,2 mil mulheres (cálculo nosso, Censo 2022) e cerca de 10 casos novos de mama por ano `[SUPOSIÇÃO]` | Piloto manual, com poucos casos |
-| Navegadoras, UBS, regulação e gestor | `[DADO FALTANDO]` quantas navegadoras existem em Charqueadas | Lista única, alerta antes do vencimento, prova para cobrar vaga |
+| Navegadora; UBS, regulação e gestor como destinatários | Função já prevista em lei; `[DADO FALTANDO]` quem a exerce em Charqueadas | Lista única, alerta antes do vencimento, prova para cobrar vaga; os demais são cobrados pela navegadora |
 
 ## Antes e depois
 
 | Hoje | Com a solução |
 | --- | --- |
 | O atraso aparece meses depois, em dados de faturamento | O alerta chega antes do vencimento |
-| Cada ponto sabe só do seu trecho; o retorno não chega à UBS | Um calendário com o mesmo prazo para UBS, regulação, hospital e paciente |
+| Cada ponto sabe só do seu trecho; o retorno não chega à UBS | Um calendário da navegadora, com link de leitura para a paciente; a navegadora cobra UBS, regulação e hospital |
 | Sem notícia, ninguém percebe (32% dos casos de mama de Porto Alegre sem informação de tempo) | Silêncio é alerta: o caso fica amarelo e a navegadora liga |
 | A paciente espera sem saber o próximo passo nem o que a lei garante | Mensagem com o próximo passo, a data e o direito aos 30 e 60 dias |
 | A mulher com laudo benigno some da lista sem destino | O caso fecha com o resultado e volta à UBS com o seguimento |
@@ -67,12 +67,13 @@ vencimento.
 
 ## Riscos de impacto
 
-- Enquanto não houver integração, o sistema depende de alguém lançar os dados.
+- Enquanto não houver integração, o sistema depende de a navegadora lançar os dados. O
+  médico não muda nada.
 - O Dia 30 não cria vaga de biópsia nem de tratamento. Ele mostra quem está mais
   perto de estourar e gera a prova para cobrar a vaga.
 - O volume em Charqueadas é pequeno e a banca vai perguntar "por que não uma
-  planilha?". Resposta: a planilha fica no computador de uma pessoa; o Dia 30 é o
-  mesmo calendário para UBS, regulação, hospital e paciente, com alerta.
+  planilha?". Resposta: a planilha fica no computador de uma pessoa; o Dia 30 dá à
+  navegadora um relógio com alertas e histórico, e a paciente tem um link de leitura.
 - Erro da IA ao ler um laudo: mitigado porque a IA só sugere e a navegadora confirma.
 - Laudo é dado sensível (LGPD, art. 11): demo só com laudos fictícios, e a regra de
   produção é `[DECISÃO PENDENTE]` (`domain.md`).

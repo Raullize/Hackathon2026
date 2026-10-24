@@ -11,8 +11,8 @@
 
 ## 1. A ideia em uma frase
 
-Quando a UBS registra uma **suspeita de câncer**, começa a contar um relógio
-compartilhado por UBS, regulação, hospital e pela própria paciente. Cada etapa tem
+Quando uma **suspeita de câncer** entra na linha de cuidado, começa a contar um
+relógio compartilhado pela navegadora e visível para a paciente. Cada etapa tem
 prazo: exame agendado → exame feito → laudo pronto → laudo visto → consulta
 oncológica → início do tratamento.
 
@@ -116,7 +116,7 @@ O que já existe e onde para:
 | **PMAE / Agora Tem Especialistas: OCI de mama** (Portarias SAES/MS 1.640, 1.821 e 1.824, de 2024) | Pacotes de procedimentos por etapa da linha de cuidado. **OCI 1** (avaliação diagnóstica inicial): consulta com especialista, mamografia diagnóstica e ultrassom. **OCI 2** (progressão): punções, biópsia e anatomopatológico, com critério de entrada "Mamografia alterada [...] BI-RADS 4 ou 5" | Organiza e paga o pacote **dentro do prestador**. No Rio de Janeiro, a OCI é concluída "com prazo no máximo de 30 ou 60 dias", a data de execução é "a data do primeiro atendimento do paciente" e a APAC de oncologia exige "a data do resultado do exame anatomopatológico". Não cobre a fila da UBS até o prestador nem o trecho do laudo até o tratamento | 🟢 (protocolo do MS) / 🟡 (regra de faturamento do município do Rio) |
 | **Conass, Módulo 4 da oficina da Rede de Prevenção e Controle do Câncer** (set/2026) | Propõe um "dicionário mínimo de estados da jornada": suspeita ativa (30 dias) → diagnóstico pendente → diagnóstico conclusivo (inicia os 60 dias) → plano definido → tratamento ativo → seguimento. Exceções explícitas: "recusa, contraindicação, ausência, pendência clínica, transporte ou capacidade". E: "Não basta calcular o atraso depois: o sistema deve tornar o próximo risco de atraso acionável hoje" | É um **artefato de oficina** para as secretarias estaduais, não um sistema em uso. Mostra que a ideia está na agenda dos gestores: o Dia 30 é um protótipo do que o Conass descreve | 🟢 |
 | **GERCON** (Sistema de Gerenciamento de Consultas) | Regula os encaminhamentos para consultas especializadas. Em Porto Alegre, é por onde passam os encaminhamentos das mulheres com mamografia alterada | Organiza a fila. Não encontramos contagem dos prazos das leis da suspeita até o tratamento `[SUPOSIÇÃO]` | 🟢 (uso em POA, pelo boletim da SMS) |
-| **Vigilância das mamografias alteradas de Porto Alegre** (DVS/SMS) | Recebe as mamografias **BI-RADS 4 e 5** de oito prestadores do SUS, georreferencia cada caso e avisa a UBS, que faz busca ativa e registra no e-SUS PEC. O boletim diz que monitora "100%" desses exames | Depende de uma equipe de vigilância da capital e sai em boletim. Mesmo assim, em jan–ago/2024, **32%** dos casos de mama de POA estavam sem informação de tempo até o tratamento no Painel-Oncologia, e **53%** das mulheres sem vínculo com a UBS estavam sem acompanhamento especializado | 🟢 |
+| **Vigilância das mamografias alteradas de Porto Alegre** (DVS/SMS) | Recebe as mamografias **BI-RADS 4 e 5** de oito prestadores do SUS, georreferencia cada caso e avisa a UBS, que faz a busca ativa no e-SUS PEC. O boletim diz que monitora "100%" desses exames | Depende de uma equipe de vigilância da capital e sai em boletim. Mesmo assim, em jan–ago/2024, **32%** dos casos de mama de POA estavam sem informação de tempo até o tratamento no Painel-Oncologia, e **53%** das mulheres sem vínculo com a UBS estavam sem acompanhamento especializado | 🟢 |
 
 **Posicionamento:** "O e-SUS registra. O GERCON organiza a fila. A OCI paga o pacote.
 O Dia 30 cobra o prazo."
