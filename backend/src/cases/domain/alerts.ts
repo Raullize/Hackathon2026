@@ -68,6 +68,7 @@ function buildAlert(
   return {
     key,
     caseId: caseRecord.id,
+    fullName: caseRecord.fullName,
     initials: caseRecord.initials,
     reason: seed.reason,
     recipient: seed.recipient,

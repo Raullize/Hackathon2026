@@ -53,7 +53,7 @@ export class CasesController {
   @ApiOperation({ summary: 'Lista casos abertos ou fechados' })
   @ApiOkResponse({ type: CaseListResponseDto })
   list(@Query() query: CaseListQueryDto): Promise<CaseListResponse> {
-    return this.cases.list(query.scope);
+    return this.cases.list(query.scope, query.q);
   }
 
   @Get(':id')

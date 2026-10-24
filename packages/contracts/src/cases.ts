@@ -223,6 +223,7 @@ export const outcome60Schema = z.enum([
 
 export const caseViewSchema = z.object({
   id: z.string().uuid(),
+  fullName: z.string(),
   initials: z.string(),
   trigger: caseTriggerSchema,
   status: caseStatusSchema,
@@ -263,6 +264,7 @@ export const patientMessageSchema = z.object({
 });
 
 export const caseDetailSchema = caseViewSchema.extend({
+  cns: z.string(),
   ageYears: z.number().int().nonnegative(),
   timeline: z.array(caseEventViewSchema),
   messages: z.array(patientMessageSchema),
@@ -277,6 +279,7 @@ export const caseListResponseSchema = z.object({
 
 export const caseListQuerySchema = z.object({
   scope: z.enum(['open', 'closed']).default('open'),
+  q: z.string().trim().max(80).optional(),
 });
 
 export const demoAdvanceSchema = z.object({
@@ -303,6 +306,7 @@ export const alertRecipientSchema = z.enum([
 export const alertSchema = z.object({
   key: z.string(),
   caseId: z.string().uuid(),
+  fullName: z.string(),
   initials: z.string(),
   reason: alertReasonSchema,
   recipient: alertRecipientSchema,

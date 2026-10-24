@@ -2,6 +2,7 @@ import type { CaseEventRecord, CaseRecord } from './case.types';
 import { buildAlerts } from './alerts';
 
 const caseRecord: CaseRecord = {
+  fullName: 'Maria Fictícia da Silva',
   id: '00000000-0000-4000-8000-000000000001',
   initials: 'M.F.S.',
   trigger: 'BIRADS_5',

@@ -81,7 +81,10 @@ export function AlertsPage() {
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <CardTitle className="text-base">
                     <Link className="hover:underline" to={`/casos/${alert.caseId}`}>
-                      {alert.initials}
+                      {alert.fullName}
+                      <span className="ml-2 text-xs font-normal text-muted-foreground">
+                        {alert.initials}
+                      </span>
                     </Link>
                   </CardTitle>
                   <Badge variant="outline">{reasonLabel[alert.reason]}</Badge>

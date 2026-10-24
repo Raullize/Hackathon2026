@@ -1,6 +1,7 @@
 import type { CaseEventRecord, CaseRecord } from '../case.types';
 
 export const MARIA_CASE: CaseRecord = {
+  fullName: 'Maria Fictícia da Silva',
   id: '00000000-0000-4000-8000-000000000010',
   initials: 'M.F.S.',
   trigger: 'BIRADS_5',

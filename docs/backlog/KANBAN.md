@@ -24,6 +24,7 @@ evidência em `docs/deliveries/`.
 | D30-004 | Telas de login, intake, calendário e detalhe responsivas | `docs/deliveries/0006-d30-004-telas.md` |
 | D30-005 | Alertas, mensagens, link da paciente, cobrança e métricas | `docs/deliveries/0007-d30-005-alertas-link-metricas.md` |
 | D30-006 | Seed, reset e barra da demo, incluindo descoberta tardia | `docs/deliveries/0008-d30-006-seed-reset.md` |
+| D30-008 | Nome da paciente nas telas autenticadas e busca por nome/iniciais/CNS | `docs/deliveries/0009-nome-busca-cns.md` |
 
 ## Ready
 

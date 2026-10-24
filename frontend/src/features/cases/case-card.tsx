@@ -16,7 +16,7 @@ export function CaseCard({ item }: { item: CaseView }) {
   const color = item.color ?? 'green';
   const Icon =
     color === 'red' ? CircleX : color === 'yellow' ? TriangleAlert : CircleCheck;
-  const ariaLabel = `${item.initials}, dia ${item.day ?? '—'} de ${
+  const ariaLabel = `${item.fullName}, dia ${item.day ?? '—'} de ${
     item.dayTotal ?? '—'
   }, prazo ${formatDateBr(item.dueDate)}, ${colorLabel[color]}`;
 
@@ -34,9 +34,13 @@ export function CaseCard({ item }: { item: CaseView }) {
       >
         <CardHeader className="px-3 pb-0">
           <div className="flex items-start justify-between gap-2">
-            <div>
-              <p className="text-sm font-semibold">{item.initials}</p>
-              <p className="text-xs opacity-80">{triggerLabel[item.trigger]}</p>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold leading-snug break-words">
+                {item.fullName}
+              </p>
+              <p className="text-xs opacity-80">
+                {item.initials} · {triggerLabel[item.trigger]}
+              </p>
             </div>
             <Badge variant="outline" className="bg-white/60">
               <Icon aria-hidden="true" />

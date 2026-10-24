@@ -1,11 +1,13 @@
+import { useDeferredValue, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import type { CaseListResponse, MetricValue, Metrics } from '@careflow/contracts';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch } from '@/lib/api-client';
-import { formatDateBr } from './calendar-utils';
+import { casesUrl, formatDateBr } from './calendar-utils';
 import { colorLabel } from './labels';
 
 function percent(metric: MetricValue): string {
@@ -32,9 +34,12 @@ function MetricCard({ title, metric }: { title: string; metric: MetricValue }) {
 }
 
 export function ClosedPage() {
+  const [search, setSearch] = useState('');
+  const deferredSearch = useDeferredValue(search);
   const casesQuery = useQuery({
-    queryKey: ['cases', 'closed'],
-    queryFn: () => apiFetch<CaseListResponse>('/cases?scope=closed'),
+    queryKey: ['cases', 'closed', deferredSearch],
+    queryFn: () =>
+      apiFetch<CaseListResponse>(casesUrl('closed', deferredSearch)),
   });
   const metricsQuery = useQuery({
     queryKey: ['metrics'],
@@ -71,8 +76,18 @@ export function ClosedPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Concluídos</h1>
         <p className="text-sm text-muted-foreground">
           Hoje: {formatDateBr(metrics.today)} · {cases.length} caso(s) fechado(s)
+          {deferredSearch ? ` · busca “${deferredSearch}”` : ''}
         </p>
       </div>
+
+      <Input
+        type="search"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Buscar por nome, iniciais ou CNS"
+        aria-label="Buscar por nome, iniciais ou CNS"
+        className="max-w-sm"
+      />
 
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <MetricCard title="Sem informação" metric={metrics.withoutInformation} />
@@ -114,7 +129,9 @@ export function ClosedPage() {
         {cases.length === 0 ? (
           <Card>
             <CardContent className="p-6 text-sm text-muted-foreground">
-              Nenhum caso fechado.
+              {deferredSearch
+                ? `Nenhum caso encontrado para “${deferredSearch}”.`
+                : 'Nenhum caso fechado.'}
             </CardContent>
           </Card>
         ) : (
@@ -123,8 +140,9 @@ export function ClosedPage() {
               <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
                 <div>
                   <Link className="font-medium hover:underline" to={`/casos/${item.id}`}>
-                    {item.initials}
+                    {item.fullName}
                   </Link>
+                  <p className="text-xs text-muted-foreground">{item.initials}</p>
                   <p className="text-xs text-muted-foreground">
                     Fechado em {formatDateBr(item.closedAt)}
                   </p>

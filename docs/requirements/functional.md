@@ -12,7 +12,7 @@
 | RF-008 | Swagger | `/docs` lista auth, chat e health com Bearer auth | Done |
 | RF-009 | Validação Zod | Payload inválido retorna `400` com detalhes | Done |
 | RF-010 | Rate limit | Chat tem limite mais rígido que a API geral | Done |
-| RF-011 | Cadastro de caso (Dia 30) | `POST /api/cases` com `fullName`, `cns`, `birthDate`, `trigger`, `requestedAt` e `source` cria o caso em `SUSPECTED` com o evento `CASE_CREATED` e retorna `201`; `requestedAt` no futuro retorna `400`; nenhuma resposta da API contém `fullName`, `cns` ou `birthDate` | Backlog |
+| RF-011 | Cadastro de caso (Dia 30) | `POST /api/cases` com `fullName`, `cns`, `birthDate`, `trigger`, `requestedAt` e `source` cria o caso em `SUSPECTED` com o evento `CASE_CREATED` e retorna `201`; `requestedAt` no futuro retorna `400`; respostas autenticadas da navegadora contêm `fullName`; `cns` aparece só no detalhe; `birthDate` nunca é exposta | Backlog |
 | RF-012 | Prazo de 30 dias | Dia zero = `requestedAt`; "Dia X de 30" = hoje − `requestedAt`; vence em `requestedAt + 30`; o dia 30 está no prazo e o dia 31 é vencido; cumprido quando `reportDate ≤ requestedAt + 30`; laudo inconclusivo não reinicia a contagem | Backlog |
 | RF-013 | Prazo de 60 dias | Conta do `reportDate` do laudo maligno (não da confirmação); vence em `reportDate + 60`; cumprido quando `treatmentStartedAt ≤ reportDate + 60`; o tratamento tem tipo (cirurgia, quimioterapia ou radioterapia); `reportDate` antes do `requestedAt` ou depois de hoje retorna `400` | Backlog |
 | RF-014 | Cores do caso | Vermelho quando vencido; amarelo quando faltam 7 dias ou menos (D30) ou 14 ou menos (D60), ou quando falta notícia; verde no resto; prioridade vermelho > amarelo > verde; caso fechado não tem cor; limites numa constante central | Backlog |
@@ -24,7 +24,7 @@
 | RF-020 | Confirmação do laudo | `REPORT_CONFIRMED` com `extractionId` e valores finais move para `DIAGNOSIS_CONFIRMED`, `DISCARDED` ou `EXAM_TO_RESCHEDULE`; o servidor calcula os campos alterados a partir da sugestão guardada; a segunda confirmação (duplo clique) retorna `409` | Backlog |
 | RF-021 | Filtro de identificadores | Antes de qualquer extrator, CPF, CNS e o nome da paciente são removidos do texto do laudo, inclusive na demo; teste com os 3 laudos fictícios prova que nenhum identificador sobra | Backlog |
 | RF-022 | Calendário | Semana atual mais 8, começando na segunda, coluna "Vencidos" à esquerda e "Depois" à direita; card na semana do vencimento do prazo aberto; ordem por cor, dias restantes e gatilho (BI-RADS 5, BI-RADS 4, suspeita clínica); abaixo de 768px vira lista vertical por semana | Backlog |
-| RF-023 | Card e detalhe | O card mostra iniciais, "Dia X de 30/60", próximo passo com data e vencimento (ou "Aguardando agendamento"), cor com rótulo e ícone e os selos; clicar abre o detalhe com a linha do tempo e as ações permitidas | Backlog |
+| RF-023 | Card e detalhe | O card mostra nome completo, iniciais, "Dia X de 30/60", próximo passo com data e vencimento (ou "Aguardando agendamento"), cor com rótulo e ícone e os selos; clicar abre o detalhe com a linha do tempo e as ações permitidas | Backlog |
 | RF-024 | Concluídos | Aba com os casos fechados, "30 dias: cumpriu/não cumpriu" e "60 dias: cumpriu/não cumpriu/não se aplica" | Backlog |
 | RF-025 | Alertas e escada | `GET /api/alerts` calcula os alertas na leitura: amarelo ou silêncio → navegadora; faltam 3 dias ou menos → regulação; vencido → coordenação e SMS; vencido com falta de vaga → 2ª CRS; caso com `LATE_ENTRY` → coordenação imediatamente; cada alerta traz caso, destinatário, motivo e ação sugerida | Backlog |
 | RF-026 | "Ciente" no alerta | `ALERT_ACKNOWLEDGED` registra quem marcou e quando; o alerta continua visível até a causa sumir; não há "resolvido" manual; "Ciente" não zera o silêncio | Backlog |
@@ -37,6 +37,7 @@
 | RF-033 | Extração de intake | `POST /api/case-intake/extractions` com `{ requestText }` devolve sugestão de `requestedAt` (pode ser null), `trigger`, `examLabel`, `evidenceQuote` e `provider`; sem nome, CNS ou data de nascimento no texto da IA; a navegadora confirma; PDF é UI no MVP, só texto é funcional | Backlog |
 | RF-034 | Descoberta tardia | Se `CASE_CREATED.recordedAt > requestedAt + 30`, o caso recebe selo `LATE_ENTRY`, entra vermelho, alerta coordenação e não reinicia o prazo; `source` e tempo até cadastro são registrados | Backlog |
 | RF-035 | Registro de cobrança | `CONTACT_LOGGED` registra canal (`PHONE`, `EMAIL`, `SMS`, `WHATSAPP`), observação e horário; não muda estado nem zera silêncio; ligação é manual, demais canais são simulados no MVP | Backlog |
+| RF-036 | Busca de casos | `GET /api/cases?scope=open|closed&q=` busca por nome, iniciais ou CNS; o calendário e Concluídos têm campo de busca; o link público continua sem nome/CNS | Done |
 
 ## Fora do MVP
 

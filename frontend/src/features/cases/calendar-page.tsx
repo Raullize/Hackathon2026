@@ -1,13 +1,15 @@
+import { useDeferredValue, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import type { CaseListResponse, CaseView } from '@careflow/contracts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch } from '@/lib/api-client';
 import { CaseCard } from './case-card';
 import { DemoBar } from './demo-bar';
-import { formatDateBr, groupCases } from './calendar-utils';
+import { casesUrl, formatDateBr, groupCases } from './calendar-utils';
 
 function Column({
   title,
@@ -43,9 +45,11 @@ function Column({
 }
 
 export function CalendarPage() {
+  const [search, setSearch] = useState('');
+  const deferredSearch = useDeferredValue(search);
   const query = useQuery({
-    queryKey: ['cases', 'open'],
-    queryFn: () => apiFetch<CaseListResponse>('/cases?scope=open'),
+    queryKey: ['cases', 'open', deferredSearch],
+    queryFn: () => apiFetch<CaseListResponse>(casesUrl('open', deferredSearch)),
   });
 
   if (query.isLoading) {
@@ -74,7 +78,8 @@ export function CalendarPage() {
     );
   }
 
-  const groups = groupCases(query.data.cases, query.data.today);
+  const visibleCases = query.data.cases;
+  const groups = groupCases(visibleCases, query.data.today);
 
   return (
     <main className="mx-auto w-full max-w-7xl space-y-4 px-4 py-6 md:px-6">
@@ -82,8 +87,9 @@ export function CalendarPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Calendário</h1>
           <p className="text-sm text-muted-foreground">
-            Hoje: {formatDateBr(query.data.today)} · {query.data.cases.length}{' '}
+            Hoje: {formatDateBr(query.data.today)} · {visibleCases.length}{' '}
             caso(s) aberto(s)
+            {deferredSearch ? ` · busca “${deferredSearch}”` : ''}
           </p>
         </div>
         <Button asChild>
@@ -92,6 +98,15 @@ export function CalendarPage() {
       </div>
 
       <DemoBar />
+
+      <Input
+        type="search"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Buscar por nome, iniciais ou CNS"
+        aria-label="Buscar por nome, iniciais ou CNS"
+        className="max-w-sm"
+      />
 
       {query.data.cases.length === 0 ? (
         <Card>
@@ -102,6 +117,12 @@ export function CalendarPage() {
             <Button asChild variant="outline">
               <Link to="/casos/novo">Cadastrar caso</Link>
             </Button>
+          </CardContent>
+        </Card>
+      ) : visibleCases.length === 0 ? (
+        <Card>
+          <CardContent className="p-6 text-sm text-muted-foreground">
+            Nenhum caso encontrado para “{deferredSearch}”.
           </CardContent>
         </Card>
       ) : (

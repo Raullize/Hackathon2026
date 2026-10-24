@@ -44,8 +44,10 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
 - **RNF-003** O texto bruto do laudo só é guardado com `DEMO_MODE=true`, num campo
   marcado para ser apagado (`demoRawText`), que o reset de demo apaga. A regra de
   produção é `[DECISÃO PENDENTE]` (aviso de LGPD em `domain.md`).
-- **RNF-004** Texto de laudo (bruto ou filtrado), token da paciente, `fullName` e CNS
-  nunca aparecem em log, em mensagem de erro ou em resposta da API.
+- **RNF-004** Texto de laudo (bruto ou filtrado), token da paciente e `birthDate`
+  nunca aparecem em log, mensagem de erro ou resposta da API. `fullName` só aparece
+  nas respostas autenticadas da navegadora; `cns` só no detalhe autenticado e na busca
+  server-side. O link público não contém nome nem CNS.
 - **RNF-005** Mensagens e visão da paciente sem as palavras "câncer", "cancer",
   "tumor", "maligno" e "carcinoma", provado por teste.
 
@@ -91,7 +93,7 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
 
 - **RNF-019** A cor nunca aparece sozinha: sempre com rótulo em texto ("No prazo",
   "Atenção", "Vencido") e ícone.
-- **RNF-020** O card é um `<button>` focável, com `aria-label` (iniciais, dia e prazo).
+- **RNF-020** O card é um `<button>` focável, com `aria-label` (nome, dia e prazo).
   Calendário, detalhe e confirmação do laudo funcionam só com teclado, com foco
   visível.
 - **RNF-021** Contraste mínimo WCAG AA no texto de cards e selos `[SUPOSIÇÃO]`.

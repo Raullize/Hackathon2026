@@ -300,11 +300,11 @@ export function CaseDetailPage() {
             ← Voltar ao calendário
           </Link>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-            {detail.initials}
+            {detail.fullName}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {detail.ageYears} anos · {triggerLabel[detail.trigger]} ·{' '}
-            {statusLabel[detail.status]}
+            {detail.initials} · CNS {detail.cns} · {detail.ageYears} anos ·{' '}
+            {triggerLabel[detail.trigger]} · {statusLabel[detail.status]}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

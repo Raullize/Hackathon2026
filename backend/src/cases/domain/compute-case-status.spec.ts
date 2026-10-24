@@ -10,6 +10,7 @@ const REQUESTED_AT = '2026-10-05';
 
 function caseRecord(): CaseRecord {
   return {
+    fullName: 'Maria Teste da Silva',
     id: CASE_ID,
     initials: 'M.F.S.',
     trigger: 'BIRADS_5',

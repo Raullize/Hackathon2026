@@ -51,6 +51,7 @@ export type Malignancy = 'malignant' | 'benign' | 'inconclusive';
 
 export interface CaseRecord {
   id: string;
+  fullName: string;
   initials: string;
   trigger: CaseTrigger;
   requestedAt: IsoDate;

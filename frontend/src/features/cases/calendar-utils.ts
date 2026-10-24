@@ -59,6 +59,14 @@ export function formatWeekRange(start: string): string {
   return `${formatDateShort(start)} – ${formatDateShort(end)}`;
 }
 
+export function casesUrl(scope: 'open' | 'closed', query: string): string {
+  const params = new URLSearchParams({ scope });
+  if (query.trim()) {
+    params.set('q', query.trim());
+  }
+  return `/cases?${params.toString()}`;
+}
+
 export interface WeekGroup {
   start: string;
   end: string;

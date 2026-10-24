@@ -58,17 +58,17 @@ describe('Cases (e2e)', () => {
     await request(app.getHttpServer()).get('/api/cases').expect(401);
   });
 
-  it('creates, lists and details a case without exposing PII', async () => {
+  it('creates, lists and details a case with navigator identity fields', async () => {
     const created = await createCase().expect(201);
 
     expect(created.body).toMatchObject({
+      fullName: 'Maria Teste da Silva',
       status: 'SUSPECTED',
       source: 'UBS_BRIDGE',
       requestedAt: '2026-10-01',
       trigger: 'BIRADS_5',
       allowedEventTypes: expect.arrayContaining(['EXAM_SCHEDULED']),
     });
-    expect(created.body).not.toHaveProperty('fullName');
     expect(created.body).not.toHaveProperty('cns');
     expect(created.body).not.toHaveProperty('birthDate');
 
@@ -80,6 +80,22 @@ describe('Cases (e2e)', () => {
     expect(list.body.today).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(list.body.cases.some((item: { id: string }) => item.id === created.body.id)).toBe(true);
 
+    const byName = await request(app.getHttpServer())
+      .get('/api/cases?scope=open&q=Maria%20Teste')
+      .set(auth())
+      .expect(200);
+    expect(
+      byName.body.cases.some((item: { id: string }) => item.id === created.body.id),
+    ).toBe(true);
+
+    const byCns = await request(app.getHttpServer())
+      .get('/api/cases?scope=open&q=000000000000001')
+      .set(auth())
+      .expect(200);
+    expect(
+      byCns.body.cases.some((item: { id: string }) => item.id === created.body.id),
+    ).toBe(true);
+
     const detail = await request(app.getHttpServer())
       .get(`/api/cases/${created.body.id}`)
       .set(auth())
@@ -87,15 +103,40 @@ describe('Cases (e2e)', () => {
 
     expect(detail.body).toMatchObject({
       id: created.body.id,
+      fullName: 'Maria Teste da Silva',
+      cns: '000000000000001',
       ageYears: expect.any(Number),
       timeline: expect.any(Array),
       messages: expect.any(Array),
       alerts: expect.any(Array),
       extractions: [],
     });
-    expect(detail.body).not.toHaveProperty('fullName');
-    expect(detail.body).not.toHaveProperty('cns');
     expect(detail.body).not.toHaveProperty('birthDate');
+  });
+
+  it('searches names without accents and by CNS digits', async () => {
+    const created = await createCase({
+      fullName: 'Sônia Acento da Silva',
+      cns: '000000000000099',
+    }).expect(201);
+
+    const byName = await request(app.getHttpServer())
+      .get('/api/cases?scope=open&q=sonia')
+      .set(auth())
+      .expect(200);
+    expect(
+      byName.body.cases.some((item: { id: string }) => item.id === created.body.id),
+    ).toBe(true);
+
+    const byFormattedCns = await request(app.getHttpServer())
+      .get('/api/cases?scope=open&q=000.000.000-000099')
+      .set(auth())
+      .expect(200);
+    expect(
+      byFormattedCns.body.cases.some(
+        (item: { id: string }) => item.id === created.body.id,
+      ),
+    ).toBe(true);
   });
 
   it('applies valid events and rejects invalid transitions', async () => {
@@ -328,6 +369,7 @@ describe('Cases (e2e)', () => {
       guidance: null,
     });
     expect(JSON.stringify(publicView.body)).not.toContain('Maria Teste');
+    expect(JSON.stringify(publicView.body)).not.toContain('000000000000001');
     expect(JSON.stringify(publicView.body)).not.toMatch(
       /câncer|cancer|tumor|maligno|carcinoma/i,
     );
@@ -363,6 +405,7 @@ describe('Cases (e2e)', () => {
       expect.arrayContaining([
         expect.objectContaining({
           caseId: created.body.id,
+          fullName: 'Maria Teste da Silva',
           reason: 'LATE_ENTRY',
           recipient: 'COORDINATION',
         }),

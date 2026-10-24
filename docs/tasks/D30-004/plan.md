@@ -21,7 +21,7 @@ calendário de prazos e detalhe com ações.
 - [x] Login e logout com cookie, rota protegida e redirecionamento.
 - [x] Intake: colar pedido, pré-preencher com IA, revisar e criar caso.
 - [x] Calendário com Vencidos, 9 semanas e Depois.
-- [x] Card com iniciais, dia, cor/rótulo, próximo passo, vencimento e selos.
+- [x] Card com nome, iniciais, dia, cor/rótulo, próximo passo, vencimento e selos.
 - [x] Detalhe com relógio, timeline, extrações e ações permitidas.
 - [x] Agendar/realizar exame, receber/confirmar laudo, tratamento, exceção, cobrança e encerramento.
 - [x] Layout responsivo de 360px a 1440px.

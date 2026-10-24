@@ -42,6 +42,13 @@ import {
 
 const IGNORED_NAME_PARTS = new Set(['da', 'de', 'do', 'das', 'dos', 'e']);
 
+function normalizeSearch(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+}
+
 function initialsFromName(fullName: string): string {
   const parts = fullName
     .trim()
@@ -87,6 +94,24 @@ function asRequestedAt(events: CaseEventRecord[]): IsoDate | undefined {
   return typeof value === 'string' ? value : undefined;
 }
 
+function filterCases(
+  cases: CaseWithEvents[],
+  query: string,
+): CaseWithEvents[] {
+  const normalizedQuery = normalizeSearch(query.trim());
+  const cnsQuery = query.replace(/\D/g, '');
+
+  return cases.filter((item) => {
+    const haystack = normalizeSearch(
+      `${item.case.fullName} ${item.case.initials}`,
+    );
+    if (haystack.includes(normalizedQuery)) {
+      return true;
+    }
+    return cnsQuery.length > 0 && item.case.cns.includes(cnsQuery);
+  });
+}
+
 @Injectable()
 export class CasesService {
   constructor(
@@ -123,13 +148,14 @@ export class CasesService {
     return this.toView(created, today);
   }
 
-  async list(scope: CaseScope): Promise<CaseListResponse> {
+  async list(scope: CaseScope, query?: string): Promise<CaseListResponse> {
     const today = this.clock.today();
     const cases = await this.repository.findMany(scope);
+    const filtered = query?.trim() ? filterCases(cases, query) : cases;
 
     return {
       today,
-      cases: cases.map((item) => this.toView(item, today)),
+      cases: filtered.map((item) => this.toView(item, today)),
     };
   }
 
@@ -423,6 +449,7 @@ export class CasesService {
 
     return {
       id: item.case.id,
+      fullName: item.case.fullName,
       initials: item.case.initials,
       trigger: computed.trigger,
       status: computed.status,
@@ -464,6 +491,7 @@ export class CasesService {
 
     return {
       ...view,
+      cns: item.case.cns,
       ageYears: ageYears(item.case.birthDate, today),
       timeline,
       messages: buildMessages(item.events, view.status, today),

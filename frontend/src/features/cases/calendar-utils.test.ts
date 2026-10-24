@@ -4,11 +4,13 @@ import {
   formatDateBr,
   groupCases,
   startOfWeekMonday,
+  casesUrl,
 } from './calendar-utils';
 
 function caseView(overrides: Partial<CaseView>): CaseView {
   return {
     id: 'case-1',
+    fullName: 'Maria Fictícia da Silva',
     initials: 'M.F.S.',
     trigger: 'BIRADS_5',
     status: 'SUSPECTED',
@@ -72,6 +74,13 @@ describe('calendar-utils', () => {
       'yellow',
       'green',
     ]);
+  });
+
+  it('builds the cases query with optional search', () => {
+    expect(casesUrl('open', '')).toBe('/cases?scope=open');
+    expect(casesUrl('closed', 'Maria Silva')).toBe(
+      '/cases?scope=closed&q=Maria+Silva',
+    );
   });
 
   it('formats dates for the UI', () => {

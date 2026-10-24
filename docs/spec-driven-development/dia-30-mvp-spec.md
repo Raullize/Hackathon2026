@@ -411,7 +411,7 @@ risco.
 
 O card mostra:
 
-- as iniciais (nunca o nome completo);
+- o nome completo da paciente, com as iniciais como apoio (a navegadora é a única usuária autenticada);
 - "Dia X de 30" ou "Dia X de 60";
 - o próximo passo, com a data agendada e o vencimento do prazo. Ex.: "Biópsia agendada
   25/10 · prazo 30d vence 04/11". Sem data: "Aguardando agendamento · prazo 30d vence
@@ -440,7 +440,7 @@ Clicar no card abre o detalhe, com a linha do tempo.
 
 ### 8.4 Detalhe e Concluídos
 
-- **Detalhe:** iniciais, idade, gatilho, estado, relógio, linha do tempo (correções
+- **Detalhe:** nome, iniciais, CNS, idade, gatilho, estado, relógio, linha do tempo (correções
   aparecem junto do evento corrigido, com o motivo), ações permitidas
   (`allowedEventTypes`, que vem da API), a extração do laudo, as mensagens simuladas,
   os alertas do caso e o botão "Gerar novo link da paciente".
@@ -454,7 +454,7 @@ Clicar no card abre o detalhe, com a linha do tempo.
 
 - A cor sempre vem com rótulo em texto ("No prazo", "Atenção", "Vencido") e ícone
   (`lucide-react`, já instalado).
-- O card é um `<button>` focável, com `aria-label` com as iniciais, o dia e o prazo.
+- O card é um `<button>` focável, com `aria-label` com o nome, o dia e o prazo.
   Ex.: "M.F.S., dia 18 de 30, prazo vence 04/11, no prazo".
 - Foco visível e navegação completa por teclado no calendário, no detalhe e na
   confirmação do laudo.
@@ -526,7 +526,7 @@ enum CaseEventType {
 
 model Case {
   id          String      @id @default(uuid()) @db.Uuid
-  fullName    String      @map("full_name")   // só para o filtro; nunca sai na API
+  fullName    String      @map("full_name")   // exposto só na API autenticada
   initials    String
   cns         String                          // fictício; nunca sai na API
   birthDate   DateTime    @map("birth_date") @db.Date
@@ -675,8 +675,9 @@ tabela 10.3 quando houver.
 { requestedAt: 'YYYY-MM-DD' | null, trigger: 'BIRADS_5' | 'BIRADS_4' | 'CLINICAL_SUSPICION', examLabel: string, evidenceQuote: string }
 ```
 
-`fullName`, `cns` e `birthDate` nunca saem em nenhuma resposta. O detalhe mostra a
-idade calculada `[DECISÃO PENDENTE: a navegadora pode precisar ver o nome para ligar]`.
+`birthDate` nunca sai em resposta. O `fullName` aparece nas respostas autenticadas da
+navegadora; o `cns` aparece só no detalhe autenticado. O link público continua sem
+nome, CNS e palavra proibida.
 
 ### 10.3 Códigos de erro
 
@@ -892,7 +893,7 @@ probabilidade estatística.
 
 - Lista derivada, calculada na leitura em `GET /api/alerts`. Não há tabela de alertas
   nem job.
-- Cada alerta traz o caso (id e iniciais), o destinatário, o motivo e a ação sugerida.
+- Cada alerta traz o caso (id, nome e iniciais), o destinatário, o motivo e a ação sugerida.
 - A navegadora é a única usuária e vê todos os alertas. O destinatário diz quem deveria
   agir.
 
@@ -1179,7 +1180,7 @@ Se o tempo apertar, sai nesta ordem:
 - Silêncio contado pelo `recordedAt`, e não pelo `occurredAt`.
 - Evento `TREATMENT_SCHEDULED` para o trecho de 60 dias.
 - Mock com palavras dos dois grupos → `inconclusive`.
-- `fullName` fora de todas as respostas, inclusive do detalhe.
+- `fullName` fora das respostas públicas; visível só para a navegadora autenticada.
 - JWT nas rotas de demo.
 - `DEMO_MODE` bloqueado com `NODE_ENV=production`.
 - Denominadores das métricas de prazo (vencidos abertos dentro; `CLOSED_EXCEPTION` fora,
@@ -1217,7 +1218,7 @@ Respostas do time em três rodadas. Onde uma rodada corrige a anterior, vale a m
 - `CORRECTION` com `correctsEventId`, novos valores e motivo obrigatório; só para datas
   e dados, nunca para transições; o cálculo usa o valor corrigido.
 - `Case` único com campos fictícios (`fullName`, `initials`, `cns`, `birthDate`,
-  gatilho). `Patient` separado fica pendente. O `fullName` só serve ao filtro.
+  gatilho). `Patient` separado fica pendente. O `fullName` identifica o caso para a navegadora.
 
 ### Prazos
 
