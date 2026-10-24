@@ -23,6 +23,7 @@ evidência em `docs/deliveries/`.
 | D30-007 | Extração de intake do pedido (texto; sem PII; PDF só UI) | `docs/deliveries/0005-d30-007-intake.md` |
 | D30-004 | Telas de login, intake, calendário e detalhe responsivas | `docs/deliveries/0006-d30-004-telas.md` |
 | D30-005 | Alertas, mensagens, link da paciente, cobrança e métricas | `docs/deliveries/0007-d30-005-alertas-link-metricas.md` |
+| D30-006 | Seed, reset e barra da demo, incluindo descoberta tardia | `docs/deliveries/0008-d30-006-seed-reset.md` |
 
 ## Ready
 
@@ -38,7 +39,6 @@ Histórias do MVP Dia 30, na ordem dos PRs. Spec:
 
 | ID | Story | Observação |
 | --- | --- | --- |
-| D30-006 | Seed, reset e roteiro da demo | RF-031; incluir caso de descoberta tardia; `docs/pitch/DEMO_SCRIPT.md` |
 | ~~FEAT-001~~ | ~~Implementar telas de auth no frontend~~ | absorvida pelo D30-004 |
 | ~~FEAT-003~~ | ~~Definir domínio e seeders reais~~ | substituída pelo D30-001 a D30-007 (domínio em `domain.md`, seed no D30-006) |
 | OPS-001 | Deploy e compose de produção | somente depois do hackathon |

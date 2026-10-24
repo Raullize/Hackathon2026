@@ -6,4 +6,5 @@
 2026-10-24 04:28 ACT Telas de Alertas, Concluídos, visão pública e geração de link.
 2026-10-24 04:29 TEST unitários de mensagens/alertas e e2e de link/alertas/métricas; 19 e2e.
 2026-10-24 04:30 RECORD lint, typecheck, 65 unit backend + 4 frontend, 19 e2e e build verdes.
-Pendente: commit e D30-006 (seed/reset).
+2026-10-24 04:31 RECORD commit 2241ebf na branch feat/d30-005-alerts-public-metrics.
+Pendente: D30-006 (seed/reset).

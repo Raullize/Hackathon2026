@@ -5,4 +5,4 @@
 2026-10-24 04:20 ACT Detalhe com timeline, extrações, ações e confirmação de laudo.
 2026-10-24 04:21 TEST Utilitários do calendário; lint, typecheck e build.
 2026-10-24 04:21 RECORD 61 unit backend + 4 frontend, 15 e2e e build verdes.
-Pendente: commit e D30-005 (alertas/mensagens/link/métricas).
+2026-10-24 04:31 RECORD D30-004 commitado em f96dfcb; D30-005 concluída em seguida.

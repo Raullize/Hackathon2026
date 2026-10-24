@@ -483,6 +483,11 @@ describe('Cases (e2e)', () => {
       .set(auth())
       .send({ days: 1 })
       .expect(404);
+
+    await request(app.getHttpServer())
+      .post('/api/demo/reset')
+      .set(auth())
+      .expect(404);
   });
 
   it('returns 404 for a missing case', async () => {

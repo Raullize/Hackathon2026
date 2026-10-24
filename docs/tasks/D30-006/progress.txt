@@ -1,0 +1,7 @@
+2026-10-24 04:33 PERCEIVE D30-005 concluída; seed/reset ainda era apenas usuário e não havia barra de demo.
+2026-10-24 04:34 ACT Seed fictício com 11 casos, 8 abertos e 3 concluídos, relativo ao Clock.
+2026-10-24 04:35 ACT Reset transacional dos casos, laudos e links, com recarga do seed e relógio zerado.
+2026-10-24 04:36 ACT Endpoint POST /api/demo/reset protegido por DEMO_MODE.
+2026-10-24 04:37 ACT Barra de demo no calendário; oculta quando /demo/status responde 404.
+2026-10-24 04:38 TEST reset real com DEMO_MODE=true: 11 casos, 8 alertas, métricas e link público 200.
+2026-10-24 04:39 RECORD unit 65, frontend 4, e2e 19, lint, typecheck e build verdes.

@@ -6,6 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Clock } from '../clock/clock';
 import { PrismaService } from '../prisma/prisma.service';
+import { DemoSeedService } from './demo-seed.service';
 import type { AppEnv } from '../config/env';
 
 export interface DemoStatus {
@@ -19,6 +20,7 @@ export class DemoService {
     private readonly prisma: PrismaService,
     private readonly clock: Clock,
     private readonly config: ConfigService<AppEnv, true>,
+    private readonly seed: DemoSeedService,
   ) {}
 
   async status(): Promise<DemoStatus> {
@@ -37,6 +39,14 @@ export class DemoService {
     await this.saveOffset(nextOffset);
     this.clock.setOffsetDays(nextOffset);
     return this.current();
+  }
+
+  async resetDemo(userId: string): Promise<{ cases: number }> {
+    this.assertEnabled();
+    await this.saveOffset(0);
+    this.clock.setOffsetDays(0);
+    const cases = await this.seed.seed(userId);
+    return { cases };
   }
 
   async resetClock(): Promise<DemoStatus> {

@@ -2,7 +2,7 @@
 
 - **Data:** 2026-10-24
 - **Story:** D30-005
-- **Status:** implementado na branch `feat/d30-005-alerts-public-metrics`; commit pendente de autorização
+- **Status:** implementado e commitado em `2241ebf` na branch `feat/d30-005-alerts-public-metrics`
 - **Escopo:** mensagens, alertas, link público, métricas e telas de acompanhamento.
 
 ## Entregue

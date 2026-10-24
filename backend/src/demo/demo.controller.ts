@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import type { AuthUser } from '../common/types/authenticated-request';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DemoAdvanceDto } from './demo.dto';
@@ -28,5 +30,11 @@ export class DemoController {
   @ApiOperation({ summary: 'Zera o relógio da demo' })
   reset(): Promise<DemoStatus> {
     return this.demo.resetClock();
+  }
+
+  @Post('reset')
+  @ApiOperation({ summary: 'Recarrega o seed fictício e zera o relógio' })
+  resetDemo(@CurrentUser() user: AuthUser): Promise<{ cases: number }> {
+    return this.demo.resetDemo(user.id);
   }
 }

@@ -11,7 +11,9 @@ depender de internet, do Gemini ou de dados criados na hora.
 - [ ] `pnpm test` e `pnpm test:e2e` verdes.
 - [ ] API sobe com `pnpm dev:backend`.
 - [ ] `curl http://localhost:3000/api/health/ready` retorna `database: "up"`.
+- [ ] `DEMO_MODE=true` no `.env` (nunca em produção) e API reiniciada.
 - [ ] Login seed funciona: `demo@careflow.dev` / `demo1234`.
+- [ ] Barra "Demo" aparece no calendário; se não aparecer, `/api/demo/status` está 404 (flag desligada).
 - [ ] Chat autenticado responde. Se Gemini falhar, `provider: "mock"` é aceitável.
 - [ ] Swagger abre em `http://localhost:3000/docs`.
 - [ ] Mensagens de **SMS/e-mail** aparecem simuladas na tela; WhatsApp é apenas visão.
@@ -79,7 +81,20 @@ GEMINI_MODEL=gemini-3.5-flash-lite
 Reinicie a API após alterar. O mock é o plano B oficial; ele não é uma falha da
 demo.
 
-## Reset do banco
+## Reset da demo
+
+Com `DEMO_MODE=true`, use a barra **Recarregar demo** no calendário ou:
+
+```bash
+curl -X POST http://localhost:3000/api/demo/reset \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Esperado: `201` com `{"cases":11}`. O reset zera o relógio, apaga casos,
+eventos, laudos e links, e recarrega os 11 casos fictícios. O usuário de login
+não é apagado.
+
+Reset total do banco, só se o schema/seed de usuário estiver quebrado:
 
 ```bash
 docker compose down -v
@@ -95,6 +110,8 @@ Isso apaga dados locais. Não usar em produção.
 | Sintoma | Causa provável | Ação |
 | --- | --- | --- |
 | `401` no chat | sem token ou token expirado | refazer login |
+| Barra de demo não aparece | `DEMO_MODE=false` | ligar a flag no `.env` e reiniciar |
+| `404` em `/api/demo/reset` | `DEMO_MODE=false` | ligar a flag; em produção é intencional |
 | `503` no ready | PostgreSQL fora | `docker compose ps` e logs |
 | Chat sempre mock | sem chave, provider mock ou quota | conferir `.env` e logs |
 | `404` do Gemini | modelo indisponível para a chave | deixar fallback ou trocar `GEMINI_MODEL` |

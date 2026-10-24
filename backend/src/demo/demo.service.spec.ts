@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Clock } from '../clock/clock';
 import type { AppEnv } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
+import { DemoSeedService } from './demo-seed.service';
 import { DemoService } from './demo.service';
 
 function createService(demoMode = true, offsetDays = 0) {
@@ -23,7 +24,10 @@ function createService(demoMode = true, offsetDays = 0) {
     get: jest.fn((key: keyof AppEnv) => (key === 'DEMO_MODE' ? demoMode : undefined)),
   } as unknown as ConfigService<AppEnv, true>;
 
-  return { service: new DemoService(prisma, clock, config), prisma, clock };
+  const seed = {
+    seed: jest.fn().mockResolvedValue(10),
+  } as unknown as DemoSeedService;
+  return { service: new DemoService(prisma, clock, config, seed), prisma, clock, seed };
 }
 
 describe('DemoService', () => {
@@ -33,6 +37,7 @@ describe('DemoService', () => {
     await expect(service.status()).rejects.toBeInstanceOf(NotFoundException);
     await expect(service.advance(1)).rejects.toBeInstanceOf(NotFoundException);
     await expect(service.resetClock()).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.resetDemo('user-1')).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('reports the simulated date and offset', async () => {
@@ -45,7 +50,7 @@ describe('DemoService', () => {
   });
 
   it('advances and resets the clock', async () => {
-    const { service, prisma, clock } = createService(true, 0);
+    const { service, prisma, clock, seed } = createService(true, 0);
 
     await expect(service.advance(7)).resolves.toEqual({
       today: '2026-10-23',
@@ -62,6 +67,10 @@ describe('DemoService', () => {
       today: '2026-10-23',
       offsetDays: 0,
     });
+    expect(clock.setOffsetDays).toHaveBeenLastCalledWith(0);
+
+    await expect(service.resetDemo('user-1')).resolves.toEqual({ cases: 10 });
+    expect(seed.seed).toHaveBeenCalledWith('user-1');
     expect(clock.setOffsetDays).toHaveBeenLastCalledWith(0);
   });
 

@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch } from '@/lib/api-client';
 import { CaseCard } from './case-card';
+import { DemoBar } from './demo-bar';
 import { formatDateBr, groupCases } from './calendar-utils';
 
 function Column({
@@ -89,6 +90,8 @@ export function CalendarPage() {
           <Link to="/casos/novo">Novo caso</Link>
         </Button>
       </div>
+
+      <DemoBar />
 
       {query.data.cases.length === 0 ? (
         <Card>

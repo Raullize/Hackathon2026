@@ -1,6 +1,6 @@
 # D30-005 — Alertas, mensagens, link e métricas
 
-**Status:** implementado na branch `feat/d30-005-alerts-public-metrics`; commit pendente de autorização.
+**Status:** implementado e commitado em `2241ebf` na branch `feat/d30-005-alerts-public-metrics`.
 
 ## Objetivo
 
