@@ -3,7 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
+import { CasesModule } from './cases/cases.module';
 import { ChatModule } from './chat/chat.module';
+import { ClockModule } from './clock/clock.module';
+import { DemoModule } from './demo/demo.module';
 import { validateEnv, type AppEnv } from './config/env';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -25,9 +28,12 @@ import { PrismaModule } from './prisma/prisma.module';
       ],
     }),
     PrismaModule,
+    ClockModule,
     AuthModule,
     HealthModule,
     ChatModule,
+    CasesModule,
+    DemoModule,
   ],
   providers: [
     {

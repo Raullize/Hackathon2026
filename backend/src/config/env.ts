@@ -19,6 +19,24 @@ export const envSchema = z.object({
 
   THROTTLE_TTL: z.coerce.number().int().positive().default(60000),
   THROTTLE_LIMIT: z.coerce.number().int().positive().default(20),
+
+  DEMO_MODE: z
+    .union([z.boolean(), z.enum(['true', 'false'])])
+    .default('false')
+    .transform((value) => value === true || value === 'true'),
+  REPORT_EXTRACTION_TIMEOUT_MS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(8000),
+}).superRefine((env, ctx) => {
+  if (env.DEMO_MODE && env.NODE_ENV === 'production') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['DEMO_MODE'],
+      message: 'DEMO_MODE cannot be enabled in production',
+    });
+  }
 });
 
 export type AppEnv = z.infer<typeof envSchema>;

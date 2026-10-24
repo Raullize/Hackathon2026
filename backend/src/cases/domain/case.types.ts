@@ -63,6 +63,7 @@ export interface CaseEventRecord {
   type: CaseEventType;
   occurredAt: IsoDate;
   recordedAt: IsoDate;
+  userId?: string;
   payload: Record<string, unknown>;
   correctsEventId?: string | null;
 }

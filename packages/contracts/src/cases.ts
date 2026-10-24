@@ -272,6 +272,10 @@ export const caseListQuerySchema = z.object({
   scope: z.enum(['open', 'closed']).default('open'),
 });
 
+export const demoAdvanceSchema = z.object({
+  days: z.number().int().min(1).max(60),
+});
+
 export const reportSuggestionSchema = z.object({
   examType: z.string().trim().min(1).max(80),
   reportDate: isoDateSchema.nullable(),
@@ -320,6 +324,7 @@ export type CaseView = z.infer<typeof caseViewSchema>;
 export type CaseEventView = z.infer<typeof caseEventViewSchema>;
 export type CaseDetail = z.infer<typeof caseDetailSchema>;
 export type CaseListResponse = z.infer<typeof caseListResponseSchema>;
+export type DemoAdvance = z.infer<typeof demoAdvanceSchema>;
 export type ReportSuggestion = z.infer<typeof reportSuggestionSchema>;
 export type ReportExtractionView = z.infer<typeof reportExtractionViewSchema>;
 export type CaseIntakeSuggestion = z.infer<typeof caseIntakeSuggestionSchema>;

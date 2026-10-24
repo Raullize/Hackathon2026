@@ -1,0 +1,8 @@
+2026-10-24 03:55 PERCEIVE D30-001 concluída; API de casos, Clock e demo ainda ausentes.
+2026-10-24 03:56 ACT Clock global com America/Sao_Paulo e offset de demo; env DEMO_MODE/REPORT_EXTRACTION_TIMEOUT_MS.
+2026-10-24 03:57 ACT Repositório Prisma de casos/eventos e contratos da API.
+2026-10-24 03:58 ACT CasesService/Controller com create, list, detail, events, source, LATE_ENTRY e CONTACT_LOGGED.
+2026-10-24 03:59 ACT DemoService/Controller para status, advance e reset do relógio; 404 sem DEMO_MODE.
+2026-10-24 04:00 TEST e2e de auth/casos/eventos/correção/fechamento/demo; 13 passaram.
+2026-10-24 04:00 RECORD lint, typecheck, 49 unit backend + 1 frontend, 13 e2e e build verdes.
+Pendente: commit e D30-003 (extração de laudo).
