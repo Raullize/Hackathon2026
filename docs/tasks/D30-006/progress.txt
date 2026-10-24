@@ -5,3 +5,4 @@
 2026-10-24 04:37 ACT Barra de demo no calendário; oculta quando /demo/status responde 404.
 2026-10-24 04:38 TEST reset real com DEMO_MODE=true: 11 casos, 8 alertas, métricas e link público 200.
 2026-10-24 04:39 RECORD unit 65, frontend 4, e2e 19, lint, typecheck e build verdes.
+2026-10-24 04:40 RECORD commit 122e9d7; db:seed também passou a criar os 11 casos em 4c8ad63.

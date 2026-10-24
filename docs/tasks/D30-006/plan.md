@@ -1,6 +1,6 @@
 # D30-006 — Seed, reset e roteiro da demo
 
-**Status:** implementado na branch `feat/d30-006-demo-seed`.
+**Status:** implementado e commitado em `122e9d7` + `4c8ad63` na branch `feat/d30-006-demo-seed`.
 
 ## Objetivo
 

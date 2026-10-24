@@ -2,7 +2,7 @@
 
 - **Data:** 2026-10-24
 - **Story:** D30-006
-- **Status:** implementado na branch `feat/d30-006-demo-seed`
+- **Status:** implementado e commitado em `122e9d7` + `4c8ad63` na branch `feat/d30-006-demo-seed`
 - **Escopo:** seed fictício repetível, reset transacional e barra de demo.
 
 ## Entregue
