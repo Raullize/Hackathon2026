@@ -8,7 +8,7 @@ propósito.
 ## Quando implementar
 
 1. Use `POST /api/chat` via `apiFetch`; o endpoint exige autenticação.
-2. Envie `messages` no formato definido em `@hackathon/contracts`.
+2. Envie `messages` no formato definido em `@careflow/contracts`.
 3. Trate `provider: "mock"` como resposta válida para demo/offline.
 4. Adicione a rota em `src/app/router.tsx` dentro da área autenticada.
 

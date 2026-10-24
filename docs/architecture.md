@@ -2,8 +2,9 @@
 
 ## Contexto
 
-Starter full-stack para hackathon. O objetivo é ter autenticação, chat com IA e
-uma base de qualidade pronta antes do tema ser conhecido.
+CareFlow é a aplicação de acompanhamento dos prazos legais da linha de cuidado do
+câncer. O repositório começou como starter full-stack e agora documenta o módulo
+Dia 30, com autenticação, IA e uma base de qualidade pronta.
 
 ## Visão geral
 
@@ -159,6 +160,10 @@ Pontos que afetam a arquitetura:
   apenas visão de pitch, não integração implementada (ADR 0007).
 - **Extração de laudo:** `confidence` é rótulo heurístico; o Gemini não fornece
   probabilidade calibrada nem logprobs no modelo usado (ADR 0008).
+- **Intake:** a navegadora cola o texto do pedido; a IA pré-preenche data, gatilho e
+  exame; ela confirma. Sem PII no texto da IA; PDF é UI no MVP.
+- **Descoberta tardia e cobrança:** `source` no `CASE_CREATED`, selo `LATE_ENTRY`,
+  `CONTACT_LOGGED` para ligação/e-mail/WhatsApp e métricas de atraso de cadastro.
 - **Responsividade:** todos os fluxos devem funcionar de 360px a 1440px, com
   calendário em lista no celular e link da paciente mobile-first.
 

@@ -3,7 +3,7 @@ import {
   loginSchema,
   publicUserSchema,
   registerSchema,
-} from '@hackathon/contracts';
+} from '@careflow/contracts';
 import { createZodDto } from 'nestjs-zod';
 
 export class RegisterDto extends createZodDto(registerSchema) {}

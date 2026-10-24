@@ -14,10 +14,10 @@ export function App() {
       <main className="mx-auto flex w-full max-w-4xl flex-1 items-center justify-center px-6 py-16">
         <Card className="w-full max-w-xl">
           <CardHeader>
-            <CardTitle>Hackathon 2026 — starter pronto</CardTitle>
+            <CardTitle>CareFlow — starter pronto</CardTitle>
             <CardDescription>
               A fundação do frontend está configurada. As telas de produto
-              entram no evento, depois que o tema for definido.
+              entram na próxima etapa do CareFlow.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap items-center gap-3">

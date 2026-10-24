@@ -8,7 +8,7 @@ propósito.
 ## Quando implementar
 
 1. Crie `api/` com chamadas usando `apiFetch` de `@/lib/api-client`.
-2. Reutilize os schemas de `@hackathon/contracts` com React Hook Form + Zod.
+2. Reutilize os schemas de `@careflow/contracts` com React Hook Form + Zod.
 3. Crie `components/` para formulários e `hooks/` para mutations/queries.
 4. Adicione as rotas em `src/app/router.tsx` e proteja rotas privadas.
 

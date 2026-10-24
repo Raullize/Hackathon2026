@@ -1,4 +1,4 @@
-# Domínio — Dia 30
+# Domínio — CareFlow (Dia 30)
 
 > **Contexto do projeto.** Recorte escolhido pelo time em 23/10/2026 para o tema
 > [Saúde Conectada 2026](../tema-saude-conectada.md). Os números e as fontes estão em
@@ -8,16 +8,16 @@
 
 ## Em uma frase
 
-O Dia 30 organiza, num calendário compartilhado, os prazos legais de cada pessoa com
+O CareFlow organiza, num calendário compartilhado, os prazos legais de cada pessoa com
 suspeita de câncer, da UBS ao início do tratamento, e avisa quem precisa agir antes
 do prazo vencer. Linha piloto: **câncer de mama**. O motor de prazos serve para
 qualquer câncer.
 
 **Enquadramento:** a navegadora já existe por lei (Lei 14.758/2023, art. 13; Lei
 14.450/2022; Portaria GM/MS 6.592/2025). O problema não é criar a função, é dar a ela
-uma ferramenta. O Dia 30 é essa ferramenta.
+uma ferramenta. O CareFlow é essa ferramenta.
 
-> "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O Dia 30 é a
+> "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O CareFlow é a
 > ferramenta."
 
 ## Problema
@@ -51,9 +51,9 @@ uma ferramenta. O Dia 30 é essa ferramenta.
 - **Por que calendário e não relógio:** um contador regressivo foca na urgência de
   forma abstrata e gera ansiedade. Um calendário dá previsibilidade, ajuda a planejar
   e se encaixa no trabalho real da navegação.
-- **O médico fica fora do Dia 30:** ele pede o exame pelo caminho de sempre (e-SUS PEC,
+- **O médico fica fora do CareFlow:** ele pede o exame pelo caminho de sempre (e-SUS PEC,
   requisição do SISCAN, papel). Nada muda na rotina dele: **zero trabalho novo para o
-  médico**. A navegadora é a única usuária do Dia 30.
+  médico**. A navegadora é a única usuária do CareFlow.
 - **Paciente por SMS e e-mail:** mensagens claras sobre o prazo, o próximo passo e os
   direitos. Exemplo: "Dia 18 de 30. Próximo passo: biópsia em 25/10."
   - **Escopo atual:** SMS e e-mail. O envio é simulado na demo.
@@ -84,11 +84,11 @@ Personas de trabalho, a validar na entrevista (regulamento, item 6.4).
 | Persona | Contexto | Dor principal | O que precisa |
 | --- | --- | --- | --- |
 | **Navegadora** | Função já prevista em lei; acompanha as pessoas com suspeita de câncer do município. **Única usuária com login.** | Não vê onde cada caso travou e descobre o atraso tarde | Uma ferramenta para ver, na semana, quem está perto do prazo, lançar eventos e cobrar o próximo passo |
-| Médico assistente | Pede o exame pelo caminho de sempre (e-SUS PEC, SISCAN, papel); **não usa o Dia 30** | Já tem trabalho suficiente; não quer mais uma ferramenta | **Zero trabalho novo**: nada muda na rotina dele |
-| Equipe da UBS | Recebe a mulher de volta e faz busca ativa quando a navegadora aciona; **não registra no Dia 30** | Perde o seguimento quando a informação não volta | Ser acionada pela navegadora e receber a paciente com o próximo passo claro |
+| Médico assistente | Pede o exame pelo caminho de sempre (e-SUS PEC, SISCAN, papel); **não usa o CareFlow** | Já tem trabalho suficiente; não quer mais uma ferramenta | **Zero trabalho novo**: nada muda na rotina dele |
+| Equipe da UBS | Recebe a mulher de volta e faz busca ativa quando a navegadora aciona; **não registra no CareFlow** | Perde o seguimento quando a informação não volta | Ser acionada pela navegadora e receber a paciente com o próximo passo claro |
 | Paciente | Saiu da UBS com uma suspeita (por exemplo, mamografia BI-RADS 4 ou 5) | Espera sem informação e não conhece os direitos | **Só recebe**: mensagem e link de leitura; não envia nada |
 | Gestor municipal e regulação | Respondem pelos prazos legais e pela fila | Só veem o atraso meses depois, no faturamento | Receber alerta e cobrança da navegadora; **não operam o sistema** |
-| Prestador e hospital | Fazem exames, laudos e tratamento | O retorno não chega à UBS | **Não têm conta no Dia 30**: a navegadora lança os eventos e cobra o retorno |
+| Prestador e hospital | Fazem exames, laudos e tratamento | O retorno não chega à UBS | **Não têm conta no CareFlow**: a navegadora lança os eventos e cobra o retorno |
 
 ## Porta de entrada do caso
 
@@ -109,11 +109,41 @@ funcionamento em Charqueadas ainda precisa ser confirmado na entrevista
 No futuro, a importação do SISCAN e da RNDS (FHIR) reduz a digitação; o médico
 continua sem trabalho novo.
 
+### Protocolo de entrada da UBS
+
+O canal pode variar por UBS/região; o protocolo não.
+
+| Item | Regra do piloto |
+| --- | --- |
+| Canal principal | E-mail institucional (recomendado) ou WhatsApp institucional |
+| Quem envia | Recepção/administração da UBS, com substituto definido |
+| Prazo | Pedido até 14h → envio até 17h do mesmo dia útil; depois disso → próximo dia útil até 10h |
+| Conferência | Navegadora olha a caixa 2× por dia |
+| Formato | Assunto e campos padrão: paciente, CNS, data do pedido, gatilho, exame e UBS |
+| Fallback | Fila da regulação, lista de BI-RADS 4/5 do prestador e SISCAN |
+| Registro | `source` do caso e data de recebimento |
+
+**A regulação agenda. A navegadora registra o evento, acompanha e cobra o próximo
+passo quando necessário. O CareFlow não é um sistema de agendamento; é o relógio que
+prova se a data combinada está sendo cumprida.**
+
+### Cobrança e notificação
+
+- **Cobrança interna:** navegadora → UBS, regulação e prestador, por ligação, e-mail
+  ou WhatsApp institucional. SMS não é o canal natural para profissionais.
+- **Notificação da paciente:** SMS e e-mail, simulados no MVP; WhatsApp é visão.
+- **No MVP:** nenhum canal externo envia de verdade. A interface mostra a prévia e
+  registra a ação; a ligação é manual e real.
+- **Registro:** `CONTACT_LOGGED` com canal, observação e horário; não muda estado nem
+  zera o silêncio.
+
 ## Fluxo principal (MVP)
 
 1. A navegadora registra a suspeita a partir da porta de entrada: gatilho (mamografia
-   BI-RADS 4/5 ou suspeita clínica) e data do pedido dos exames. Começa o prazo de 30
-   dias. O médico não precisa avisar.
+   BI-RADS 4/5 ou suspeita clínica) e data do pedido dos exames. Ela pode colar o texto
+   do pedido; a IA pré-preenche `requestedAt`, gatilho e exame, e ela confirma. Começa
+   o prazo de 30 dias. O médico não precisa avisar. PDF é interface no MVP; só texto é
+   funcional.
 2. O caso vira um card no calendário, na semana do vencimento, com a cor do risco.
 3. A navegadora lança cada etapa quando fica sabendo (exame agendado, exame feito,
    laudo pronto); o card e o próximo passo são atualizados.
@@ -149,6 +179,15 @@ continua sem trabalho novo.
 - **`confidence` é heurística:** o Gemini não fornece uma probabilidade calibrada. O
   campo é um rótulo (`high|medium|low`) que serve para orientar a revisão humana e não
   decide nada sozinho.
+- **Descoberta tardia:** se `CASE_CREATED.recordedAt > requestedAt + 30`, o caso entra
+  vermelho com selo `LATE_ENTRY`, alerta imediato para coordenação e o prazo **não
+  reinicia**.
+- **Origem do caso:** todo `CASE_CREATED` registra `source` (`UBS_BRIDGE`,
+  `REGULATION`, `SISCAN`, `PROVIDER` ou `OTHER`).
+- **Cobrança registrada:** `CONTACT_LOGGED` guarda canal, nota e horário; não muda
+  estado e não zera o silêncio.
+- **Métricas de entrada:** tempo entre pedido e cadastro e % de casos com descoberta
+  tardia.
 - **Mensagens para a paciente não usam a palavra "câncer".**
 - **Demo só com dados fictícios.**
 
@@ -168,7 +207,7 @@ continua sem trabalho novo.
 - Envio real nesta demo. A integração real prevista é por **SMS e e-mail**.
 - **WhatsApp:** não integrado; aparece apenas como visão/roadmap no pitch final, junto
   de SMS e e-mail.
-- Agendar vagas: o Dia 30 não cria vaga, mostra quem está perto do prazo.
+- Agendar vagas: o CareFlow não cria vaga, mostra quem está perto do prazo.
 - Dados reais de pacientes.
 
 ## Perguntas abertas
@@ -188,7 +227,7 @@ continua sem trabalho novo.
 | 23/10/2026 | Calendário (Kanban) em vez de relógio regressivo | Contador regressivo gera ansiedade; calendário dá previsibilidade |
 | 23/10/2026 | Banco: PostgreSQL + Prisma | Já configurado no starter, com migrations e CI |
 | 23/10/2026 | A IA só sugere; a navegadora confirma antes de o caso mudar de estado | Erro na leitura de um laudo de câncer é grave |
-| 23/10/2026 | O Dia 30 "antecipa" o atraso; não usar "preditivo" | O aviso vem da conta das datas, não de um modelo de previsão |
+| 23/10/2026 | O CareFlow "antecipa" o atraso; não usar "preditivo" | O aviso vem da conta das datas, não de um modelo de previsão |
 | 23/10/2026 | Não usar a frase "O SUS não tem relógio" | — |
 | 23/10/2026 | Sem cron: clock derivado, com o estado calculado na leitura (ADR 0006) | Evita dependência nova, deixa a demo andar na hora e as regras testáveis com data fixa |
 

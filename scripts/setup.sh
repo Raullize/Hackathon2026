@@ -37,14 +37,14 @@ echo "Instalando dependências..."
 pnpm install --frozen-lockfile
 
 echo "Gerando contratos e Prisma Client..."
-pnpm --filter @hackathon/contracts build
-pnpm --filter @hackathon/backend db:generate
+pnpm --filter @careflow/contracts build
+pnpm --filter @careflow/backend db:generate
 
 echo "Aplicando migrations..."
-pnpm --filter @hackathon/backend db:deploy
+pnpm --filter @careflow/backend db:deploy
 
 echo "Rodando seed de demonstração..."
-pnpm --filter @hackathon/backend db:seed
+pnpm --filter @careflow/backend db:seed
 
 cat <<'EOF'
 
@@ -60,5 +60,5 @@ Próximos comandos:
   pnpm db:studio       # Prisma Studio
 
 Swagger: http://localhost:3000/docs
-Login seed: demo@hackathon.dev / demo1234
+Login seed: demo@careflow.dev / demo1234
 EOF

@@ -6,7 +6,7 @@
 
 ## 1. Capa
 
-- **Dia 30**: o calendário dos prazos da lei no câncer de mama.
+- **CareFlow**: o calendário dos prazos da lei no câncer de mama.
 - Tema Saúde Conectada 2026. Time e uma frase: "A lei dá 30 dias para diagnosticar e
   60 para tratar. Mas ninguém tem um relógio."
 
@@ -27,7 +27,7 @@
 - A IA lê o laudo, a navegadora confirma. A paciente vê o próximo passo, sem a
   palavra "câncer".
 - **Frase-âncora:** "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O
-  Dia 30 é a ferramenta."
+  CareFlow é a ferramenta."
 - O médico não muda nada: pede o exame pelo caminho de sempre. **Zero trabalho novo
   para o médico.**
 - Diferencial: **antecipa** o atraso, em vez de medir depois.
@@ -61,9 +61,9 @@
 ## 7. Impacto
 
 - Por que importa: a Lei 14.758/2023 manda manter um sistema que registre as
-  suspeitas de câncer; o Dia 30 é o protótipo dele.
+  suspeitas de câncer; o CareFlow é o protótipo dele.
 - Métricas do próprio sistema: % em 30 dias, % em 60 dias, % sem informação.
-- Navegação funciona (revisão de 61 revisões sistemáticas, 2023), mas efeito do Dia 30
+- Navegação funciona (revisão de 61 revisões sistemáticas, 2023), mas efeito do CareFlow
   ainda não foi medido.
 - Critério: Impacto Social.
 
@@ -94,6 +94,6 @@
 ## Regra
 
 Sem números inventados. Se for estimativa, dizer “estimativa”. Se for protótipo,
-dizer “protótipo”. Não dizer "preditivo" (o Dia 30 **antecipa**), nem "O SUS não tem
+dizer “protótipo”. Não dizer "preditivo" (o CareFlow **antecipa**), nem "O SUS não tem
 relógio". Não comparar o "% sem informação" do sistema com os 32% de Porto Alegre como
 se fossem a mesma medida.

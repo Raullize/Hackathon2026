@@ -1,7 +1,7 @@
 # Impacto
 
 > Toda métrica tem fonte ou rótulo de estimativa. Fontes em
-> [`EVIDENCE.md`](./EVIDENCE.md). Efeito do Dia 30 não foi medido: o que está abaixo
+> [`EVIDENCE.md`](./EVIDENCE.md). Efeito do CareFlow não foi medido: o que está abaixo
 > como "meta" é hipótese, não resultado.
 
 ## Beneficiários
@@ -69,10 +69,10 @@ vencimento.
 
 - Enquanto não houver integração, o sistema depende de a navegadora lançar os dados. O
   médico não muda nada.
-- O Dia 30 não cria vaga de biópsia nem de tratamento. Ele mostra quem está mais
+- O CareFlow não cria vaga de biópsia nem de tratamento. Ele mostra quem está mais
   perto de estourar e gera a prova para cobrar a vaga.
 - O volume em Charqueadas é pequeno e a banca vai perguntar "por que não uma
-  planilha?". Resposta: a planilha fica no computador de uma pessoa; o Dia 30 dá à
+  planilha?". Resposta: a planilha fica no computador de uma pessoa; o CareFlow dá à
   navegadora um relógio com alertas e histórico, e a paciente tem um link de leitura.
 - Erro da IA ao ler um laudo: mitigado porque a IA só sugere e a navegadora confirma.
 - Laudo é dado sensível (LGPD, art. 11): demo só com laudos fictícios, e a regra de

@@ -10,7 +10,7 @@ import type {
   LoginInput,
   PublicUser,
   RegisterInput,
-} from '@hackathon/contracts';
+} from '@careflow/contracts';
 import { Prisma } from '@prisma/client';
 import argon2 from 'argon2';
 import { USER_REPOSITORY, type UserRepository } from './auth.repository';

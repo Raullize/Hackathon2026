@@ -1,4 +1,4 @@
-# Evidências — Dia 30: o relógio da linha de cuidado do câncer
+# Evidências — CareFlow (Dia 30): o relógio da linha de cuidado do câncer
 
 > Base de argumentos do pitch. Pesquisa feita em 23/10/2026, durante o hackathon.
 > Cada número tem fonte e nível de confiança. **Antes de pôr um número no slide,
@@ -33,7 +33,7 @@ INCA publica dados por estado.
 
 ## 2. Encaixe no tema (slides oficiais)
 
-| Slide | O que o slide diz | Como o Dia 30 responde |
+| Slide | O que o slide diz | Como o CareFlow responde |
 | --- | --- | --- |
 | 02 | Cada transição vira risco de "repetição, atraso ou perda de seguimento" | Torna o atraso visível em cada transição, no dia em que acontece |
 | 03 | "Um prontuário, três níveis, uma linha de cuidado" | O câncer atravessa os três níveis: suspeita na UBS, diagnóstico na especializada, tratamento na alta complexidade, seguimento de volta na UBS |
@@ -77,7 +77,7 @@ INCA publica dados por estado.
 | **Resolução CIB/RS 204/2020** | O RS já cita o prazo de 30 dias ao organizar as referências oncológicas, para câncer de cabeça e pescoço | 🟢 |
 
 **Argumento central:** a Lei 14.758/2023 manda o poder público manter um sistema
-que registre as suspeitas de câncer e mostre a posição na fila. O Dia 30 é um
+que registre as suspeitas de câncer e mostre a posição na fila. O CareFlow é um
 protótipo desse sistema, conectado à navegação que a mesma lei criou.
 
 ## 6. E o prazo é descumprido
@@ -108,18 +108,18 @@ trecho que menos se mede.
 
 O que já existe e onde para:
 
-| O que existe | O que faz | Limite que o Dia 30 cobre | Confiança |
+| O que existe | O que faz | Limite que o CareFlow cobre | Confiança |
 | --- | --- | --- | --- |
 | **Painel-Oncologia** (DATASUS/INCA) | Ferramenta oficial de monitoramento da Lei 12.732 (Portaria 876/2013). Cruza SIA (APAC e BPA-I), SIH e SISCAN; um caso é definido por Cartão SUS + CID | Atualização mensal, mas os sistemas de origem têm prazos de envio de **até um ano**, então os números mudam depois. Depende da qualidade do registro. Começa a contar no laudo, então não vê o trecho suspeita → diagnóstico | 🟢 |
 | **SISCAN, módulo Seguimento** | Acompanha mulheres com exame alterado de **mama e colo do útero**. "Gerenciar Seguimento" checa se estão sendo avaliadas e tratadas no tempo certo | Só mama e colo. A mulher só aparece depois do fechamento da competência (mensal). É para coordenadores, não para a paciente. Implantação incompleta gera perda de dados em alguns estados | 🟢 |
 | **Navegação** (Lei 14.758/2023 + Portaria 6.592/2025) | Programa nacional de acompanhamento individual | Lei e portaria existem; a ferramenta de trabalho do navegador não foi encontrada | 🟢 (norma) / `[SUPOSIÇÃO]` (falta de ferramenta) |
 | **PMAE / Agora Tem Especialistas: OCI de mama** (Portarias SAES/MS 1.640, 1.821 e 1.824, de 2024) | Pacotes de procedimentos por etapa da linha de cuidado. **OCI 1** (avaliação diagnóstica inicial): consulta com especialista, mamografia diagnóstica e ultrassom. **OCI 2** (progressão): punções, biópsia e anatomopatológico, com critério de entrada "Mamografia alterada [...] BI-RADS 4 ou 5" | Organiza e paga o pacote **dentro do prestador**. No Rio de Janeiro, a OCI é concluída "com prazo no máximo de 30 ou 60 dias", a data de execução é "a data do primeiro atendimento do paciente" e a APAC de oncologia exige "a data do resultado do exame anatomopatológico". Não cobre a fila da UBS até o prestador nem o trecho do laudo até o tratamento | 🟢 (protocolo do MS) / 🟡 (regra de faturamento do município do Rio) |
-| **Conass, Módulo 4 da oficina da Rede de Prevenção e Controle do Câncer** (set/2026) | Propõe um "dicionário mínimo de estados da jornada": suspeita ativa (30 dias) → diagnóstico pendente → diagnóstico conclusivo (inicia os 60 dias) → plano definido → tratamento ativo → seguimento. Exceções explícitas: "recusa, contraindicação, ausência, pendência clínica, transporte ou capacidade". E: "Não basta calcular o atraso depois: o sistema deve tornar o próximo risco de atraso acionável hoje" | É um **artefato de oficina** para as secretarias estaduais, não um sistema em uso. Mostra que a ideia está na agenda dos gestores: o Dia 30 é um protótipo do que o Conass descreve | 🟢 |
+| **Conass, Módulo 4 da oficina da Rede de Prevenção e Controle do Câncer** (set/2026) | Propõe um "dicionário mínimo de estados da jornada": suspeita ativa (30 dias) → diagnóstico pendente → diagnóstico conclusivo (inicia os 60 dias) → plano definido → tratamento ativo → seguimento. Exceções explícitas: "recusa, contraindicação, ausência, pendência clínica, transporte ou capacidade". E: "Não basta calcular o atraso depois: o sistema deve tornar o próximo risco de atraso acionável hoje" | É um **artefato de oficina** para as secretarias estaduais, não um sistema em uso. Mostra que a ideia está na agenda dos gestores: o CareFlow é um protótipo do que o Conass descreve | 🟢 |
 | **GERCON** (Sistema de Gerenciamento de Consultas) | Regula os encaminhamentos para consultas especializadas. Em Porto Alegre, é por onde passam os encaminhamentos das mulheres com mamografia alterada | Organiza a fila. Não encontramos contagem dos prazos das leis da suspeita até o tratamento `[SUPOSIÇÃO]` | 🟢 (uso em POA, pelo boletim da SMS) |
 | **Vigilância das mamografias alteradas de Porto Alegre** (DVS/SMS) | Recebe as mamografias **BI-RADS 4 e 5** de oito prestadores do SUS, georreferencia cada caso e avisa a UBS, que faz a busca ativa no e-SUS PEC. O boletim diz que monitora "100%" desses exames | Depende de uma equipe de vigilância da capital e sai em boletim. Mesmo assim, em jan–ago/2024, **32%** dos casos de mama de POA estavam sem informação de tempo até o tratamento no Painel-Oncologia, e **53%** das mulheres sem vínculo com a UBS estavam sem acompanhamento especializado | 🟢 |
 
 **Posicionamento:** "O e-SUS registra. O GERCON organiza a fila. A OCI paga o pacote.
-O Dia 30 cobra o prazo."
+O CareFlow cobra o prazo."
 
 `[SUPOSIÇÃO]` O painel público do Painel-Oncologia é agregado e não serve para a UBS
 acompanhar uma paciente em tempo real. Confirmar no TabNet (PAINEL_ONCOLOGIABR).
@@ -160,7 +160,7 @@ da UFRGS (🟡).
 
 | Dado | Fonte | Confiança |
 | --- | --- | --- |
-| Em 21/09/2026, o MPRS anunciou um acordo entre nove municípios, Charqueadas entre eles, sobre o Hospital Regional de São Jerônimo, que recebia casos de baixa complexidade que a atenção básica poderia resolver. A maioria das prefeituras escolheu **fortalecer a atenção básica**, e o Dia 30 é uma ferramenta de coordenação para ela | MPRS | 🟢 |
+| Em 21/09/2026, o MPRS anunciou um acordo entre nove municípios, Charqueadas entre eles, sobre o Hospital Regional de São Jerônimo, que recebia casos de baixa complexidade que a atenção básica poderia resolver. A maioria das prefeituras escolheu **fortalecer a atenção básica**, e o CareFlow é uma ferramenta de coordenação para ela | MPRS | 🟢 |
 | O RS é o estado com mais municípios onde o câncer é a 1ª causa de morte (168) | Observatório de Oncologia, via imprensa | 🟡 |
 
 Pelo Plano Estadual de Oncologia (Resolução CIB/RS 265/20), Charqueadas fica na 2ª
@@ -217,7 +217,7 @@ vêm depois do exame 🟢 (documento de 2020):
 **Leitura:** no RS, o laboratório não é o gargalo (88,3% dos laudos de biópsia em até
 30 dias) e, pelo Plano Estadual, o mamógrafo também não. O tempo se perde nas filas:
 do pedido ao laudo da mamografia, do exame alterado até a biópsia (que ninguém mede)
-e do laudo até o tratamento. Os dois últimos trechos são os que o Dia 30 cobre.
+e do laudo até o tratamento. Os dois últimos trechos são os que o CareFlow cobre.
 
 ### Porto Alegre já monitora, e mesmo assim perde informação
 
@@ -231,7 +231,7 @@ também a seção 8):
 - Mulheres com BI-RADS 4/5 vinculadas à UBS: 66% com acompanhamento especializado.
   Sem vínculo: **53% sem acompanhamento**.
 - **Como usar:** a capital precisou de uma equipe de vigilância para não perder essas
-  mulheres, e um terço dos casos ainda fica sem informação. O Dia 30 leva essa
+  mulheres, e um terço dos casos ainda fica sem informação. O CareFlow leva essa
   vigilância a um município do tamanho de Charqueadas, com o prazo da lei.
   `[SUPOSIÇÃO]` Charqueadas não tem estrutura equivalente; confirmar na entrevista.
 
@@ -278,12 +278,12 @@ que ninguém mede.
    "o RS demora em tudo".
 2. **O RS diagnostica cedo acima da média** (29,2% contra 25,0%). Não dizer que o RS
    diagnostica tarde.
-3. **Falta biópsia, e o Dia 30 não cria vaga.** Ele mostra quem está mais perto de
+3. **Falta biópsia, e o CareFlow não cria vaga.** Ele mostra quem está mais perto de
    estourar o prazo e com mais risco (no BI-RADS 5, o risco é de 95% ou mais) e gera
    a prova para cobrar a vaga.
 4. **O volume em Charqueadas é pequeno** (algumas dezenas de suspeitas por ano
    `[SUPOSIÇÃO]`). Se perguntarem "por que não uma planilha?": a planilha fica no
-   computador de uma pessoa; o Dia 30 é o mesmo relógio para UBS, regulação,
+   computador de uma pessoa; o CareFlow é o mesmo relógio para UBS, regulação,
    hospital e paciente.
 5. **"E os outros cânceres?"** O relógio é o mesmo. Mama é o piloto porque tem
    gatilho objetivo, lei própria de navegação e o SISCAN.
@@ -296,7 +296,7 @@ que ninguém mede.
 | "Em 2019, 4 em cada 10 pacientes começaram o tratamento depois do prazo de 60 dias." | *Cad. Saúde Pública* 2021 (Painel-Oncologia) | 🟢 |
 | "Cada 4 semanas de atraso na cirurgia aumentam o risco de morte em 6% a 8%." | Hanna et al., *BMJ* 2020 | 🟢 |
 | "Câncer de mama descoberto cedo: mais de 99% vivem 5 anos. Com metástase: 32%." | American Cancer Society / SEER | 🟢 |
-| "Uma lei de 2023 manda ter um sistema que registre as suspeitas de câncer e mostre a posição na fila. O Dia 30 é esse sistema." | Lei 14.758/2023, art. 4º | 🟢 |
+| "Uma lei de 2023 manda ter um sistema que registre as suspeitas de câncer e mostre a posição na fila. O CareFlow é esse sistema." | Lei 14.758/2023, art. 4º | 🟢 |
 | "O Reino Unido mede o relógio de cada paciente todo mês. Aqui, o painel oficial usa dados que podem levar até um ano para chegar." | NHS England; documentos do Painel-Oncologia | 🟢 |
 | "No RS, o câncer já é a principal causa de morte em 168 municípios." | Observatório de Oncologia | 🟡 (citar a fonte no slide) |
 | "Entre 2020 e 2024, mais da metade das gaúchas com câncer de mama começou o tratamento depois do prazo da lei. O Paraná, aqui do lado, chega a 60%." | INCA 2025, Figura 26 | 🟢 |

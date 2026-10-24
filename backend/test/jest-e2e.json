@@ -13,6 +13,6 @@
     ]
   },
   "moduleNameMapper": {
-    "^@hackathon/contracts$": "<rootDir>/../packages/contracts/src/index.ts"
+    "^@careflow/contracts$": "<rootDir>/../packages/contracts/src/index.ts"
   }
 }

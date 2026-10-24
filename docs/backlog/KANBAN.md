@@ -23,7 +23,8 @@ evidência em `docs/deliveries/`.
 | ID | Story | Critério de aceite |
 | --- | --- | --- |
 | PITCH-001 | Preencher pitch com o tema do evento | problema, solução, impacto, negócio e demo sem números inventados |
-| D30-001 | Contratos Zod, modelo Prisma, migration e `computeCaseStatus` com os testes das regras de prazo | RF-012 a RF-018 (regras de domínio); plano em `docs/tasks/D30-001/plan.md` |
+| OPS-002 | Definir protocolo de entrada da UBS | canal oficial, responsável, SLA de mesmo dia, fallback e rotina de conferência; documentar em `OPERATIONS.md` |
+| D30-001 | Contratos Zod, modelo Prisma, migration e `computeCaseStatus` com os testes das regras de prazo | RF-012 a RF-018 e RF-033 a RF-035; inclui `source`, `LATE_ENTRY`, `CONTACT_LOGGED` e intake; plano em `docs/tasks/D30-001/plan.md` |
 
 ## Backlog
 
@@ -32,13 +33,14 @@ Histórias do MVP Dia 30, na ordem dos PRs. Spec:
 
 | ID | Story | Observação |
 | --- | --- | --- |
-| D30-002 | API de casos e eventos, `Clock` e endpoints de demo | RF-011, RF-017, RF-018, RF-030; depois do D30-001; adiciona `DEMO_MODE` e `REPORT_EXTRACTION_TIMEOUT_MS` ao `env.ts` |
+| D30-002 | API de casos e eventos, `Clock`, `source`, descoberta tardia e endpoints de demo | RF-011, RF-017, RF-018, RF-030, RF-034; depois do D30-001; adiciona `DEMO_MODE` e `REPORT_EXTRACTION_TIMEOUT_MS` ao `env.ts` |
 | D30-003 | `ReportExtractor` (mock, Gemini e filtro) e fluxo de confirmação do laudo | RF-019, RF-020, RF-021; `confidence` heurístico (ADR 0008); nunca cortar |
-| D30-004 | Telas de login, calendário e detalhe do caso, responsivas de 360px a 1440px | RF-022, RF-023, RF-032; absorve o FEAT-001; nunca cortar o calendário |
-| D30-005 | Alertas, mensagens (SMS/e-mail; WhatsApp só visão), link da paciente e Concluídos com as métricas | RF-024 a RF-029; ordem de corte: métricas, escada, link público |
-| D30-006 | Seed, reset e roteiro da demo | RF-031; `docs/pitch/DEMO_SCRIPT.md` |
+| D30-007 | Extração de intake do pedido (texto; PDF só UI) | RF-033; depois da D30-002; antes da D30-004; sem PII |
+| D30-004 | Telas de login, intake, calendário e detalhe do caso, responsivas de 360px a 1440px | RF-022, RF-023, RF-032, RF-033, RF-034; absorve o FEAT-001; nunca cortar o calendário |
+| D30-005 | Alertas, mensagens (SMS/e-mail; WhatsApp só visão), link da paciente, cobrança e Concluídos com as métricas | RF-024 a RF-029, RF-035; ordem de corte: métricas, escada, link público |
+| D30-006 | Seed, reset e roteiro da demo | RF-031; incluir caso de descoberta tardia; `docs/pitch/DEMO_SCRIPT.md` |
 | ~~FEAT-001~~ | ~~Implementar telas de auth no frontend~~ | absorvida pelo D30-004 |
-| ~~FEAT-003~~ | ~~Definir domínio e seeders reais~~ | substituída pelo D30-001 a D30-006 (domínio em `domain.md`, seed no D30-006) |
+| ~~FEAT-003~~ | ~~Definir domínio e seeders reais~~ | substituída pelo D30-001 a D30-007 (domínio em `domain.md`, seed no D30-006) |
 | OPS-001 | Deploy e compose de produção | somente depois do hackathon |
 
 ## Fora do MVP

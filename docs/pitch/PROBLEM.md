@@ -55,11 +55,11 @@ completo em [`domain.md`](../spec-driven-development/domain.md).
 | Persona | Contexto | Dor | O que precisa |
 | --- | --- | --- | --- |
 | **Navegadora** | Função já prevista em lei; acompanha as pessoas com suspeita de câncer do município. **Única usuária do sistema.** | Não vê onde cada caso travou e descobre o atraso tarde | Uma ferramenta para ver, na semana, quem está perto do prazo, lançar eventos e cobrar o próximo passo |
-| Médico assistente | Pede o exame pelo caminho de sempre (e-SUS PEC, SISCAN, papel); **fica fora do Dia 30** | Já tem trabalho suficiente; não quer mais uma ferramenta | **Zero trabalho novo** |
-| Equipe da UBS | Recebe a mulher de volta e faz busca ativa quando acionada; **não registra no Dia 30** | Perde o seguimento quando a informação não volta | Ser acionada pela navegadora |
+| Médico assistente | Pede o exame pelo caminho de sempre (e-SUS PEC, SISCAN, papel); **fica fora do CareFlow** | Já tem trabalho suficiente; não quer mais uma ferramenta | **Zero trabalho novo** |
+| Equipe da UBS | Recebe a mulher de volta e faz busca ativa quando acionada; **não registra no CareFlow** | Perde o seguimento quando a informação não volta | Ser acionada pela navegadora |
 | Paciente | Saiu da UBS com uma suspeita (por exemplo, BI-RADS 4 ou 5) | Espera sem informação e não conhece os direitos | **Só recebe** mensagem e link de leitura |
 | Gestor municipal e regulação | Respondem pelos prazos legais e pela fila | Só veem o atraso meses depois | Receber alerta e cobrança da navegadora; **não operam o sistema** |
-| Prestador e hospital | Fazem exames, laudos e tratamento | O retorno não chega à UBS | **Não têm conta no Dia 30**: a navegadora lança os eventos e cobra o retorno |
+| Prestador e hospital | Fazem exames, laudos e tratamento | O retorno não chega à UBS | **Não têm conta no CareFlow**: a navegadora lança os eventos e cobra o retorno |
 
 ## Recorte do MVP
 
@@ -67,7 +67,7 @@ completo em [`domain.md`](../spec-driven-development/domain.md).
   cor, alerta antes do vencimento, laudo estruturado pela IA (a navegadora confirma),
   mensagem para a paciente e métricas dos prazos. Linha piloto: câncer de mama.
 - **O que fica de fora:** integração com e-SUS, SISCAN, GERCON e RNDS; WhatsApp real;
-  perfis de acesso além da navegadora; agendar vagas (o Dia 30 não cria vaga); dados
+  perfis de acesso além da navegadora; agendar vagas (o CareFlow não cria vaga); dados
   reais de pacientes.
 - **Por que esse recorte é defensável em 24h:** o motor de prazos é uma conta de datas,
   testável e sem dependência externa (sem cron, ADR 0006). O lançamento é manual, como

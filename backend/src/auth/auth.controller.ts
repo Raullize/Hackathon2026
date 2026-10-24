@@ -16,7 +16,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import type { AuthResponse, PublicUser } from '@hackathon/contracts';
+import type { AuthResponse, PublicUser } from '@careflow/contracts';
 import type { Response } from 'express';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AuthUser } from '../common/types/authenticated-request';

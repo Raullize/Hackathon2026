@@ -8,9 +8,9 @@
 - **Implementado:** monorepo, contratos Zod e CI.
 - **Implementado:** auth completa (cadastro/login/me/logout).
 - **Implementado:** chat autenticado com Gemini e fallback mock. Não faz parte do
-  produto: o Dia 30 não é chatbot, e a IA entra para estruturar laudos.
+  produto: o CareFlow não é chatbot, e a IA entra para estruturar laudos.
 - **Implementado:** health, Swagger, rate limit e testes.
-- **Implementado (documentação):** spec do MVP do Dia 30, requisitos RF-011 a RF-032,
+- **Implementado (documentação):** spec do MVP do CareFlow, requisitos RF-011 a RF-035,
   ADR 0006 e roteiro da demo.
 
 ## Próximas 30 horas (evento)
@@ -22,10 +22,11 @@ Ordem dos PRs; cada um com testes escritos antes.
 - **Protótipo (D30-002):** API de casos e eventos, `Clock` e endpoints de demo.
 - **Protótipo (D30-003):** `ReportExtractor` (mock, Gemini e filtro) e o fluxo de
   confirmação do laudo.
-- **Protótipo (D30-004):** telas de login, calendário e detalhe do caso, responsivas de
-  360px a 1440px.
-- **Protótipo (D30-005):** alertas, mensagens (SMS/e-mail; WhatsApp só visão), link da
-  paciente e Concluídos com as métricas.
+- **Protótipo (D30-007):** extração de intake do pedido (texto; PDF só UI).
+- **Protótipo (D30-004):** telas de login, intake, calendário e detalhe do caso,
+  responsivas de 360px a 1440px.
+- **Protótipo (D30-005):** alertas, mensagens (SMS/e-mail; WhatsApp só visão), cobrança,
+  link da paciente e Concluídos com as métricas.
 - **Protótipo (D30-006):** seed, reset e roteiro da demo.
 - Gravar o vídeo da demo e ensaiar o pitch.
 

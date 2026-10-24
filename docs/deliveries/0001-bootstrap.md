@@ -37,7 +37,7 @@
 | E2E | `pnpm test:e2e` | 4 passaram |
 | Build | `pnpm build` | ok (backend + frontend) |
 | Migração | `prisma migrate dev --name init` | aplicada |
-| Seed | `pnpm db:seed` | `demo@hackathon.dev` criado |
+| Seed | `pnpm db:seed` | `demo@careflow.dev` criado |
 | Smoke | `pnpm smoke` | health, ready, register, login, chat 401/200 |
 | Swagger | `GET /docs` | 200 |
 | Gemini real | `POST /api/chat` com `LLM_PROVIDER=gemini` | `provider: "gemini"`, `model: "gemini-3.5-flash-lite"` |

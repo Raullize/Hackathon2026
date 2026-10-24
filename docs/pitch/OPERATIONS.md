@@ -1,6 +1,6 @@
-# Operação — como o Dia 30 funciona nas unidades
+# Operação — como o CareFlow funciona nas unidades
 
-> Como o Dia 30 sairia do protótipo e funcionaria de verdade em Charqueadas.
+> Como o CareFlow sairia do protótipo e funcionaria de verdade em Charqueadas.
 > **É uma proposta do time, não a descrição de algo que já existe.** Os fatos
 > citados têm fonte em [`EVIDENCE.md`](./EVIDENCE.md); o resto é desenho nosso,
 > a validar com quem trabalha na rede. Linha piloto: câncer de mama.
@@ -8,13 +8,13 @@
 
 ## 1. Quem faz o quê
 
-| Papel | Quem | O que faz no Dia 30 |
+| Papel | Quem | O que faz no CareFlow |
 | --- | --- | --- |
 | **Navegadora** | Função já prevista em lei (Lei 14.758/2023, art. 13; Lei 14.450/2022; Portaria GM/MS 6.592/2025). No piloto, quem exerce o papel é a referência municipal `[SUPOSIÇÃO: confirmar na entrevista]` | **Única usuária do sistema.** Abre os casos, olha a lista todo dia, lança os eventos, cola o laudo, confirma a sugestão da IA e cobra o próximo passo |
-| Médico assistente | Quem pede o exame na rotina | **Fica fora do Dia 30.** Pede pelo caminho de sempre (e-SUS PEC, requisição do SISCAN, papel). **Zero trabalho novo para o médico** |
-| UBS | Equipe de saúde da família | **Não registra no Dia 30.** Faz a busca ativa quando a navegadora aciona e recebe a mulher de volta no seguimento |
-| Regulação municipal | Quem agenda no GERCON | **Não registra no Dia 30.** Recebe o alerta e prioriza o agendamento |
-| Prestador e hospital | Serviço de diagnóstico e hospital de referência (pelo Plano Estadual de Oncologia de 2020, o Hospital Ana Nery, em Santa Cruz do Sul 🟡) | **Não tem conta no Dia 30.** A navegadora lança os eventos a partir da informação que o serviço já produz e cobra o retorno |
+| Médico assistente | Quem pede o exame na rotina | **Fica fora do CareFlow.** Pede pelo caminho de sempre (e-SUS PEC, requisição do SISCAN, papel). **Zero trabalho novo para o médico** |
+| UBS | Equipe de saúde da família | **Não registra no CareFlow.** Faz a busca ativa quando a navegadora aciona e recebe a mulher de volta no seguimento |
+| Regulação municipal | Quem agenda no GERCON | **Não registra no CareFlow.** Recebe o alerta e prioriza o agendamento |
+| Prestador e hospital | Serviço de diagnóstico e hospital de referência (pelo Plano Estadual de Oncologia de 2020, o Hospital Ana Nery, em Santa Cruz do Sul 🟡) | **Não tem conta no CareFlow.** A navegadora lança os eventos a partir da informação que o serviço já produz e cobra o retorno |
 | Paciente | A própria mulher | **Só recebe.** Vê o próprio relógio, o próximo passo e os direitos no link de leitura; não envia nada |
 
 Coordenação da atenção básica, SMS e 2ª CRS também **não têm login**: aparecem apenas
@@ -37,7 +37,7 @@ como destinatários de alerta na seção 5.
 3. **Resultados BI-RADS 4/5 enviados pelos prestadores à UBS:** modelo de Porto
    Alegre, descrito em [`EVIDENCE.md`](./EVIDENCE.md), seção 8.
 
-A navegadora confere a fonte, cadastra o caso no Dia 30 e começa a cobrar o próximo
+A navegadora confere a fonte, cadastra o caso no CareFlow e começa a cobrar o próximo
 passo. O funcionamento em Charqueadas ainda precisa ser confirmado na entrevista
 `[SUPOSIÇÃO: confirmar na entrevista]`.
 
@@ -45,6 +45,29 @@ O médico **não muda nada**: ele pede o exame pelo caminho de sempre (e-SUS PEC
 requisição do SISCAN, papel). No futuro, a importação do SISCAN e da RNDS (FHIR) pode reduzir a
 digitação da navegadora `[SUPOSIÇÃO: viabilidade a confirmar]`; o médico continua sem
 trabalho novo.
+
+### Protocolo de entrada da UBS
+
+O canal pode variar por UBS/região; o protocolo não.
+
+| Item | Regra do piloto |
+| --- | --- |
+| Canal principal | E-mail institucional (recomendado) ou WhatsApp institucional |
+| Quem envia | Recepção/administração da UBS, com substituto definido |
+| Prazo | Pedido até 14h → envio até 17h do mesmo dia útil; depois → próximo dia útil até 10h |
+| Conferência | Navegadora olha a caixa 2× por dia |
+| Formato | Paciente, CNS, data do pedido, gatilho, exame e UBS |
+| Fallback | Fila da regulação, lista BI-RADS 4/5 do prestador e SISCAN |
+| Registro | `source` e data de recebimento |
+
+**A regulação agenda. A navegadora registra o evento, acompanha e cobra o próximo passo
+quando necessário. O CareFlow não é um sistema de agendamento; é o relógio que prova se
+a data combinada está sendo cumprida.**
+
+A navegadora pode colar o texto do pedido; a IA pré-preenche `requestedAt`, gatilho e
+exame, e ela confirma. PDF é interface no MVP; só texto é funcional. Se o caso for
+cadastrado depois de `requestedAt + 30`, entra vermelho com **“Descoberta tardia”** e o
+prazo não reinicia.
 
 **Ficha do caso, com quatro campos:**
 
@@ -105,6 +128,18 @@ Os limites do amarelo são escolha nossa, a combinar com a gestão `[SUPOSIÇÃO
 - **Responsividade:** a visão da paciente é mobile-first e funciona de 360px a 1440px,
   sem rolagem horizontal.
 
+### Cobrança interna x notificação da paciente
+
+| Ação | Quem | Canal no MVP |
+| --- | --- | --- |
+| Cobrar UBS, regulação ou hospital | Navegadora | Ligação manual, e-mail ou WhatsApp institucional |
+| Notificar a paciente | Sistema/navegadora | SMS/e-mail simulados; WhatsApp é visão |
+| Abrir o relógio e os direitos | Paciente | Link de leitura |
+
+No MVP, nenhum canal externo envia de verdade. A interface mostra a prévia e registra
+a ação; a ligação é manual e real. A cobrança interna pode ser registrada como
+`CONTACT_LOGGED` (canal + observação), sem mudar estado nem zerar o silêncio.
+
 ## 7. Dados e LGPD
 
 - Dado de saúde é dado pessoal sensível. A base legal é a LGPD, art. 11, II, "b"
@@ -143,8 +178,8 @@ Os limites do amarelo são escolha nossa, a combinar com a gestão `[SUPOSIÇÃO
 | "Isso já existe?" | Existem peças: o e-SUS registra, o GERCON organiza a fila, a OCI paga o pacote no prestador e o SISCAN acompanha exames alterados. Nas nossas buscas, nenhuma conta o prazo da lei da suspeita até o tratamento para todos verem (`EVIDENCE.md`, seção 8) |
 | "Quem alimenta o sistema?" | A navegadora, que a lei já prevê, a partir da fila da regulação e do SISCAN. O médico não muda nada. No futuro, importação do SISCAN e a RNDS (FHIR) tiram até essa digitação |
 | "E se o hospital não atualizar?" | Silêncio é alerta: o caso fica amarelo e a navegadora liga |
-| "O Dia 30 cria vaga?" | Não. Mostra quem está mais perto de estourar o prazo e com mais risco, e gera a prova para pedir a vaga |
-| "Por que não uma planilha?" | A planilha fica no computador de uma pessoa. O Dia 30 dá à navegadora um relógio com alertas, histórico e link de leitura para a paciente; a navegadora cobra UBS, regulação e hospital |
+| "O CareFlow cria vaga?" | Não. Mostra quem está mais perto de estourar o prazo e com mais risco, e gera a prova para pedir a vaga |
+| "Por que não uma planilha?" | A planilha fica no computador de uma pessoa. O CareFlow dá à navegadora um relógio com alertas, histórico e link de leitura para a paciente; a navegadora cobra UBS, regulação e hospital |
 | "E a LGPD?" | LGPD, art. 11, II, "b" e "f"; só a navegadora acessa o painel; paciente só pelo link; registro de acesso; demo com dados fictícios |
 | "Por que mama?" | Gatilho claro no laudo (BI-RADS), lei própria de navegação (14.450/2022), dados por estado no INCA, e o RS vai mal: só 44,4% tratadas em até 60 dias |
 | "E os outros cânceres?" | O relógio é o mesmo. Mama é o piloto |
@@ -196,5 +231,5 @@ dados pessoais no repositório.
 - Mostrar que a aplicação é responsiva: calendário, detalhe e link da paciente.
 - Separar "Hoje" (protótipo, SMS/e-mail simulados) de "Visão" (integração real por
   WhatsApp, SMS e e-mail), como pede o [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md).
-- Frase-âncora: "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O Dia 30
+- Frase-âncora: "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O CareFlow
   é a ferramenta."

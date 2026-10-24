@@ -6,17 +6,17 @@
 
 ## Proposta de valor
 
-Para a navegadora e para a mulher com suspeita de câncer de mama, o Dia 30 é um
+Para a navegadora e para a mulher com suspeita de câncer de mama, o CareFlow é um
 calendário compartilhado dos prazos de 30 e 60 dias da lei: mostra quem está perto de
 vencer, avisa quem precisa agir antes do prazo estourar e diz à paciente o próximo
 passo e os direitos dela.
 
 A navegadora **já existe por lei** (Lei 14.758/2023, art. 13; Lei 14.450/2022;
 Portaria GM/MS 6.592/2025). O problema não é criar a função, é dar a ela uma
-ferramenta. O médico **fica fora do Dia 30** e pede o exame pelo caminho de sempre:
+ferramenta. O médico **fica fora do CareFlow** e pede o exame pelo caminho de sempre:
 **zero trabalho novo para o médico**.
 
-> "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O Dia 30 é a
+> "A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O CareFlow é a
 > ferramenta."
 
 ## Como funciona
@@ -35,7 +35,10 @@ ferramenta. O médico **fica fora do Dia 30** e pede o exame pelo caminho de sem
    atual.
 6. Se o prazo aperta ou vence, o alerta sobe a escada para a navegadora, a regulação,
    a coordenação e, em falta de vaga, a 2ª CRS. Esses destinatários **não registram
-   nada** no sistema; a navegadora cobra cada um.
+   nada** no sistema; a navegadora cobra cada um por ligação, e-mail ou WhatsApp
+   institucional. No MVP, os canais são simulados; a ligação é real.
+7. Se o caso for cadastrado depois de `requestedAt + 30`, entra vermelho com o selo
+   **“Descoberta tardia”**; o prazo não reinicia e a coordenação é alertada.
 
 ## O que está implementado hoje
 
@@ -44,14 +47,14 @@ estiver na `main`.
 
 - **Base (starter, na `main`):** monorepo, contratos Zod, auth (cadastro/login/me/logout),
   chat com Gemini e fallback mock, health, Swagger, rate limit, testes e CI.
-- **Especificação do Dia 30 (na `main`):** spec, requisitos RF-011 a RF-032, ADR 0006,
+- **Especificação do CareFlow (na `main`):** spec, requisitos RF-011 a RF-035, ADR 0006,
   plano da D30-001 e roteiro da demo.
 
 ## O que é roadmap/protótipo
 
-- **Protótipo em construção (D30-001 a D30-006):** motor de prazos, API de casos e
-  eventos, extração de laudo com confirmação, calendário, alertas, mensagens, link da
-  paciente, métricas e seed. `[DADO FALTANDO]` Atualizar esta lista com o que estiver
+- **Protótipo em construção (D30-001 a D30-007):** motor de prazos, API de casos e
+  eventos, intake, extração de laudo com confirmação, calendário, alertas, mensagens,
+  cobrança, link da paciente, métricas e seed. `[DADO FALTANDO]` Atualizar esta lista com o que estiver
   pronto quando o pitch começar.
 - **Visão:** importação do SISCAN e do GERCON, envio real de SMS/e-mail, WhatsApp como
   visão, relógio real e outros tipos de câncer (`OPERATIONS.md`, seção 8).
@@ -78,7 +81,7 @@ estiver na `main`.
 - **Responsivo de 360px a 1440px**, com calendário em lista no celular e link da
   paciente mobile-first.
 - **Posicionamento:** o e-SUS registra. O GERCON organiza a fila. A OCI paga o pacote.
-  O Dia 30 cobra o prazo.
+  O CareFlow cobra o prazo.
 
 ## Demo
 

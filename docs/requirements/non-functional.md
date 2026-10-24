@@ -65,7 +65,7 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
   relógio e o `demoRawText`. Sem ele, as rotas de demo retornam `404` e o deslocamento é
   ignorado.
 - **RNF-011** `DEMO_MODE=true` com `NODE_ENV=production` falha na validação do
-  ambiente, porque o reset apaga as tabelas do Dia 30 `[DECISÃO PENDENTE]`.
+  ambiente, porque o reset apaga as tabelas do CareFlow `[DECISÃO PENDENTE]`.
 - **RNF-012** Sem cron e sem `@nestjs/schedule`: estado, cores, alertas, mensagens e
   métricas são calculados na leitura (ADR 0006).
 
@@ -109,16 +109,23 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
 - **RNF-030** **Só a navegadora tem login.** UBS, regulação, prestador, coordenação e
   2ª CRS não acessam o painel; são destinatários de alerta e de cobrança. A paciente
   acessa apenas o próprio caso por link de leitura.
-- **RNF-031** O médico **fica fora do Dia 30**. Ele pede o exame pelo caminho de sempre
+- **RNF-031** O médico **fica fora do CareFlow**. Ele pede o exame pelo caminho de sempre
   (e-SUS PEC, SISCAN, papel); **zero trabalho novo para o médico**.
 
-## Dia 30 — Comunicação com a paciente
+## Dia 30 — Comunicação e cobrança
 
-- **RNF-026** Canais do MVP: **SMS e e-mail**. O envio é simulado na demo; a integração
-  real prevista é por esses dois canais.
+- **RNF-026** Canais do MVP: **SMS e e-mail** para a paciente; ambos simulados na demo.
+  A ligação para UBS/regulação/paciente é manual e real. A integração real prevista é
+  por SMS e e-mail.
 - **RNF-027** **WhatsApp não faz parte da integração implementada.** No pitch final ele
   aparece apenas como visão/roadmap, junto de SMS e e-mail. A documentação interna e a
   demo não devem afirmar que o WhatsApp já está integrado.
+- **RNF-032** No MVP, nenhum canal externo envia de verdade. A interface mostra a prévia
+  e registra a ação; `CONTACT_LOGGED` comprova a cobrança interna.
+- **RNF-033** Descoberta tardia: se `CASE_CREATED.recordedAt > requestedAt + 30`, o caso
+  entra vermelho com `LATE_ENTRY` e o prazo não reinicia.
+- **RNF-034** Extração de intake sem PII: nome, CNS e data de nascimento não vão para a
+  IA; PDF é interface no MVP e só texto é extraído.
 
 ## Dia 30 — Confiança da extração
 

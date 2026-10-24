@@ -24,11 +24,11 @@ informação."
 "O prazo existe, mas ninguém tem um relógio. O painel oficial mede o atraso meses
 depois, e só começa a contar no laudo.
 
-O Dia 30 é um calendário compartilhado. Cada mulher é um card verde, amarelo ou
+O CareFlow é um calendário compartilhado. Cada mulher é um card verde, amarelo ou
 vermelho, na semana em que vence o prazo da lei. Ele não mede o atraso depois. Ele
 antecipa."
 
-"A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O Dia 30 é a ferramenta.
+"A lei criou a navegadora. Ninguém deu a ela uma ferramenta. O CareFlow é a ferramenta.
 E o médico não muda nada: ele pede o exame pelo caminho de sempre. Zero trabalho novo
 para o médico."
 
@@ -41,7 +41,7 @@ Seguir os 7 passos de `DEMO_SCRIPT.md`. Falas de apoio, nos pontos que mais pesa
 - **Passo 1:** "Essa é a Maria, personagem fictícia. Dia 18 de 30, verde. Cada card é
   uma mulher, na semana em que vence o prazo."
 - **Passo 2:** "Passo sete dias. Dia 25, amarelo. A biópsia passou e ninguém
-  registrou. O Dia 30 percebe antes do prazo vencer, e o alerta chega à navegadora."
+  registrou. O CareFlow percebe antes do prazo vencer, e o alerta chega à navegadora."
 - **Passo 3:** "Aqui a IA lê o laudo e sugere. Quem confirma é a navegadora. Nada muda
   de estado sem ela. O médico não registra nada; ele já pediu o exame pelo caminho de
   sempre." (Dizer qual selo aparece: "Gemini" ou "regra local".)
@@ -69,7 +69,7 @@ sempre confirma."
 ## 4:20–4:45 — Impacto e roadmap (slides 7 a 9)
 
 "A Lei 14.758, de 2023, manda o poder público manter um sistema que registre as
-suspeitas de câncer. O Dia 30 é um protótipo desse sistema.
+suspeitas de câncer. O CareFlow é um protótipo desse sistema.
 
 O sistema mede o que importa: quantos diagnósticos em 30 dias, quantos tratamentos em
 60, quantos casos sem notícia. Ainda não medimos o efeito dele em pacientes reais.
@@ -94,7 +94,7 @@ Respostas curtas em [`OPERATIONS.md`](./OPERATIONS.md), seção 9, e no fim do
 - **"Isso já existe?"** Existem peças: o e-SUS registra, o GERCON organiza a fila, a
   OCI paga o pacote e o SISCAN acompanha exames alterados. Nas nossas buscas, nenhuma
   conta o prazo da lei da suspeita até o tratamento para todos verem.
-- **"Por que não uma planilha?"** A planilha fica no computador de uma pessoa. O Dia 30
+- **"Por que não uma planilha?"** A planilha fica no computador de uma pessoa. O CareFlow
   dá à navegadora um relógio com alertas e histórico; ela cobra UBS, regulação e
   hospital, e a paciente tem um link de leitura.
 - **"Cria vaga?"** Não. Mostra quem está mais perto de estourar o prazo e gera a prova

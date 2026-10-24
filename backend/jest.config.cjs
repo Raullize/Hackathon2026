@@ -11,7 +11,7 @@ module.exports = {
     ],
   },
   moduleNameMapper: {
-    '^@hackathon/contracts$': '<rootDir>/../../packages/contracts/src/index.ts',
+    '^@careflow/contracts$': '<rootDir>/../../packages/contracts/src/index.ts',
   },
   collectCoverageFrom: ['**/*.ts', '!**/*.module.ts', '!**/main.ts'],
   coverageDirectory: '../coverage',

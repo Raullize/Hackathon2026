@@ -71,13 +71,13 @@ jobs:
         run: cp .env.example .env
 
       - name: Build contracts
-        run: pnpm --filter @hackathon/contracts build
+        run: pnpm --filter @careflow/contracts build
 
       - name: Generate Prisma Client
-        run: pnpm --filter @hackathon/backend db:generate
+        run: pnpm --filter @careflow/backend db:generate
 
       - name: Apply migrations
-        run: pnpm --filter @hackathon/backend db:deploy
+        run: pnpm --filter @careflow/backend db:deploy
 
       - name: Lint
         run: pnpm lint

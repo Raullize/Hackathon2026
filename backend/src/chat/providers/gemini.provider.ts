@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
-import type { ChatMessage, ChatResponse } from '@hackathon/contracts';
+import type { ChatMessage, ChatResponse } from '@careflow/contracts';
 import type { AppEnv } from '../../config/env';
 import type { ChatProvider } from './chat-provider.interface';
 

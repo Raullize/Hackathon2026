@@ -69,7 +69,7 @@ Hipóteses, nenhuma testada:
 - Coordenar pela atenção primária é mais barato: resolver um encaminhamento na APS
   custou R$ 239,22, contra R$ 759,26 quando virou consulta especializada (RegulaSUS,
   não é câncer) 🟢.
-- **Não afirmamos economia do Dia 30.** Mostramos o custo do atraso como contexto.
+- **Não afirmamos economia do CareFlow.** Mostramos o custo do atraso como contexto.
 
 ## Go-to-market
 

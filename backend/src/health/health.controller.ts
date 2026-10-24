@@ -1,5 +1,5 @@
 import { Controller, Get, Res } from '@nestjs/common';
-import type { HealthResponse } from '@hackathon/contracts';
+import type { HealthResponse } from '@careflow/contracts';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
