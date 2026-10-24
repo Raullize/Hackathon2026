@@ -111,6 +111,13 @@ O que já existe e onde para:
 | **Painel-Oncologia** (DATASUS/INCA) | Ferramenta oficial de monitoramento da Lei 12.732 (Portaria 876/2013). Cruza SIA (APAC e BPA-I), SIH e SISCAN; um caso é definido por Cartão SUS + CID | Atualização mensal, mas os sistemas de origem têm prazos de envio de **até um ano**, então os números mudam depois. Depende da qualidade do registro. Começa a contar no laudo, então não vê o trecho suspeita → diagnóstico | 🟢 |
 | **SISCAN, módulo Seguimento** | Acompanha mulheres com exame alterado de **mama e colo do útero**. "Gerenciar Seguimento" checa se estão sendo avaliadas e tratadas no tempo certo | Só mama e colo. A mulher só aparece depois do fechamento da competência (mensal). É para coordenadores, não para a paciente. Implantação incompleta gera perda de dados em alguns estados | 🟢 |
 | **Navegação** (Lei 14.758/2023 + Portaria 6.592/2025) | Programa nacional de acompanhamento individual | Lei e portaria existem; a ferramenta de trabalho do navegador não foi encontrada | 🟢 (norma) / `[SUPOSIÇÃO]` (falta de ferramenta) |
+| **PMAE / Agora Tem Especialistas: OCI de mama** (Portarias SAES/MS 1.640, 1.821 e 1.824, de 2024) | Pacotes de procedimentos por etapa da linha de cuidado. **OCI 1** (avaliação diagnóstica inicial): consulta com especialista, mamografia diagnóstica e ultrassom. **OCI 2** (progressão): punções, biópsia e anatomopatológico, com critério de entrada "Mamografia alterada [...] BI-RADS 4 ou 5" | Organiza e paga o pacote **dentro do prestador**. No Rio de Janeiro, a OCI é concluída "com prazo no máximo de 30 ou 60 dias", a data de execução é "a data do primeiro atendimento do paciente" e a APAC de oncologia exige "a data do resultado do exame anatomopatológico". Não cobre a fila da UBS até o prestador nem o trecho do laudo até o tratamento | 🟢 (protocolo do MS) / 🟡 (regra de faturamento do município do Rio) |
+| **Conass, Módulo 4 da oficina da Rede de Prevenção e Controle do Câncer** (set/2026) | Propõe um "dicionário mínimo de estados da jornada": suspeita ativa (30 dias) → diagnóstico pendente → diagnóstico conclusivo (inicia os 60 dias) → plano definido → tratamento ativo → seguimento. Exceções explícitas: "recusa, contraindicação, ausência, pendência clínica, transporte ou capacidade". E: "Não basta calcular o atraso depois: o sistema deve tornar o próximo risco de atraso acionável hoje" | É um **artefato de oficina** para as secretarias estaduais, não um sistema em uso. Mostra que a ideia está na agenda dos gestores: o Dia 30 é um protótipo do que o Conass descreve | 🟢 |
+| **GERCON** (Sistema de Gerenciamento de Consultas) | Regula os encaminhamentos para consultas especializadas. Em Porto Alegre, é por onde passam os encaminhamentos das mulheres com mamografia alterada | Organiza a fila. Não encontramos contagem dos prazos das leis da suspeita até o tratamento `[SUPOSIÇÃO]` | 🟢 (uso em POA, pelo boletim da SMS) |
+| **Vigilância das mamografias alteradas de Porto Alegre** (DVS/SMS) | Recebe as mamografias **BI-RADS 4 e 5** de oito prestadores do SUS, georreferencia cada caso e avisa a UBS, que faz busca ativa e registra no e-SUS PEC. O boletim diz que monitora "100%" desses exames | Depende de uma equipe de vigilância da capital e sai em boletim. Mesmo assim, em jan–ago/2024, **32%** dos casos de mama de POA estavam sem informação de tempo até o tratamento no Painel-Oncologia, e **53%** das mulheres sem vínculo com a UBS estavam sem acompanhamento especializado | 🟢 |
+
+**Posicionamento:** "O e-SUS registra. O GERCON organiza a fila. A OCI paga o pacote.
+O Dia 30 cobra o prazo."
 
 `[SUPOSIÇÃO]` O painel público do Painel-Oncologia é agregado e não serve para a UBS
 acompanhar uma paciente em tempo real. Confirmar no TabNet (PAINEL_ONCOLOGIABR).
@@ -201,6 +208,9 @@ tem navegador de câncer.
 - [Conass sobre a regulamentação da Política do Câncer](https://www.conass.org.br/?p=46708)
 - [Conass, Guia da Oficina PNPCC (set/2026)](https://www.conass.org.br/wp-content/uploads/2026/09/Guia-Oficina-PNPCC.pdf)
 - [Resolução CIB/RS 204/2020](https://saude.rs.gov.br/upload/arquivos/202010/23143254-cibr204-20.pdf)
+- [Protocolo de Acesso às OCI em oncologia, versão preliminar 2024 (MS/SAES, cópia do COSEMS-SP)](https://www.cosemssp.org.br/wp-content/uploads/2024/11/Protocolo-de-Acesso-Ofertas-Cuidados-Integra.pdf)
+- [Rio de Janeiro, Portaria S/SUBGERAL nº 10/2025, faturamento das OCI](https://saude.prefeitura.rio/wp-content/uploads/sites/47/2025/07/PORTARIA-SUBGERAL-No-10-DE-04-DE-JULHO-DE-2025-OCI.pdf)
+- [Conass, Módulo 4 da oficina da Rede de Prevenção e Controle do Câncer (set/2026)](https://www.conass.org.br/wp-content/uploads/2026/09/Modulo-04.pdf)
 
 **Dados brasileiros**
 
@@ -226,6 +236,7 @@ tem navegador de câncer.
 - [Seguimento de citologia alterada (RBC)](https://rbc.inca.gov.br/index.php/revista/article/download/486/288/2202)
 - [RegulaSUS, avaliação (UFRGS)](https://lume.ufrgs.br/handle/10183/274103)
 - [MPRS, acordo do Hospital Regional de São Jerônimo (21/09/2026)](https://www.mprs.mp.br/noticias/67284/)
+- [Porto Alegre, Boletim Epidemiológico Outubro Rosa 2024 (SMS/DVS)](https://prefeitura.poa.br/sites/default/files/usu_doc/hotsites/sms/vigilancia-em-saude/BE%20Outubro%20Rosa%202024.pdf)
 
 **Dados internacionais**
 
