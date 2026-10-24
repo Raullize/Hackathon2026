@@ -2,8 +2,9 @@
 
 ## Contexto
 
-Starter full-stack para hackathon. O objetivo é ter autenticação, chat com IA e
-uma base de qualidade pronta antes do tema ser conhecido.
+CareFlow é a aplicação de acompanhamento dos prazos legais da linha de cuidado do
+câncer. O repositório começou como starter full-stack e agora documenta o módulo
+Dia 30, com autenticação, IA e uma base de qualidade pronta.
 
 ## Visão geral
 
@@ -145,6 +146,27 @@ erDiagram
 Não há tabela de conversa. O chat é stateless: o histórico vem no body e o
 servidor não persiste mensagens.
 
+## Dia 30 — casos, prazos e comunicação
+
+O recorte do produto está em
+[`spec-driven-development/dia-30-mvp-spec.md`](./spec-driven-development/dia-30-mvp-spec.md).
+Pontos que afetam a arquitetura:
+
+- **Máquina de estados:** cada caso muda por eventos (`POST /api/cases/:id/events`),
+  com matriz de transições e linha do tempo append-only.
+- **Clock derivado:** prazos, cores, selos, alertas e métricas são calculados na
+  leitura; não há cron (ADR 0006).
+- **Comunicação:** templates de SMS e e-mail; envio real fora do MVP. WhatsApp é
+  apenas visão de pitch, não integração implementada (ADR 0007).
+- **Extração de laudo:** `confidence` é rótulo heurístico; o Gemini não fornece
+  probabilidade calibrada nem logprobs no modelo usado (ADR 0008).
+- **Intake:** a navegadora cola o texto do pedido; a IA pré-preenche data, gatilho e
+  exame; ela confirma. Sem PII no texto da IA; PDF é UI no MVP.
+- **Descoberta tardia e cobrança:** `source` no `CASE_CREATED`, selo `LATE_ENTRY`,
+  `CONTACT_LOGGED` para ligação/e-mail/WhatsApp e métricas de atraso de cadastro.
+- **Responsividade:** todos os fluxos devem funcionar de 360px a 1440px, com
+  calendário em lista no celular e link da paciente mobile-first.
+
 ## Contratos
 
 `packages/contracts` é a fonte da verdade dos formatos:
@@ -171,3 +193,6 @@ telas forem implementadas. Nada de duplicar validação.
 - [0003 — Auth JWT simples](./adr/0003-auth-jwt-simples.md)
 - [0004 — Chat Gemini com mock](./adr/0004-chat-gemini-mock.md)
 - [0005 — Frontend com shadcn sem telas](./adr/0005-frontend-shadcn.md)
+- [0006 — Clock derivado, sem cron](./adr/0006-clock-derivado-sem-cron.md)
+- [0007 — Canais: SMS/e-mail agora, WhatsApp como visão](./adr/0007-canais-comunicacao.md)
+- [0008 — Confiança da extração é heurística](./adr/0008-confianca-extracao.md)

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { ChatMessage, ChatResponse } from '@hackathon/contracts';
+import type { ChatMessage, ChatResponse } from '@careflow/contracts';
 import type { AppEnv } from '../config/env';
 import { GeminiProvider } from './providers/gemini.provider';
 import { MockProvider } from './providers/mock.provider';

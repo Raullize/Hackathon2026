@@ -11,9 +11,11 @@ depender de internet, do Gemini ou de dados criados na hora.
 - [ ] `pnpm test` e `pnpm test:e2e` verdes.
 - [ ] API sobe com `pnpm dev:backend`.
 - [ ] `curl http://localhost:3000/api/health/ready` retorna `database: "up"`.
-- [ ] Login seed funciona: `demo@hackathon.dev` / `demo1234`.
+- [ ] Login seed funciona: `demo@careflow.dev` / `demo1234`.
 - [ ] Chat autenticado responde. Se Gemini falhar, `provider: "mock"` é aceitável.
 - [ ] Swagger abre em `http://localhost:3000/docs`.
+- [ ] Mensagens de **SMS/e-mail** aparecem simuladas na tela; WhatsApp é apenas visão.
+- [ ] Layout testado em desktop e em 360px de largura, sem overflow horizontal.
 - [ ] Vídeo de backup gravado e slides em PDF.
 - [ ] Notebook carregado; hotspot de celular como plano B.
 
@@ -31,7 +33,7 @@ curl http://localhost:3000/api/health/ready
 ```bash
 LOGIN=$(curl -sS -X POST http://localhost:3000/api/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"demo@hackathon.dev","password":"demo1234"}')
+  -d '{"email":"demo@careflow.dev","password":"demo1234"}')
 
 TOKEN=$(node -e "console.log(JSON.parse(process.argv[1]).accessToken)" "$LOGIN")
 ```

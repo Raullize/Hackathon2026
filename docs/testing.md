@@ -11,7 +11,7 @@ quando a regra de negócio for removida ou quebrada.
 | --- | --- | --- |
 | Unitário backend | Jest | AuthService e ChatService |
 | E2E backend | Jest + Supertest | health, auth, chat 401/200, validação Zod |
-| Frontend | Vitest + Testing Library | render do placeholder e componentes shadcn |
+| Frontend | Vitest + Testing Library | render, breakpoints por classe e estados responsivos |
 | Smoke | Node + fetch | fluxo real health → auth → chat |
 
 ## Comandos
@@ -21,7 +21,7 @@ pnpm test                 # unitários backend + frontend
 pnpm test:backend         # só Jest
 pnpm test:e2e             # e2e da API
 pnpm test:frontend        # só Vitest
-pnpm --filter @hackathon/backend test -- --coverage
+pnpm --filter @careflow/backend test -- --coverage
 pnpm smoke                # requer API rodando
 ```
 
@@ -43,6 +43,24 @@ pnpm db:deploy
 - E2E força `LLM_PROVIDER=mock` no setup.
 - CI não precisa de `GEMINI_API_KEY`.
 - O provider Gemini é testado por contrato, sem chamada real.
+- `confidence` da extração é enum (`high|medium|low`), nunca número. O teste cobre
+  também o rebaixamento quando o `evidenceQuote` não é literal.
+- O Gemini não fornece confiança calibrada; logprobs não estão habilitados no
+  `gemini-3.5-flash-lite` (teste de 2026-10-23 retornou 400). Não testar como
+  probabilidade.
+- Intake: texto sem PII, schema `caseIntakeSuggestionSchema` e confirmação humana; PDF
+  não é extraído no MVP.
+- `LATE_ENTRY`: caso cadastrado após `requestedAt + 30` recebe selo e não reinicia o
+  prazo.
+- `CONTACT_LOGGED`: canal do enum, não muda estado e não zera silêncio.
+
+## Responsividade
+
+- Testing Library cobre a troca de breakpoint por classe/estado.
+- O layout real é validado no checklist manual: 360×640, 768×1024, 1280×800 e
+  1440×900.
+- Critérios: sem overflow horizontal fora da rolagem do calendário, alvos de toque
+  com 44×44px e link da paciente em uma coluna no celular.
 
 ## Evidência de entrega
 

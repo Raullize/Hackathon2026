@@ -1,4 +1,4 @@
-# Backend
+# CareFlow — Backend
 
 API NestJS do starter: autenticação JWT, chat com Gemini, health checks e
 Swagger.
@@ -28,10 +28,10 @@ Ou manualmente:
 cp .env.example .env
 docker compose up -d db
 pnpm install
-pnpm --filter @hackathon/contracts build
-pnpm --filter @hackathon/backend db:generate
-pnpm --filter @hackathon/backend db:deploy
-pnpm --filter @hackathon/backend db:seed
+pnpm --filter @careflow/contracts build
+pnpm --filter @careflow/backend db:generate
+pnpm --filter @careflow/backend db:deploy
+pnpm --filter @careflow/backend db:seed
 pnpm dev:backend
 ```
 
@@ -43,9 +43,9 @@ Swagger: http://localhost:3000/docs
 | Comando | Descrição |
 | --- | --- |
 | `pnpm dev:backend` | API em watch mode |
-| `pnpm --filter @hackathon/backend build` | Build |
-| `pnpm --filter @hackathon/backend test` | Unitários |
-| `pnpm --filter @hackathon/backend test:e2e` | E2E (precisa do banco) |
+| `pnpm --filter @careflow/backend build` | Build |
+| `pnpm --filter @careflow/backend test` | Unitários |
+| `pnpm --filter @careflow/backend test:e2e` | E2E (precisa do banco) |
 | `pnpm db:migrate` | Migration de desenvolvimento |
 | `pnpm db:deploy` | Aplica migrations existentes |
 | `pnpm db:seed` | Usuário demo |
@@ -80,7 +80,7 @@ curl -X POST http://localhost:3000/api/auth/register \
 ```bash
 curl -X POST http://localhost:3000/api/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"demo@hackathon.dev","password":"demo1234"}'
+  -d '{"email":"demo@careflow.dev","password":"demo1234"}'
 ```
 
 Guarde o `accessToken` retornado.
@@ -156,7 +156,7 @@ test/               # e2e + setup
 
 ## Decisões
 
-- Validação de entrada é Zod, compartilhada via `@hackathon/contracts`.
+- Validação de entrada é Zod, compartilhada via `@careflow/contracts`.
 - Auth simples: um access token de 8h, sem refresh token.
 - Chat stateless; não há tabela de conversa nesta fase.
 - Erros seguem `{ statusCode, error, message, path, timestamp }`.

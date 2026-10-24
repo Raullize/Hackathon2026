@@ -11,6 +11,8 @@
 - Para o gestor: ver o atraso antes de ele vencer e ter a prova para cobrar vaga da
   regional.
 - Para a rede: um calendário só, em vez de cada ponto com a sua lista.
+- Para o médico: **zero trabalho novo**. Ele continua pedindo o exame pelo e-SUS PEC,
+  SISCAN ou papel; a navegadora faz a ponte.
 
 ## Clientes
 
@@ -42,6 +44,8 @@ Hipóteses, nenhuma testada:
 | Item | Estimativa | Observação |
 | --- | --- | --- |
 | Gemini/LLM | Free tier hoje; `[DADO FALTANDO]` em produção | Uma chamada por laudo; o custo cresce com o volume. O mock cobre a falta de rede |
+| SMS/e-mail | `[DADO FALTANDO]` | Canais do escopo de integração; custo por mensagem |
+| WhatsApp | `[DADO FALTANDO]` | Apenas visão/roadmap; não integrado nesta fase |
 | Infra | `[DADO FALTANDO]` | Postgres e uma API NestJS; sem cron nem fila (ADR 0006) |
 | Operação | `[DADO FALTANDO]` | Treinamento e suporte à navegadora; revisão jurídica da LGPD |
 
@@ -65,12 +69,13 @@ Hipóteses, nenhuma testada:
 - Coordenar pela atenção primária é mais barato: resolver um encaminhamento na APS
   custou R$ 239,22, contra R$ 759,26 quando virou consulta especializada (RegulaSUS,
   não é câncer) 🟢.
-- **Não afirmamos economia do Dia 30.** Mostramos o custo do atraso como contexto.
+- **Não afirmamos economia do CareFlow.** Mostramos o custo do atraso como contexto.
 
 ## Go-to-market
 
-1. **Piloto manual em Charqueadas** com a navegadora ou a enfermeira da regulação,
-   dados reais só após decidir a regra de LGPD (`domain.md`).
+1. **Piloto manual em Charqueadas** com a navegadora — função já prevista em lei; no
+   município, confirmar quem exerce o papel `[SUPOSIÇÃO: confirmar na entrevista]`.
+   Dados reais só após decidir a regra de LGPD (`domain.md`).
 2. **Levar a prova à 2ª CRS e à secretaria estadual:** prazos cumpridos, casos em
    silêncio e exceções "falta de vaga".
 3. **Fase 2:** importar laudos alterados do SISCAN e encaminhamentos do GERCON, e
@@ -92,7 +97,9 @@ Hipóteses, nenhuma testada:
   prazo da suspeita ao tratamento para todos verem (`EVIDENCE.md`, seção 8) e que o
   Conass descreve a necessidade.
 - Dependência de integração com sistemas públicos `[SUPOSIÇÃO: viabilidade a
-  confirmar]`.
+  confirmar]`. RNDS exige HL7 FHIR e credenciamento pelo Portal de Serviços do
+  DATASUS; `[DADO FALTANDO]` modelo específico para laudo de mama. Não há API pública
+  do SISCAN/PEC confirmada; o LEDI do e-SUS é só envio ao SISAB.
 - LGPD e provedor de IA externo para dado de saúde (`[DECISÃO PENDENTE]`).
 
 ## Ligação com o pitch

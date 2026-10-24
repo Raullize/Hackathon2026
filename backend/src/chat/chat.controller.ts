@@ -13,7 +13,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import type { ChatResponse } from '@hackathon/contracts';
+import type { ChatResponse } from '@careflow/contracts';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { ChatRequestDto, ChatResponseDto } from './dto/chat.dto';

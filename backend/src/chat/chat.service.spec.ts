@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import type { ChatMessage } from '@hackathon/contracts';
+import type { ChatMessage } from '@careflow/contracts';
 import type { AppEnv } from '../config/env';
 import { ChatService } from './chat.service';
 import { GeminiProvider } from './providers/gemini.provider';

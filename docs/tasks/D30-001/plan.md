@@ -19,6 +19,9 @@ seções 4 a 7, 9 e 18.
 - RF-016 (exceções e encerramento: regra de domínio)
 - RF-017 (transições: matriz de domínio; o endpoint fica no D30-002)
 - RF-018 (correção: aplicação no cálculo; o endpoint fica no D30-002)
+- RF-033 (extração de intake: contrato)
+- RF-034 (descoberta tardia: cálculo do selo)
+- RF-035 (registro de cobrança: contrato do evento)
 - RNF-012 (sem cron)
 - RNF-014 (datas sem hora, dias inteiros, sem dependência nova)
 
@@ -38,6 +41,11 @@ seções 4 a 7, 9 e 18.
   `malignancy` é rejeitada.
 - [ ] Matriz de transições: todo par (estado, evento) fora da tabela 4.3 é rejeitado
   com um erro de domínio que o D30-002 traduz em `409`.
+- [ ] `LATE_ENTRY`: `CASE_CREATED.recordedAt > requestedAt + 30` gera o selo, sem
+  reiniciar o prazo.
+- [ ] `CONTACT_LOGGED` aceita canais do enum, não muda estado e não zera silêncio.
+- [ ] `caseIntakeSuggestionSchema` tem `requestedAt`, `trigger`, `examLabel`,
+  `evidenceQuote` e `provider`, sem nome/CNS/data de nascimento.
 - [ ] Golden fixture da Maria: em `T`, dia 18 de 30, verde; em `T+7`, dia 25, faltam 5,
   amarelo, com os selos de data passada e de silêncio; depois do laudo maligno com
   `reportDate = T+7`, 30 dias cumpriu e D60 vencendo em `T+67`.
@@ -49,8 +57,11 @@ seções 4 a 7, 9 e 18.
 - [ ] Schema Prisma com `Case`, `CaseEvent`, `ReportExtraction`, `PatientAccessToken` e
   `DemoClockState`; `prisma validate` passa e a migration é gerada.
 - [ ] Contratos Zod em `packages/contracts` (datas `YYYY-MM-DD`, `CaseEventInput` como
-  `discriminatedUnion('type')`, `CaseView`, `reportSuggestionSchema`) exportados e com
-  build verde.
+  `discriminatedUnion('type')`, `CaseView` com `source` e `LATE_ENTRY`,
+  `reportSuggestionSchema`, `caseIntakeSuggestionSchema`, `CONTACT_LOGGED`) exportados e
+  com build verde.
+- [ ] `reportSuggestionSchema.confidence` é enum `high|medium|low`, nunca número; a
+  spec e o ADR 0008 deixam claro que é heurística, não probabilidade do Gemini.
 - [ ] Suíte, lint, typecheck e build verdes; evidência em `docs/deliveries/`.
 
 ## Plano
@@ -84,6 +95,7 @@ seções 4 a 7, 9 e 18.
 ## Arquivos previstos
 
 - `packages/contracts/src/cases.ts`
+- `packages/contracts/src/case-intake.ts`
 - `packages/contracts/src/index.ts`
 - `backend/prisma/schema.prisma`
 - `backend/prisma/migrations/<timestamp>_dia30_cases/migration.sql`
@@ -112,7 +124,7 @@ seções 4 a 7, 9 e 18.
 
 ## Evidência esperada
 
-- Comando: `pnpm --filter @hackathon/backend test -- src/cases/domain`, `pnpm lint`,
+- Comando: `pnpm --filter @careflow/backend test -- src/cases/domain`, `pnpm lint`,
   `pnpm typecheck`, `pnpm test`, `pnpm build`.
 - Resultado: contagem de testes passando; a falha inicial de cada teste registrada em
   `progress.txt`; o teste que quebra de propósito reprovando a versão errada.

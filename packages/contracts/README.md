@@ -1,4 +1,4 @@
-# @hackathon/contracts
+# @careflow/contracts (CareFlow)
 
 Schemas Zod compartilhados entre `backend` e `frontend`. Esta é a fonte da
 verdade dos formatos de entrada e saída da API.
@@ -14,7 +14,7 @@ verdade dos formatos de entrada e saída da API.
 O pacote é consumido pelo build (`dist/`), então rode antes de subir os apps:
 
 ```bash
-pnpm --filter @hackathon/contracts build
+pnpm --filter @careflow/contracts build
 ```
 
 Em desenvolvimento, `pnpm dev` na raiz já inicia o pacote em modo watch.

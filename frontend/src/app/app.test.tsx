@@ -11,7 +11,7 @@ describe('App', () => {
     );
 
     expect(
-      screen.getByText('Hackathon 2026 — starter pronto'),
+      screen.getByText('CareFlow — starter pronto'),
     ).toBeInTheDocument();
     expect(screen.getByText('shadcn/ui configurado')).toBeInTheDocument();
   });

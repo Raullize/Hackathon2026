@@ -1,6 +1,6 @@
-# Spec do MVP — Dia 30
+# Spec do MVP — CareFlow (Dia 30)
 
-> **Contexto.** Spec do MVP do Dia 30 para o hackathon Saúde Conectada 2026. O domínio
+> **Contexto.** Spec do MVP do CareFlow para o hackathon Saúde Conectada 2026. O domínio
 > está em [`domain.md`](./domain.md); os números e as fontes, em
 > [`../pitch/EVIDENCE.md`](../pitch/EVIDENCE.md); a operação nas unidades, em
 > [`../pitch/OPERATIONS.md`](../pitch/OPERATIONS.md). As decisões vêm da entrevista de
@@ -22,21 +22,30 @@ prazo aberto. O protótipo avisa quem precisa agir antes do vencimento, usa a IA
 para **sugerir** a estrutura de um laudo em texto livre e mostra à paciente o próximo
 passo e os direitos dela, sem a palavra "câncer".
 
-A demo prova uma frase: **o Dia 30 antecipa o atraso, em vez de medir depois.** O
+A demo prova uma frase: **o CareFlow antecipa o atraso, em vez de medir depois.** O
 aviso vem da conta das datas, não de um modelo de previsão.
 
 ## 2. Escopo e fora de escopo
 
 ### Escopo
 
-- Cadastro do caso pela navegadora, com dados fictícios.
+- Cadastro do caso pela navegadora, com dados fictícios. **A navegadora é a única
+  usuária do sistema.** O médico não usa o CareFlow: ele pede o exame pelo caminho de
+  sempre (e-SUS PEC, SISCAN, papel), com zero trabalho novo. A paciente só recebe
+  mensagem e link de leitura.
 - Motor de prazos: a função pura `computeCaseStatus(case, events, today)`, só no backend.
 - Linha do tempo append-only (`CaseEvent`), com correção auditável.
 - Calendário de 9 semanas, mais as colunas "Vencidos" e "Depois", a aba "Concluídos"
   e o detalhe do caso.
 - Extração do laudo: a IA sugere, a navegadora edita e confirma.
+- Extração de intake: a navegadora cola o texto do pedido; a IA pré-preenche
+  `requestedAt`, `trigger` e `examLabel`; ela confirma. Sem PII no texto da IA.
+- Registro de `source` no `CASE_CREATED` e selo `LATE_ENTRY` para descoberta tardia.
+- Registro de cobrança (`CONTACT_LOGGED`) com canal e observação, sem mudar estado.
+- PDF é interface no MVP; só texto é funcional.
 - Alertas derivados na leitura, com a escada de destinatários.
-- Simulador de WhatsApp: mensagens geradas por evento, sem envio real.
+- Simulador de mensagens nos canais SMS e e-mail: textos gerados por evento, sem envio
+  real nesta fase.
 - Link público da paciente, só leitura.
 - Mini painel de métricas.
 - Modo demo: relógio deslocável, reset e seed.
@@ -44,11 +53,19 @@ aviso vem da conta das datas, não de um modelo de previsão.
 ### Fora de escopo
 
 - Integração com e-SUS, SISCAN, GERCON e RNDS (fases futuras em `OPERATIONS.md`).
-- Envio real de WhatsApp ou SMS.
+  - **RNDS:** padrão HL7 FHIR, via Portal de Serviços do DATASUS; exige credenciamento
+    do estabelecimento. `[DADO FALTANDO]` Modelo RNDS específico para laudo de mama
+    ainda não confirmado.
+  - **SISCAN e e-SUS PEC:** não há API pública de leitura confirmada; o LEDI do e-SUS
+    é apenas de envio ao SISAB. Importação por relatório/exportação é
+    `[SUPOSIÇÃO: viabilidade a confirmar]`.
+- Envio real nesta demo. A integração real prevista é por **SMS e e-mail**.
+- **WhatsApp:** não faz parte da integração implementada. Ele aparece apenas como
+  **visão/roadmap** no pitch final, junto de SMS e e-mail.
 - Roles e perfis: só a navegadora faz login. UBS, regulação, prestador, coordenação e
   2ª CRS aparecem apenas como **destinatários** dos alertas.
 - Entidade `Patient` separada do caso `[DECISÃO PENDENTE: fase 1]`.
-- Agendar vagas: o Dia 30 não cria vaga.
+- Agendar vagas: o CareFlow não cria vaga.
 - Cron, filas e `@nestjs/schedule` (ADR 0006).
 - Chatbot: a tela de chat (FEAT-002) sai do MVP. O produto não é chatbot; a IA
   estrutura laudos.
@@ -62,7 +79,7 @@ aviso vem da conta das datas, não de um modelo de previsão.
 | Caso (`Case`) | Uma pessoa com suspeita de câncer de mama, do pedido dos exames até o fechamento |
 | Evento (`CaseEvent`) | Fato registrado na linha do tempo do caso. Append-only: nunca é editado nem apagado |
 | Gatilho (`trigger`) | O que abriu o caso: `BIRADS_5`, `BIRADS_4` ou `CLINICAL_SUSPICION` |
-| Dia zero (`requestedAt`) | Data do pedido dos exames, informada pela UBS ou pela navegadora. Não é a data do cadastro |
+| Dia zero (`requestedAt`) | Data do pedido dos exames, informada pela navegadora a partir do pedido que o médico/UBS fez no fluxo habitual. Não é a data do cadastro |
 | `reportDate` | Data escrita no laudo. Fecha o relógio de 30 dias e abre o de 60 |
 | `treatmentStartedAt` | Data do início do primeiro tratamento: cirurgia, quimioterapia ou radioterapia |
 | Relógio aberto | O prazo que está correndo agora: `D30` ou `D60`. Caso fechado não tem relógio aberto |
@@ -73,6 +90,10 @@ aviso vem da conta das datas, não de um modelo de previsão.
 | Selo (`badge`) | Marca no card que não muda a cor por si só, exceto o silêncio (seção 6) |
 | Exceção | Recusa, ausência, contraindicação, pendência clínica, transporte ou falta de vaga. Anota e põe selo; nunca suspende o prazo |
 | Extração (`ReportExtraction`) | Sugestão da IA (ou da regra local) para um laudo colado. Fica no servidor até ser confirmada |
+| Intake (`CaseIntake`) | Sugestão da IA para o texto do pedido/encaminhamento; não cria caso sozinha |
+| `source` | Origem do caso: `UBS_BRIDGE`, `REGULATION`, `SISCAN`, `PROVIDER` ou `OTHER` |
+| `LATE_ENTRY` | Selo de caso cadastrado depois de `requestedAt + 30`; não reinicia o prazo |
+| `CONTACT_LOGGED` | Evento de cobrança/contato (canal + nota); não muda estado nem zera silêncio |
 | Navegadora | Única usuária com login. Dona da lista de casos |
 | Hoje | Data local em `America/Sao_Paulo`, calculada só pelo `Clock`, mais o deslocamento de demo |
 
@@ -104,7 +125,7 @@ para `TREATMENT_STARTED`.
 
 | `type` | Muda estado? | Conta como notícia? | Payload (além de `occurredAt`) |
 | --- | --- | --- | --- |
-| `CASE_CREATED` | cria em `SUSPECTED` | Sim | `trigger`, `requestedAt` |
+| `CASE_CREATED` | cria em `SUSPECTED` | Sim | `trigger`, `requestedAt`, `source` |
 | `EXAM_SCHEDULED` | → `EXAM_SCHEDULED` | Sim | `examLabel`, `scheduledFor`, `location` |
 | `EXAM_DONE` | → `EXAM_DONE` | Sim | `examLabel` |
 | `REPORT_RECEIVED` | → `REPORT_PENDING_CONFIRMATION` | Sim | — |
@@ -114,6 +135,7 @@ para `TREATMENT_STARTED`.
 | `CASE_CLOSED_EXCEPTION` | → `CLOSED_EXCEPTION` | — (fecha o caso) | `reason` (`DEFINITIVE_REFUSAL`, `DEATH`), `note` |
 | `CORRECTION` | Não | **Não** | `correctsEventId`, `changes`, `reason` |
 | `ALERT_ACKNOWLEDGED` | Não | **Não** | `alertKey` |
+| `CONTACT_LOGGED` | Não | **Não** | `channel` (`PHONE`, `EMAIL`, `SMS`, `WHATSAPP`), `note` |
 
 - `EXCEPTION_NOTED.reason`: `REFUSAL`, `ABSENCE`, `CONTRAINDICATION`, `CLINICAL_PENDING`,
   `TRANSPORT`, `NO_CAPACITY` ("falta de vaga").
@@ -142,9 +164,9 @@ Regras:
   permitido (o laudo pode chegar sem registro do agendamento).
 - `REPORT_CONFIRMED.malignancy` decide o destino: `malignant` → `DIAGNOSIS_CONFIRMED`;
   `benign` → `DISCARDED`; `inconclusive` → `EXAM_TO_RESCHEDULE`.
-- `EXCEPTION_NOTED`, `CORRECTION` e `ALERT_ACKNOWLEDGED` valem em qualquer estado
-  aberto. `CORRECTION` também vale em caso fechado, porque corrige dado e não reabre
-  nada `[SUPOSIÇÃO]`.
+- `EXCEPTION_NOTED`, `CORRECTION`, `ALERT_ACKNOWLEDGED` e `CONTACT_LOGGED` valem em
+  qualquer estado aberto. `CORRECTION` também vale em caso fechado, porque corrige dado
+  e não reabre nada `[SUPOSIÇÃO]`.
 - Transição inválida → **409**. Payload inválido → **400**. Evento em caso fechado
   (exceto `CORRECTION`) → **409**.
 - A remarcação (`EXAM_SCHEDULED` em `EXAM_SCHEDULED`) não está escrita nas decisões. Sem
@@ -184,6 +206,14 @@ Regras:
   mais recente (`recordedAt`).
 - Os valores corrigidos passam pelas mesmas validações do evento original (por
   exemplo, `requestedAt` no futuro → 400).
+
+### 4.6 Descoberta tardia
+
+- `requestedAt` é a data do pedido, não a data do cadastro.
+- Se `CASE_CREATED.recordedAt > requestedAt + 30`, o caso nasce com o selo
+  `LATE_ENTRY`, cor vermelha e alerta imediato para coordenação.
+- O prazo **não reinicia** e o caso entra na fila de cobrança no mesmo dia.
+- A origem (`source`) e o tempo entre pedido e cadastro alimentam as métricas.
 
 ## 5. Regras de prazo
 
@@ -274,7 +304,7 @@ são `[SUPOSIÇÃO]`, a combinar com a gestão.
 
 Só os eventos de etapa zeram o silêncio: `CASE_CREATED`, `EXAM_SCHEDULED`, `EXAM_DONE`,
 `REPORT_RECEIVED`, `REPORT_CONFIRMED`, `TREATMENT_STARTED` e `EXCEPTION_NOTED`.
-`ALERT_ACKNOWLEDGED` e `CORRECTION` **não** zeram.
+`ALERT_ACKNOWLEDGED`, `CORRECTION` e `CONTACT_LOGGED` **não** zeram.
 
 - `silêncio = hoje − data da última notícia`.
 - A data da notícia é a data local de `recordedAt` (quando a equipe ficou sabendo), e
@@ -431,12 +461,26 @@ Clicar no card abre o detalhe, com a linha do tempo.
 - Contraste mínimo WCAG AA no texto dos cards e dos selos `[SUPOSIÇÃO]`.
 - Selos em texto, não só em ícone.
 
-### 8.6 Celular
+### 8.6 Responsividade e celular
 
-- Abaixo de 768px, a grade vira uma lista vertical agrupada por semana, na mesma ordem:
-  "Vencidos", as 9 semanas e "Depois".
-- O link da paciente é pensado primeiro para celular: uma coluna, texto grande, sem
-  rolagem horizontal.
+A aplicação é **responsiva em todos os fluxos**, não só no calendário. A demo precisa
+funcionar no notebook da banca e no celular.
+
+- **Mobile-first** para o link da paciente: uma coluna, texto legível, botões grandes e
+  sem rolagem horizontal.
+- **Breakpoints de referência:** 360px, 768px, 1024px e 1440px.
+- **Abaixo de 768px:** a grade do calendário vira lista vertical agrupada por semana,
+  na mesma ordem: "Vencidos", as 9 semanas e "Depois".
+- **Entre 768px e 1024px:** calendário com rolagem horizontal controlada e colunas
+  "Vencidos"/"Depois" fixas; detalhe e formulários empilhados.
+- **Acima de 1024px:** calendário de 9 semanas com rolagem horizontal; detalhe em duas
+  colunas quando houver espaço.
+- **Sem overflow horizontal** fora da rolagem intencional do calendário.
+- **Alvos de toque** com pelo menos 44×44px no celular.
+- **Formulários e diálogos** ocupam a largura disponível no celular, com labels
+  visíveis e teclado adequado por tipo de campo.
+- **Teste manual** em 360×640, 768×1024, 1280×800 e 1440×900, além de teclado e zoom.
+- Componentes shadcn/Tailwind devem ser usados com breakpoints, não com largura fixa.
 
 ### 8.7 Barra de demo
 
@@ -573,11 +617,12 @@ tabela 10.3 quando houver.
 
 | Método e rota | Auth | Corpo | Resposta | Erros |
 | --- | --- | --- | --- | --- |
-| `POST /api/cases` | JWT | `{ fullName, cns, birthDate, trigger, requestedAt }` | 201 `CaseView` | 400, 401 |
+| `POST /api/cases` | JWT | `{ fullName, cns, birthDate, trigger, requestedAt, source }` | 201 `CaseView` | 400, 401 |
 | `GET /api/cases?scope=open\|closed` | JWT | — | 200 `{ today, cases: CaseView[] }` | 400 (scope inválido), 401 |
 | `GET /api/cases/:id` | JWT | — | 200 `CaseDetail` | 401, 404 |
 | `POST /api/cases/:id/events` | JWT | `CaseEventInput` (`discriminatedUnion('type')`) | 201 `CaseView` | 400, 401, 404, 409 |
 | `POST /api/cases/:id/report-extractions` | JWT | `{ reportText }` | 201 `ReportExtractionView` | 400, 401, 404, 409, 429 |
+| `POST /api/case-intake/extractions` | JWT | `{ requestText }` | 201 `CaseIntakeView` | 400, 401, 409, 429 |
 | `POST /api/cases/:id/access-tokens` | JWT | — | 201 `{ token, path }` (mostrado uma única vez) | 401, 404, 409 (caso fechado há mais de 30 dias) |
 | `GET /api/alerts` | JWT | — | 200 `Alert[]` | 401 |
 | `GET /api/metrics` | JWT | — | 200 `Metrics` | 401 |
@@ -598,7 +643,7 @@ tabela 10.3 quando houver.
 ```ts
 // CaseView: o caso já calculado pelo backend
 {
-  id, initials, trigger, status,
+  id, initials, trigger, status, source,
   requestedAt, reportDate | null, treatmentStartedAt | null,
   clock: 'D30' | 'D60' | null,
   day: number | null, dayTotal: 30 | 60 | null,
@@ -609,6 +654,7 @@ tabela 10.3 quando houver.
     | { type: 'SILENCE', days }
     | { type: 'MISSED_DATE', scheduledFor }
     | { type: 'REPORT_PENDING' }
+    | { type: 'LATE_ENTRY', daysLate }
   >,
   nextStep: { label, scheduledFor: string | null, location: string | null } | null,
   outcome30: 'MET' | 'NOT_MET' | 'MET_UNTIL_CLOSE' | null,
@@ -621,6 +667,12 @@ tabela 10.3 quando houver.
 
 // ReportExtractionView
 { extractionId, provider: 'gemini' | 'mock', fallbackReason | null, suggestion: ReportSuggestion }
+
+// CaseIntakeView
+{ provider: 'gemini' | 'mock', fallbackReason | null, suggestion: CaseIntakeSuggestion }
+
+// CaseIntakeSuggestion
+{ requestedAt: 'YYYY-MM-DD', trigger: 'BIRADS_5' | 'BIRADS_4' | 'CLINICAL_SUSPICION', examLabel: string, evidenceQuote: string }
 ```
 
 `fullName`, `cns` e `birthDate` nunca saem em nenhuma resposta. O detalhe mostra a
@@ -657,11 +709,17 @@ segunda devolve 409.
   examType: string,                 // ex.: "anatomopatológico"; até 80 caracteres
   reportDate: 'YYYY-MM-DD' | null,  // data escrita no laudo
   malignancy: 'malignant' | 'benign' | 'inconclusive',
-  confidence: 'high' | 'medium' | 'low',
+  confidence: 'high' | 'medium' | 'low', // rótulo heurístico, NÃO probabilidade
   evidenceQuote: string,            // trecho literal do laudo (já filtrado)
   provider: 'gemini' | 'mock',
 }
 ```
+
+> **Sobre `confidence`:** o Gemini não devolve uma confiança calibrada nativa. O
+> campo é um **rótulo qualitativo** gerado pelo modelo ou derivado pela regra local.
+> Ele não é uma probabilidade e não pode ser usado para decisão clínica automática.
+> O servidor pode recalcular ou rebaixar o rótulo quando o `evidenceQuote` não for
+> literal ou quando o texto for ambíguo. Ver ADR 0008.
 
 ### 11.2 Fluxo
 
@@ -724,12 +782,26 @@ PENDENTE]` (aviso de LGPD em `domain.md`).
 - `evidenceQuote`: a frase que contém a palavra-chave; sem palavra-chave, as primeiras
   120 letras do texto filtrado `[SUPOSIÇÃO]`.
 
+No mock, `confidence` é **derivado de regra** (`low`/`medium`), não de uma
+probabilidade estatística.
+
 ### 11.6 Gemini
 
 - Usa o cliente `@google/genai` que já existe e a mesma lista de modelos do ADR 0004.
 - Prompt em `backend/src/report-extraction/prompts/`, pedindo só o JSON do schema e um
   trecho literal.
 - Temperatura 0 na extração, fixa no código, para reduzir variação `[SUPOSIÇÃO]`.
+- **`confidence` não é uma probabilidade calibrada.** O Gemini não devolve um campo
+  nativo de confiança no `generateContent`. O SDK até expõe `avgLogprobs` e
+  `logprobsResult`, mas logprobs dependem do modelo; em 2026-10-23, o
+  `gemini-3.5-flash-lite` retornou `400 Logprobs is not enabled for this model`.
+  Portanto, o campo é um **rótulo qualitativo** pedido no JSON ou derivado pelo
+  servidor, e não pode ser usado para decisão clínica automática.
+- O servidor valida se `evidenceQuote` aparece literalmente no texto filtrado. Se não
+  aparecer, cai para o mock com `invalid_output`; também pode **rebaixar** o
+  `confidence` quando o trecho for ambíguo.
+- `confidence` é interno da navegadora: não é exibido para a paciente e não muda o
+  estado do caso.
 
 ### 11.7 LGPD
 
@@ -740,21 +812,38 @@ PENDENTE]` (aviso de LGPD em `domain.md`).
   regra de produção é `[DECISÃO PENDENTE]`.
 - Nunca registrar o texto do laudo (bruto ou filtrado) em log, nem em mensagem de erro.
 
+### 11.8 Extração de intake do pedido
+
+- Porta separada da extração de laudo: `CaseIntakeExtractor`.
+- Entrada: texto do pedido/encaminhamento colado pela navegadora.
+- Saída validada por Zod: `requestedAt`, `trigger`, `examLabel`, `evidenceQuote`,
+  `provider`.
+- **Sem PII:** a navegadora preenche nome, CNS e data de nascimento manualmente. O
+  texto enviado à IA não contém esses dados.
+- PDF é apenas interface no MVP; a extração funcional recebe texto.
+- O resultado é uma sugestão. A navegadora confirma antes de criar o caso.
+- Fallback para mock com `no_api_key`, `timeout`, `provider_error` ou `invalid_output`.
+
 ## 12. Mensagens para a paciente
 
 - Templates fixos em PT. A IA nunca escreve para a paciente.
 - Calculadas na leitura, a partir dos eventos e do relógio, sem tabela.
 - Horário da mensagem: o `occurredAt` do evento que a gerou. O lembrete de silêncio
   leva a data em que o silêncio completou 7 dias.
-- Aparecem no detalhe do caso e no link da paciente, como um simulador de WhatsApp. Não
-  há envio real.
+- Aparecem no detalhe do caso e no link da paciente, como um **simulador de SMS e
+  e-mail**. Não há envio real nesta fase.
+- **Canais do MVP:** SMS e e-mail. **WhatsApp não faz parte da integração
+  implementada**; no pitch final ele aparece apenas como visão/roadmap, junto dos
+  outros dois canais.
+- A mensagem é a mesma nos dois canais; o que muda é o transporte. O protótipo mostra
+  a prévia e o canal, sem disparar nada.
 - As mensagens usam os valores do evento original, isto é, o que teria sido enviado.
   Uma correção não reescreve a mensagem antiga `[DECISÃO PENDENTE: gerar mensagem de
   correção]`.
 
 | Gatilho | Texto |
 | --- | --- |
-| `CASE_CREATED` | "Olá! A sua UBS registrou um pedido de exames para investigação da mama em {requestedAt}. Pela lei, você tem direito a fazer esses exames em até 30 dias, até {vencimento30}. Vamos avisar você de cada passo." |
+| `CASE_CREATED` | "Olá! A sua UBS fez um pedido de exames para investigação da mama em {requestedAt}. Pela lei, você tem direito a fazer esses exames em até 30 dias, até {vencimento30}. Vamos avisar você de cada passo." |
 | `EXAM_SCHEDULED` | "Seu exame ({examLabel}) está marcado para {scheduledFor}, em {location}." |
 | `REPORT_CONFIRMED` → `EXAM_TO_RESCHEDULE` | "Precisamos remarcar o seu exame. A equipe vai entrar em contato com a nova data. O seu prazo de 30 dias continua valendo: até {vencimento30}." |
 | `REPORT_CONFIRMED` → `DIAGNOSIS_CONFIRMED` | "Seu resultado está pronto, e a equipe vai entrar em contato. Você tem direito a iniciar o tratamento em até 60 dias, até {vencimento60}." |
@@ -814,6 +903,7 @@ PENDENTE]` (aviso de LGPD em `domain.md`).
 | `MISSED_DATE` | Data passou sem registro | Navegadora | Confirmar se o exame aconteceu |
 | `NEAR_DUE` | Faltam 3 dias ou menos (e não venceu) `[SUPOSIÇÃO]` | Regulação municipal | Priorizar o agendamento no GERCON |
 | `OVERDUE` | Vencido | Coordenação da atenção básica e SMS | Levar o caso para a gestão |
+| `LATE_ENTRY` | Cadastrado após `requestedAt + 30` | Coordenação da atenção básica | Priorizar e apurar a origem da descoberta tardia |
 | `OVERDUE_NO_CAPACITY` | Vencido e com exceção `NO_CAPACITY` no relógio aberto | 2ª CRS | Pedir vaga ou redistribuição regional |
 
 - As regras se somam: um caso vencido sem vaga gera `OVERDUE` e `OVERDUE_NO_CAPACITY`;
@@ -839,6 +929,8 @@ traz numerador e denominador.
 | % tratamentos em até 60 dias | casos com `treatmentStartedAt ≤ reportDate + 60` ÷ (casos com tratamento iniciado + casos em `DIAGNOSIS_CONFIRMED` com o D60 vencido) |
 | IA, principal | laudos confirmados sem nenhum campo alterado ÷ laudos confirmados |
 | IA, secundária | campos alterados ÷ campos sugeridos (4 por laudo: `examType`, `reportDate`, `malignancy`, `evidenceQuote`) |
+| Descoberta tardia | casos com `LATE_ENTRY` ÷ casos cadastrados |
+| Tempo até cadastro | média de `CASE_CREATED.recordedAt − requestedAt`, em dias |
 
 - "% sem informação" é **parecida** com a medida de Porto Alegre (32% dos casos de mama
   sem informação de tempo até o tratamento, jan–ago/2024; `EVIDENCE.md`, seção 12), mas
@@ -858,7 +950,7 @@ traz numerador e denominador.
   `demoRawText`. A variável entra no `env.ts` e no `.env.example` no D30-002.
 - `DEMO_MODE=true` com `NODE_ENV=production` falha na validação do ambiente, porque o
   reset apaga as tabelas `[DECISÃO PENDENTE]`.
-- `POST /api/demo/reset` faz o truncate só das tabelas do Dia 30, recarrega o seed e
+- `POST /api/demo/reset` faz o truncate só das tabelas do CareFlow, recarrega o seed e
   zera o relógio.
 
 ### 16.2 Seed
@@ -879,8 +971,9 @@ fictícios; o CNS usa um prefixo claramente falso (ex.: `000000000000001`).
 | 8 | Sônia Piloto Alves | `BIRADS_5` | `DIAGNOSIS_CONFIRMED` | pedido `T−28`; laudo maligno `T−5`, confirmado `T−3` | Verde, dia 5 de 60 |
 | 9 | Teresa Prova Gomes | `BIRADS_5` | `DIAGNOSIS_CONFIRMED` | pedido `T−100`; laudo maligno `T−65` (30 dias não cumpriu); exceção `TRANSPORT` em `T−12` | Vermelho, dia 65 de 60, selos "Exceção: transporte" e "Sem notícia há 12 dias" |
 | 10 | Vera Fictícia Dias | `CLINICAL_SUSPICION` | `CLOSED_EXCEPTION` | pedido `T−30`; recusa definitiva em `T−8` | Concluídos: 30 dias "cumpriu até o encerramento" |
+| 11 | Nora Atraso Fictícia | `BIRADS_4` | `SUSPECTED` | pedido `T−45`; cadastro em `T−2` | Vermelho, selo "Descoberta tardia"; alerta imediato |
 
-- O seed cobre os 9 estados e as 3 cores.
+- O seed cobre os 9 estados, as 3 cores e um caso de descoberta tardia.
 - Laudos fictícios: 3 arquivos (`malignant`, `benign`, `inconclusive`) em
   `backend/test/fixtures/reports/`, reaproveitados nos testes do mock, do filtro e na
   demo. Cada um tem um nome, um CPF e um CNS falsos, para provar o filtro. As datas
@@ -921,9 +1014,15 @@ riscos (seção 20).
 | `clock` | `Clock` (porta), `SystemClock`, leitura do `DemoClockState` | Global. Sem `DEMO_MODE`, o deslocamento é sempre 0 |
 | `cases` | `domain/` (`computeCaseStatus`, transições, `DEADLINE_RULES`, datas, alertas, mensagens, métricas, todas funções puras), `CasesController`, `AlertsController`, `MetricsController`, porta `CaseRepository` e `PrismaCaseRepository` | O domínio não importa Prisma nem Nest |
 | `report-extraction` | Porta `ReportExtractor`, `GeminiReportExtractor`, `MockReportExtractor`, `IdentifierFilter`, controller de `report-extractions` | Reaproveita o padrão de fallback do chat |
+| `case-intake` | Porta `CaseIntakeExtractor`, `GeminiCaseIntakeExtractor`, `MockCaseIntakeExtractor`, controller de `case-intake/extractions` | Texto sem PII; PDF só UI no MVP |
 | `patient-access` | `GET /api/public/p/:token`, emissão e revogação de token | Throttle próprio |
 | `demo` | `/api/demo/*`, reset e seed | Registrado só com `DEMO_MODE=true` (por exemplo, com `ConditionalModule.registerWhen` do `@nestjs/config`, a confirmar na versão instalada) |
 
+- **Comunicação:** templates calculados no domínio; envio real por **SMS e e-mail**
+  fica fora do MVP. WhatsApp é apenas visão de pitch, não integração implementada
+  (ADR 0007).
+- **Confiança da extração:** `confidence` é rótulo heurístico, sem probabilidade
+  calibrada do Gemini (ADR 0008).
 - `computeCaseStatus` fica só no backend (`backend/src/cases/domain`). A API devolve o
   caso já calculado.
 - O `Clock`:
@@ -961,7 +1060,14 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 - Alertas: escada completa e chave estável.
 - Mensagens: todos os templates renderizados reprovam se tiverem uma palavra proibida.
 - Mock e filtro: os 3 laudos fictícios.
-- Métricas: fórmulas com numerador e denominador conhecidos.
+- `confidence`: aceita só `high|medium|low`; nunca número; o mock deriva da regra; o
+  servidor pode rebaixar quando o trecho não é literal; não altera o estado do caso.
+- `LATE_ENTRY`: `CASE_CREATED.recordedAt > requestedAt + 30` gera o selo e não reinicia
+  o prazo.
+- `CONTACT_LOGGED`: aceita canais do enum, não muda estado e não zera silêncio.
+- Intake: texto sem PII, saída Zod e confirmação humana; PDF não é extraído no MVP.
+- Métricas: fórmulas com numerador e denominador conhecidos, incluindo descoberta
+  tardia e tempo até cadastro.
 
 ### 18.2 Golden fixtures
 
@@ -981,11 +1087,18 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 - Os testes de `/api/demo/clock` numa suíte própria, com `DEMO_MODE=true`, que zera o
   relógio no `afterEach`.
 - Uma suíte sem `DEMO_MODE` prova que `/api/demo/*` devolve 404.
-- Truncate só das tabelas do Dia 30 no `beforeAll`.
+- Truncate só das tabelas do CareFlow no `beforeAll`.
 - `LLM_PROVIDER=mock`, como o setup e2e atual já força.
 - Duplo clique: duas confirmações seguidas → 201 e 409.
 - Link da paciente: inexistente e revogado devolvem o mesmo 404; a resposta não tem
   `fullName`, `cns` nem palavra proibida.
+- Extração: `confidence` inválido ou numérico → 400; JSON inválido → fallback mock com
+  `invalid_output`.
+- Intake: `POST /api/case-intake/extractions` não recebe PII, valida a saída e cai para
+  o mock em falha.
+- Descoberta tardia: caso criado com `requestedAt + 30 < hoje` retorna `LATE_ENTRY` e
+  alerta de coordenação.
+- Cobrança: `CONTACT_LOGGED` aceita os canais do enum e não zera silêncio.
 
 ### 18.4 Frontend (Vitest + Testing Library)
 
@@ -993,27 +1106,34 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 - Ordem dentro da coluna (cor, dias restantes, gatilho).
 - Rótulos em texto ("No prazo", "Atenção", "Vencido") e `aria-label` do card.
 - Barra de demo só aparece com `GET /api/demo/status` em 200.
-- Sem Playwright (seria dependência nova).
+- Responsividade: o calendário usa lista vertical abaixo de 768px; detalhe e
+  formulários empilham; a página pública não tem overflow horizontal; alvos de toque
+  com 44px.
+- Sem Playwright (seria dependência nova). O layout real é validado no checklist manual.
 
 ### 18.5 Smoke e checklist manual
 
 - `scripts/smoke.mjs` estendido com a história inteira da demo pela API (precisa de
   `DEMO_MODE=true`).
-- Checklist manual da UI, com print, em `docs/deliveries/`: calendário, celular (<768px),
-  teclado, detalhe, confirmação do laudo, link da paciente em modo celular.
+- Checklist manual da UI, com print, em `docs/deliveries/`: calendário, teclado,
+  detalhe, confirmação do laudo e link da paciente.
+- **Responsividade:** validar em 360×640, 768×1024, 1280×800 e 1440×900; sem overflow
+  horizontal fora da rolagem intencional do calendário; botões com 44×44px; link da
+  paciente em uma coluna.
 
 ## 19. Plano de entrega
 
-Seis histórias, uma por PR, nesta ordem. Cada PR cita os RFs que entrega.
+Sete histórias, uma por PR, nesta ordem. Cada PR cita os RFs que entrega.
 
 | Story | Entrega | RFs |
 | --- | --- | --- |
-| D30-001 | Contratos Zod, modelo Prisma, migration e `computeCaseStatus` com os testes das regras de prazo, silêncio, selos, cores e transições | RF-012 a RF-018 (regras de domínio) |
-| D30-002 | API de casos e eventos, `Clock`, endpoints de demo, `DEMO_MODE` e `REPORT_EXTRACTION_TIMEOUT_MS` no `env.ts` | RF-011, RF-017, RF-018, RF-030 |
+| D30-001 | Contratos Zod, modelo Prisma, migration e `computeCaseStatus` com as regras de prazo, silêncio, selos, cores, transições, `source`, `LATE_ENTRY` e `CONTACT_LOGGED` | RF-012 a RF-018, RF-033 a RF-035 |
+| D30-002 | API de casos e eventos, `Clock`, descoberta tardia, endpoints de demo, `DEMO_MODE` e `REPORT_EXTRACTION_TIMEOUT_MS` no `env.ts` | RF-011, RF-017, RF-018, RF-030, RF-034 |
 | D30-003 | `ReportExtractor` (mock, Gemini e filtro) e o fluxo de confirmação | RF-019, RF-020, RF-021 |
-| D30-004 | Telas de login, calendário e detalhe (absorve o FEAT-001) | RF-022, RF-023, RF-032 |
-| D30-005 | Alertas, mensagens, link da paciente e Concluídos com as métricas | RF-024 a RF-029 |
-| D30-006 | Seed, reset e roteiro da demo | RF-031 |
+| D30-007 | Extração de intake do pedido (texto; PDF só UI) | RF-033 |
+| D30-004 | Telas de login, intake, calendário e detalhe (absorve o FEAT-001) | RF-022, RF-023, RF-032, RF-033, RF-034 |
+| D30-005 | Alertas, mensagens, link da paciente, cobrança e Concluídos com as métricas | RF-024 a RF-029, RF-035 |
+| D30-006 | Seed, reset e roteiro da demo, incluindo descoberta tardia | RF-031 |
 
 ### Ordem de corte
 
@@ -1071,8 +1191,8 @@ Se o tempo apertar, sai nesta ordem:
 ### `[DADO FALTANDO]`
 
 - Risco de câncer na suspeita clínica sem mamografia (ordem dos cards).
-- Onde Charqueadas faz mamografia e biópsia hoje, e se já tem navegadora
-  (`EVIDENCE.md`, seção 15).
+- Onde Charqueadas faz mamografia e biópsia hoje, quem exerce a navegação no município
+  e como a navegadora fica sabendo dos casos (`EVIDENCE.md`, seção 15).
 
 ### `[SUPOSIÇÃO]` a validar com a gestão
 
@@ -1176,7 +1296,7 @@ Respostas do time em três rodadas. Onde uma rodada corrige a anterior, vale a m
 
 ### Escopo e entrega
 
-- Seis histórias (D30-001 a D30-006), uma por PR, com teste antes.
+- Sete histórias (D30-001 a D30-007), uma por PR, com teste antes.
 - Ordem de corte: métricas, escada, link público. Nunca cortar o calendário nem o
   fluxo do laudo.
 - FEAT-002 vai para "Fora do MVP": o produto não é chatbot; a IA estrutura laudos.

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { ChatMessage, ChatResponse } from '@hackathon/contracts';
+import type { ChatMessage, ChatResponse } from '@careflow/contracts';
 import type { ChatProvider } from './chat-provider.interface';
 
 @Injectable()

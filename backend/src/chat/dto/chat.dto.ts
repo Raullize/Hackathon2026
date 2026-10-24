@@ -1,4 +1,4 @@
-import { chatRequestSchema, chatResponseSchema } from '@hackathon/contracts';
+import { chatRequestSchema, chatResponseSchema } from '@careflow/contracts';
 import { createZodDto } from 'nestjs-zod';
 
 export class ChatRequestDto extends createZodDto(chatRequestSchema) {}

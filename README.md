@@ -1,12 +1,11 @@
-# Hackathon 2026 — Starter
+# CareFlow — Hackathon 2026
 
-Template full-stack para chegar no evento com o ambiente pronto e gastar o
-tempo no tema, não em boilerplate.
+CareFlow é a aplicação de acompanhamento dos prazos legais da linha de cuidado do câncer. Este repositório é o starter full-stack do projeto.
 
 ## Stack
 
 - **Backend:** NestJS 11, TypeScript, Prisma 6, PostgreSQL 17, Zod, JWT, Swagger.
-- **Frontend:** React 19, Vite 8, TypeScript, Tailwind 4, shadcn/ui, React Router, TanStack Query.
+- **Frontend:** React 19, Vite 8, TypeScript, Tailwind 4, shadcn/ui, React Router, TanStack Query; responsivo de 360px a 1440px.
 - **IA:** Gemini via `@google/genai`, com fallback mock para demo/offline.
 - **Infra local:** Docker Compose apenas para o PostgreSQL.
 - **Qualidade:** Jest + Supertest, Vitest + Testing Library, ESLint e GitHub Actions.
@@ -38,7 +37,7 @@ pnpm dev
 - API: http://localhost:3000/api
 - Swagger: http://localhost:3000/docs
 - Frontend: http://localhost:5173
-- Login seed: `demo@hackathon.dev` / `demo1234`
+- Login seed: `demo@careflow.dev` / `demo1234`
 
 O `pnpm setup` cria `.env` a partir de `.env.example`, sobe o PostgreSQL, instala
 dependências, aplica migrations, roda o seed e gera o Prisma Client.
@@ -97,6 +96,8 @@ limites variáveis; falhas de quota caem para mock.
 ## Documentação
 
 - [`docs/README.md`](docs/README.md) — índice.
+- [`docs/tema-saude-conectada.md`](docs/tema-saude-conectada.md) — análise do tema.
+- [`docs/spec-driven-development/dia-30-mvp-spec.md`](docs/spec-driven-development/dia-30-mvp-spec.md) — spec do CareFlow (módulo Dia 30).
 - [`docs/architecture.md`](docs/architecture.md) — arquitetura e fluxos.
 - [`docs/testing.md`](docs/testing.md) — estratégia de testes.
 - [`docs/demo-runbook.md`](docs/demo-runbook.md) — checklist de demo.

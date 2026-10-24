@@ -16,9 +16,9 @@ async function bootstrap(): Promise<void> {
   const port = config.get('PORT', { infer: true });
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Hackathon 2026 API')
+    .setTitle('CareFlow API')
     .setDescription(
-      'API starter com autenticação JWT, health checks e chat com Gemini.',
+      'API do CareFlow com autenticação JWT, health checks e chat com Gemini.',
     )
     .setVersion('0.1.0')
     .addBearerAuth()
