@@ -18,7 +18,7 @@ export const envSchema = z.object({
   LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(20000),
 
   THROTTLE_TTL: z.coerce.number().int().positive().default(60000),
-  THROTTLE_LIMIT: z.coerce.number().int().positive().default(20),
+  THROTTLE_LIMIT: z.coerce.number().int().positive().default(120),
 
   DEMO_MODE: z
     .union([z.boolean(), z.enum(['true', 'false'])])
