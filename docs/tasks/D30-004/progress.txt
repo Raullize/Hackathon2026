@@ -1,0 +1,8 @@
+2026-10-24 04:16 PERCEIVE D30-007 concluída; frontend ainda era só placeholder.
+2026-10-24 04:17 ACT AuthProvider, login/logout, rota protegida e Vite proxy.
+2026-10-24 04:18 ACT Calendário com grupos, cards, cores/selos e layout responsivo.
+2026-10-24 04:19 ACT Intake com sugestão da IA e cadastro do caso.
+2026-10-24 04:20 ACT Detalhe com timeline, extrações, ações e confirmação de laudo.
+2026-10-24 04:21 TEST Utilitários do calendário; lint, typecheck e build.
+2026-10-24 04:21 RECORD 61 unit backend + 4 frontend, 15 e2e e build verdes.
+Pendente: commit e D30-005 (alertas/mensagens/link/métricas).
