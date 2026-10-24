@@ -13,9 +13,6 @@ export const envSchema = z.object({
   LLM_PROVIDER: z.enum(['mock', 'gemini']).default('mock'),
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default('gemini-3.5-flash-lite'),
-  GEMINI_MAX_OUTPUT_TOKENS: z.coerce.number().int().positive().max(4096).default(512),
-  GEMINI_TEMPERATURE: z.coerce.number().min(0).max(2).default(0.7),
-  LLM_TIMEOUT_MS: z.coerce.number().int().positive().default(20000),
 
   THROTTLE_TTL: z.coerce.number().int().positive().default(60000),
   THROTTLE_LIMIT: z.coerce.number().int().positive().default(120),

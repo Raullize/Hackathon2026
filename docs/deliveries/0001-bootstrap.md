@@ -1,5 +1,8 @@
 # 0001 — Bootstrap do starter
 
+> **Nota histórica:** o chat citado abaixo foi removido do produto; o smoke atual cobre casos, alertas e métricas.
+
+
 - **Data:** 2026-10-22/23
 - **Branch:** `chore/bootstrap-hackathon-starter`
 - **Escopo:** fundação full-stack, auth, chat autenticado, health, CI e docs.

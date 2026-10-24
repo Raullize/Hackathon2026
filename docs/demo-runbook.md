@@ -14,7 +14,7 @@ depender de internet, do Gemini ou de dados criados na hora.
 - [ ] `DEMO_MODE=true` no `.env` (nunca em produção) e API reiniciada.
 - [ ] Login seed funciona: `demo@careflow.dev` / `demo1234`.
 - [ ] Barra "Demo" aparece no calendário; se não aparecer, `/api/demo/status` está 404 (flag desligada).
-- [ ] Chat autenticado responde. Se Gemini falhar, `provider: "mock"` é aceitável.
+- [ ] Extração de laudo ou intake responde com `provider: "mock"` ou `"gemini"`.
 - [ ] Swagger abre em `http://localhost:3000/docs`.
 - [ ] Mensagens de **SMS/e-mail** aparecem simuladas na tela; WhatsApp é apenas visão.
 - [ ] Layout testado em desktop e em 360px de largura, sem overflow horizontal.
@@ -40,26 +40,23 @@ LOGIN=$(curl -sS -X POST http://localhost:3000/api/auth/login \
 TOKEN=$(node -e "console.log(JSON.parse(process.argv[1]).accessToken)" "$LOGIN")
 ```
 
-### 3. Chat sem token
+### 3. Casos sem token
 
 ```bash
-curl -i -X POST http://localhost:3000/api/chat \
-  -H 'Content-Type: application/json' \
-  -d '{"messages":[{"role":"user","content":"oi"}]}'
+curl -i 'http://localhost:3000/api/cases?scope=open'
 ```
 
-Esperado: `401`. Esse é o ponto de autenticação obrigatória.
+Esperado: `401`.
 
-### 4. Chat autenticado
+### 4. Casos, alertas e métricas
 
 ```bash
-curl -X POST http://localhost:3000/api/chat \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"messages":[{"role":"user","content":"Explique o fluxo de auth em 2 frases."}]}'
+curl 'http://localhost:3000/api/cases?scope=open' -H "Authorization: Bearer $TOKEN"
+curl 'http://localhost:3000/api/alerts' -H "Authorization: Bearer $TOKEN"
+curl 'http://localhost:3000/api/metrics' -H "Authorization: Bearer $TOKEN"
 ```
 
-Esperado: `200` com `message` e `provider`.
+Esperado: `200` com 8 casos abertos, 8 alertas e os indicadores do dia.
 
 ### 5. Swagger
 
@@ -110,11 +107,11 @@ locais. Não usar em produção.
 
 | Sintoma | Causa provável | Ação |
 | --- | --- | --- |
-| `401` no chat | sem token ou token expirado | refazer login |
+| `401` nas rotas autenticadas | sem token ou token expirado | refazer login |
 | Barra de demo não aparece | `DEMO_MODE=false` | ligar a flag no `.env` e reiniciar |
 | `404` em `/api/demo/reset` | `DEMO_MODE=false` | ligar a flag; em produção é intencional |
 | `503` no ready | PostgreSQL fora | `docker compose ps` e logs |
-| Chat sempre mock | sem chave, provider mock ou quota | conferir `.env` e logs |
+| Extração sempre mock | sem chave, provider mock ou quota | conferir `.env` e logs |
 | `404` do Gemini | modelo indisponível para a chave | deixar fallback ou trocar `GEMINI_MODEL` |
 | Porta 5432 ocupada | outro Postgres local | usar `POSTGRES_PORT=55432` |
 | Migration pendente | banco novo | `pnpm db:deploy` |

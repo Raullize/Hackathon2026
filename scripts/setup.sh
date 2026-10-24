@@ -51,7 +51,7 @@ cat <<'EOF'
 Ambiente pronto.
 
 Próximos comandos:
-  pnpm dev             # contracts + backend + frontend
+  pnpm dev             # backend + frontend
   pnpm dev:backend     # só API em http://localhost:3000
   pnpm dev:frontend    # só frontend em http://localhost:5173
   pnpm test            # unitários

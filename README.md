@@ -1,6 +1,6 @@
 # CareFlow — Hackathon 2026
 
-CareFlow é a aplicação de acompanhamento dos prazos legais da linha de cuidado do câncer. Este repositório é o starter full-stack do projeto.
+CareFlow é a aplicação de acompanhamento dos prazos legais da linha de cuidado do câncer. O repositório contém a API, o painel da navegadora e os contratos compartilhados.
 
 ## Stack
 
@@ -14,7 +14,7 @@ CareFlow é a aplicação de acompanhamento dos prazos legais da linha de cuidad
 
 ```
 backend/               API NestJS
-frontend/              arquitetura React + shadcn, sem telas de produto
+frontend/              painel React + shadcn da navegadora
 packages/contracts/    schemas Zod compartilhados
 docs/                  arquitetura, requisitos, kanban, ADRs, pitch e delivery
 scripts/               setup e smoke test
@@ -47,7 +47,7 @@ dependências, aplica migrations, roda o seed e gera o Prisma Client.
 | Comando | O que faz |
 | --- | --- |
 | `pnpm setup` | Prepara o ambiente do zero |
-| `pnpm dev` | Contracts + backend + frontend em paralelo |
+| `pnpm dev` | Backend + frontend em paralelo |
 | `pnpm dev:backend` | Só a API |
 | `pnpm dev:frontend` | Só o frontend |
 | `pnpm build` | Build de contracts, backend e frontend |
@@ -63,18 +63,21 @@ dependências, aplica migrations, roda o seed e gera o Prisma Client.
 | `pnpm docker:up` | Sobe só o PostgreSQL |
 | `pnpm docker:down` | Derruba os containers |
 
-## Auth e chat
+## API
 
 - `POST /api/auth/register` — cria conta e devolve `accessToken`.
 - `POST /api/auth/login` — autentica e devolve `accessToken`.
 - `GET /api/auth/me` — requer Bearer ou cookie `access_token`.
 - `POST /api/auth/logout` — limpa o cookie.
-- `POST /api/chat` — **requer autenticação**; sem token retorna `401`.
+- `GET /api/cases` — lista casos abertos ou fechados, com busca e paginação.
+- `POST /api/cases` — cria um caso a partir do pedido da UBS.
+- `POST /api/cases/:id/events` — registra eventos e transições.
+- `GET /api/alerts` e `GET /api/metrics` — alertas e indicadores.
+- `GET /api/public/p/:token` — visão pública somente leitura da paciente.
 - `GET /api/health` e `GET /api/health/ready` — liveness e readiness.
 
-O chat é stateless: o cliente envia o histórico em `messages`. O backend usa
-Gemini quando `LLM_PROVIDER=gemini` e há `GEMINI_API_KEY`; em falha, quota ou
-modelo indisponível, responde com mock.
+O Gemini não é um chatbot neste produto. Ele estrutura o texto do laudo e do
+pedido de intake; a navegadora confere e confirma cada sugestão.
 
 ## Gemini
 
@@ -91,7 +94,7 @@ O `gemini-3.5-flash-lite` é o modelo mais barato disponível para chaves novas
 no momento. O `gemini-2.5-flash-lite` é mais barato no papel, mas pode retornar
 404 para projetos novos; o backend tenta `gemini-3.5-flash-lite`,
 `gemini-3.1-flash-lite` e `gemini-2.5-flash-lite` em sequência. O free tier tem
-limites variáveis; falhas de quota caem para mock.
+limites variáveis; falhas de quota caem para a regra local.
 
 ## Documentação
 
@@ -111,8 +114,8 @@ limites variáveis; falhas de quota caem para mock.
 - `GEMINI_API_KEY` fica no backend, nunca em variável `VITE_`.
 - Senhas usam Argon2id.
 - Auth com JWT de 8h, sem refresh token nesta fase.
-- Rate limit global e limite mais rígido no chat.
-- Logs não devem conter token, senha ou conteúdo de mensagem.
+- Rate limit global, com limites próprios para extração e link da paciente.
+- Logs não devem conter token, senha, laudo ou dados pessoais.
 
 ## Troubleshooting
 
@@ -122,5 +125,5 @@ alterar, atualize `DATABASE_URL` e rode `docker compose up -d db`.
 **`prisma migrate` falha:** confirme que o banco está saudável com
 `docker compose ps` e que `.env` existe.
 
-**Chat sempre em mock:** verifique `LLM_PROVIDER`, `GEMINI_API_KEY` e os logs do
-backend. A resposta traz `provider: "mock"` quando o fallback foi usado.
+**Extração sempre em mock:** verifique `LLM_PROVIDER`, `GEMINI_API_KEY` e os logs
+do backend. A resposta traz `provider: "mock"` quando o fallback foi usado.

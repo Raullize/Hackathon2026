@@ -6,12 +6,12 @@
 | RF-002 | Login | Credenciais válidas retornam token; inválidas retornam `401` genérico | Done |
 | RF-003 | Usuário autenticado | `GET /api/auth/me` retorna o usuário do token; sem token retorna `401` | Done |
 | RF-004 | Logout | Limpa o cookie de acesso e responde `200` | Done |
-| RF-005 | Chat autenticado | `POST /api/chat` sem token retorna `401`; com token retorna `200` e resposta | Done |
-| RF-006 | Fallback de IA | Sem chave, quota, timeout ou modelo indisponível, o chat responde com `provider: "mock"` | Done |
+| RF-005 | Rotas autenticadas | `/api/cases`, `/api/alerts` e `/api/metrics` sem token retornam `401`; com token retornam `200` | Done |
+| RF-006 | Fallback de IA | Sem chave, quota, timeout ou modelo indisponível, a extração responde com `provider: "mock"` | Done |
 | RF-007 | Health | `/api/health` responde `200`; `/api/health/ready` reflete o PostgreSQL | Done |
-| RF-008 | Swagger | `/docs` lista auth, chat e health com Bearer auth | Done |
+| RF-008 | Swagger | `/docs` lista auth, casos, alertas, métricas e health com Bearer auth | Done |
 | RF-009 | Validação Zod | Payload inválido retorna `400` com detalhes | Done |
-| RF-010 | Rate limit | Chat tem limite mais rígido que a API geral | Done |
+| RF-010 | Rate limit | Extração e link público têm limites próprios, mais rígidos que a API geral | Done |
 | RF-011 | Cadastro de caso (Dia 30) | `POST /api/cases` com `fullName`, `cns`, `birthDate`, `trigger`, `requestedAt` e `source` cria o caso em `SUSPECTED` com o evento `CASE_CREATED` e retorna `201`; `requestedAt` no futuro retorna `400`; respostas autenticadas da navegadora contêm `fullName`; `cns` aparece só no detalhe; `birthDate` nunca é exposta | Backlog |
 | RF-012 | Prazo de 30 dias | Dia zero = `requestedAt`; "Dia X de 30" = hoje − `requestedAt`; vence em `requestedAt + 30`; o dia 30 está no prazo e o dia 31 é vencido; cumprido quando `reportDate ≤ requestedAt + 30`; laudo inconclusivo não reinicia a contagem | Backlog |
 | RF-013 | Prazo de 60 dias | Conta do `reportDate` do laudo maligno (não da confirmação); vence em `reportDate + 60`; cumprido quando `treatmentStartedAt ≤ reportDate + 60`; o tratamento tem tipo (cirurgia, quimioterapia ou radioterapia); `reportDate` antes do `requestedAt` ou depois de hoje retorna `400` | Backlog |
@@ -48,7 +48,6 @@
 - Persistência de conversas
 - Upload/parse funcional de PDF; no MVP existe apenas a interface, sem extração
 - Multiusuário por organização
-- Tela de chat (FEAT-002): o produto não é chatbot; a IA estrutura laudos
 - Envio real nesta demo. Integração real prevista: **SMS e e-mail**. **WhatsApp** fica
   apenas como visão/roadmap no pitch final, não como integração implementada.
 - Integração com e-SUS, SISCAN, GERCON e RNDS

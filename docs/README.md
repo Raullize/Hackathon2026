@@ -11,7 +11,7 @@ verdade; os documentos apontam para eles em vez de duplicar detalhes.
 | --- | --- |
 | [`tema-saude-conectada.md`](./tema-saude-conectada.md) | Análise do tema Saúde Conectada 2026 e implicações de produto |
 | [`spec-driven-development/dia-30-mvp-spec.md`](./spec-driven-development/dia-30-mvp-spec.md) | Spec do CareFlow (módulo Dia 30): casos, prazos, IA, canais e responsividade |
-| [`architecture.md`](./architecture.md) | Desenho dos módulos, fluxos de auth/chat e limites |
+| [`architecture.md`](./architecture.md) | Desenho dos módulos, fluxos de auth/casos e limites |
 | [`testing.md`](./testing.md) | Estratégia de testes e comandos |
 | [`demo-runbook.md`](./demo-runbook.md) | Checklist operacional da demo |
 | [`backlog/KANBAN.md`](./backlog/KANBAN.md) | Kanban oficial do projeto |

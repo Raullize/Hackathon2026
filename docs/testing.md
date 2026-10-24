@@ -9,10 +9,10 @@ quando a regra de negócio for removida ou quebrada.
 
 | Camada | Ferramenta | O que cobre |
 | --- | --- | --- |
-| Unitário backend | Jest | AuthService e ChatService |
-| E2E backend | Jest + Supertest | health, auth, chat 401/200, validação Zod |
-| Frontend | Vitest + Testing Library | render, breakpoints por classe e estados responsivos |
-| Smoke | Node + fetch | fluxo real health → auth → chat |
+| Unitário backend | Jest | domínio de prazos, casos, alertas, métricas, auth, demo e extrações |
+| E2E backend | Jest + Supertest | health, auth, casos, eventos, alertas, métricas, paginação e link público |
+| Frontend | Vitest + Testing Library | login, utilitários de calendário e interações de formulário |
+| Smoke | Node + fetch | fluxo real health → auth → casos → alertas → métricas |
 
 ## Comandos
 
@@ -39,7 +39,7 @@ pnpm db:deploy
 
 ## Gemini nos testes
 
-- Unitários do `ChatService` usam mocks.
+- Unitários das extrações usam mocks, sem chamada real ao Gemini.
 - E2E força `LLM_PROVIDER=mock` no setup.
 - CI não precisa de `GEMINI_API_KEY`.
 - O provider Gemini é testado por contrato, sem chamada real.
@@ -79,4 +79,4 @@ Cobertura global não substitui teste de comportamento.
 - Detalhes internos de componentes shadcn.
 - Renderização trivial sem regra de negócio.
 - Chamadas reais ao Gemini em CI.
-- E2E de telas que ainda não existem.
+- E2E de browser/Playwright (validação visual é manual por enquanto).

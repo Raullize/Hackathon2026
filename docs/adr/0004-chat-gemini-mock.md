@@ -1,7 +1,10 @@
 # ADR 0004 — Chat com Gemini e fallback mock
 
-- **Status:** aceito
+- **Status:** removido (substituído pela extração de laudo e intake)
 - **Data:** 2026-10-22
+
+> **Nota histórica:** o chat foi removido do produto. O padrão de provider com
+> fallback foi mantido nos extratores de laudo e intake.
 
 ## Contexto
 

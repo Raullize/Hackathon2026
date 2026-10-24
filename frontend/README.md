@@ -11,7 +11,6 @@ detalhe do caso.
 - shadcn/ui (Radix)
 - React Router 7
 - TanStack Query 5
-- React Hook Form + Zod
 - Vitest + Testing Library
 
 ## Como rodar
@@ -55,8 +54,7 @@ src/
 ## shadcn/ui
 
 Componentes instalados: `button`, `card`, `input`, `label`, `textarea`, `skeleton`,
-`sonner`, `dropdown-menu`, `avatar`, `separator`, `badge`, `select`, `dialog`,
-`tabs`.
+`sonner`, `dropdown-menu`, `badge`, `select`, `dialog`.
 
 Para adicionar outro, rode em `frontend/`:
 
@@ -71,4 +69,5 @@ pnpm --filter @careflow/frontend test
 pnpm --filter @careflow/frontend build
 ```
 
-Os testes atuais cobrem o agrupamento do calendário e formatação de datas.
+Os testes atuais cobrem login, visibilidade da senha, agrupamento do calendário,
+formatação de datas e URL de paginação.

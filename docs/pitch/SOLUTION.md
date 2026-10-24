@@ -45,8 +45,8 @@ ferramenta. O médico **fica fora do CareFlow** e pede o exame pelo caminho de s
 Conferir contra o repositório antes de subir ao palco; esta lista só vale para o que
 estiver na `main`.
 
-- **Base (starter, na `main`):** monorepo, contratos Zod, auth (cadastro/login/me/logout),
-  chat com Gemini e fallback mock, health, Swagger, rate limit, testes e CI.
+- **Base:** monorepo, contratos Zod, auth (cadastro/login/me/logout), health,
+  Swagger, rate limit, testes e CI.
 - **Especificação do CareFlow (na `main`):** spec, requisitos RF-011 a RF-035, ADR 0006,
   plano da D30-001 e roteiro da demo.
 

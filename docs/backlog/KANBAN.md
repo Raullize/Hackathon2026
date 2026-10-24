@@ -10,9 +10,8 @@ evidência em `docs/deliveries/`.
 | BOOT-001 | Monorepo pnpm com `backend`, `frontend` e `packages/contracts` | `docs/deliveries/0001-bootstrap.md` |
 | BOOT-002 | PostgreSQL de desenvolvimento + Prisma + migration + seed | idem |
 | BOOT-003 | Auth com Zod, Argon2id, JWT, Bearer/cookie e e2e | idem |
-| BOOT-004 | Chat autenticado com Gemini e fallback mock | idem |
 | BOOT-005 | Health, Swagger e envelope de erro | idem |
-| BOOT-006 | Frontend com Vite, Tailwind e shadcn, sem telas | idem |
+| BOOT-006 | Frontend com Vite, Tailwind e shadcn | idem |
 | BOOT-007 | CI, scripts de setup/smoke e READMEs | idem |
 | DOCS-001 | Estrutura de docs, ADRs, requisitos e templates | idem |
 | DOMAIN-001 | Analisar o tema Saúde Conectada 2026 | `docs/tema-saude-conectada.md` |
@@ -43,12 +42,6 @@ Histórias do MVP Dia 30, na ordem dos PRs. Spec:
 | ~~FEAT-001~~ | ~~Implementar telas de auth no frontend~~ | absorvida pelo D30-004 |
 | ~~FEAT-003~~ | ~~Definir domínio e seeders reais~~ | substituída pelo D30-001 a D30-007 (domínio em `domain.md`, seed no D30-006) |
 | OPS-001 | Deploy e compose de produção | somente depois do hackathon |
-
-## Fora do MVP
-
-| ID | Story | Motivo |
-| --- | --- | --- |
-| FEAT-002 | Implementar tela de chat autenticada | o produto não é chatbot; a IA estrutura laudos |
 
 ## Critério de Done das histórias D30
 

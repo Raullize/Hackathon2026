@@ -18,7 +18,7 @@ async function bootstrap(): Promise<void> {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('CareFlow API')
     .setDescription(
-      'API do CareFlow com autenticação JWT, health checks e chat com Gemini.',
+      'API do CareFlow para acompanhamento dos prazos da linha de cuidado.',
     )
     .setVersion('0.1.0')
     .addBearerAuth()

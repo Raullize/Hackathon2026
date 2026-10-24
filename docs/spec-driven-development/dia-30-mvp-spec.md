@@ -67,7 +67,7 @@ aviso vem da conta das datas, não de um modelo de previsão.
 - Entidade `Patient` separada do caso `[DECISÃO PENDENTE: fase 1]`.
 - Agendar vagas: o CareFlow não cria vaga.
 - Cron, filas e `@nestjs/schedule` (ADR 0006).
-- Chatbot: a tela de chat (FEAT-002) sai do MVP. O produto não é chatbot; a IA
+- Chatbot: não há tela de chat no produto. O CareFlow não é chatbot; a IA
   estrutura laudos.
 - Dados reais de pacientes e laudos reais.
 - Playwright ou qualquer outra dependência nova de teste.
@@ -700,7 +700,6 @@ segunda devolve 409.
 
 ### 11.1 Porta `ReportExtractor`
 
-- Porta nova, separada do `ChatProvider` (que não muda).
 - `extract(filteredText): Promise<ReportSuggestion>`, com dois adaptadores:
   `GeminiReportExtractor` e `MockReportExtractor`.
 - Saída validada pelo schema Zod `reportSuggestionSchema`, em `packages/contracts`:
@@ -724,11 +723,10 @@ segunda devolve 409.
 
 ### 11.2 Fluxo
 
-1. A navegadora cola o laudo em texto livre (até 16.000 caracteres, como o limite do
-   chat `[SUPOSIÇÃO]`).
+1. A navegadora cola o laudo em texto livre (até 16.000 caracteres `[SUPOSIÇÃO]`).
 2. O **filtro de identificadores** remove CPF, CNS e o nome da paciente (seção 11.4).
 3. `LLM_PROVIDER=gemini` → Gemini; `LLM_PROVIDER=mock` → mock direto.
-4. Fallback para o mock, com o motivo registrado em `fallbackReason` (como no ADR 0004):
+4. Fallback para o mock, com o motivo registrado em `fallbackReason`:
    - sem `GEMINI_API_KEY` → `no_api_key`;
    - erro, quota ou modelo indisponível → `provider_error`;
    - estourou `REPORT_EXTRACTION_TIMEOUT_MS` (padrão 8000 ms `[SUPOSIÇÃO]`) → `timeout`;
@@ -869,7 +867,7 @@ probabilidade estatística.
 - Rota do frontend `/p/:accessToken`; API `GET /api/public/p/:token`.
 - 404 igual (mesmo corpo) para token inexistente, revogado ou expirado.
 - Rate limit próprio, por IP: 10 requisições a cada 60 s `[SUPOSIÇÃO]`, com o
-  `@Throttle` que o chat já usa.
+  `@Throttle` do Nest.
 - Só leitura. Mostra:
   - o próximo passo e a data;
   - "Dia X de 30" ou "Dia X de 60" e o vencimento;
@@ -1014,7 +1012,7 @@ riscos (seção 20).
 | --- | --- | --- |
 | `clock` | `Clock` (porta), `SystemClock`, leitura do `DemoClockState` | Global. Sem `DEMO_MODE`, o deslocamento é sempre 0 |
 | `cases` | `domain/` (`computeCaseStatus`, transições, `DEADLINE_RULES`, datas, alertas, mensagens, métricas, todas funções puras), `CasesController`, `AlertsController`, `MetricsController`, porta `CaseRepository` e `PrismaCaseRepository` | O domínio não importa Prisma nem Nest |
-| `report-extraction` | Porta `ReportExtractor`, `GeminiReportExtractor`, `MockReportExtractor`, `IdentifierFilter`, controller de `report-extractions` | Reaproveita o padrão de fallback do chat |
+| `report-extraction` | Porta `ReportExtractor`, `GeminiReportExtractor`, `MockReportExtractor`, `IdentifierFilter`, controller de `report-extractions` | Usa o padrão de fallback da extração |
 | `case-intake` | Porta `CaseIntakeExtractor`, `GeminiCaseIntakeExtractor`, `MockCaseIntakeExtractor`, controller de `case-intake/extractions` | Texto sem PII; PDF só UI no MVP |
 | `patient-access` | `GET /api/public/p/:token`, emissão e revogação de token | Throttle próprio |
 | `demo` | `/api/demo/*`, reset e seed | Registrado só com `DEMO_MODE=true` (por exemplo, com `ConditionalModule.registerWhen` do `@nestjs/config`, a confirmar na versão instalada) |
@@ -1263,7 +1261,7 @@ Respostas do time em três rodadas. Onde uma rodada corrige a anterior, vale a m
 
 ### IA
 
-- Porta `ReportExtractor` com Zod em `packages/contracts`; o `ChatProvider` não muda.
+- Porta `ReportExtractor` com Zod em `packages/contracts`.
 - JSON: `examType`, `reportDate`, `malignancy`, `confidence`, `evidenceQuote`,
   `provider`.
 - JSON inválido → mock, com o fallback registrado.
@@ -1300,5 +1298,4 @@ Respostas do time em três rodadas. Onde uma rodada corrige a anterior, vale a m
 - Sete histórias (D30-001 a D30-007), uma por PR, com teste antes.
 - Ordem de corte: métricas, escada, link público. Nunca cortar o calendário nem o
   fluxo do laudo.
-- FEAT-002 vai para "Fora do MVP": o produto não é chatbot; a IA estrutura laudos.
 - Vocabulário: "antecipa", nunca "preditivo". Não usar "O SUS não tem relógio".

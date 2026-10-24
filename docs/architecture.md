@@ -3,8 +3,8 @@
 ## Contexto
 
 CareFlow é a aplicação de acompanhamento dos prazos legais da linha de cuidado do
-câncer. O repositório começou como starter full-stack e agora documenta o módulo
-Dia 30, com autenticação, IA e uma base de qualidade pronta.
+câncer. O repositório documenta o módulo Dia 30, com autenticação, IA assistiva e uma
+base de qualidade pronta.
 
 ## Visão geral
 
@@ -17,7 +17,7 @@ flowchart LR
   API -->|/docs| Swagger[Swagger]
 ```
 
-- O frontend atual é apenas arquitetura; não há telas de produto.
+- O frontend entrega o painel da navegadora e a visão pública da paciente.
 - O backend é um monólito modular.
 - O PostgreSQL é o único serviço de infraestrutura local.
 - O Gemini é opcional: sem chave ou em falha, o mock responde.
@@ -32,18 +32,12 @@ flowchart TB
   App --> Prisma[PrismaModule]
   App --> Auth[AuthModule]
   App --> Health[HealthModule]
-  App --> Chat[ChatModule]
 
   Auth --> AuthController
   Auth --> AuthService
   Auth --> UserRepository[UserRepository port]
   UserRepoAdapter[PrismaUserRepository] -.implements.-> UserRepository
   AuthService --> UserRepoAdapter
-
-  Chat --> ChatController
-  Chat --> ChatService
-  ChatService --> GeminiProvider
-  ChatService --> MockProvider
 ```
 
 ### Auth
@@ -53,13 +47,6 @@ flowchart TB
 - `UserRepository`: porta de persistência.
 - `PrismaUserRepository`: adaptador que traduz Prisma para o domínio.
 - `JwtAuthGuard`: aceita `Authorization: Bearer` ou cookie `access_token`.
-
-### Chat
-
-- `ChatController`: `POST /api/chat`, protegido por `JwtAuthGuard`.
-- `ChatService`: escolhe provider, aplica fallback e não vaza erro sensível.
-- `GeminiProvider`: SDK oficial, prompt, limites e tentativa de modelo alternativo.
-- `MockProvider`: resposta determinística para demo, testes e CI.
 
 ### Health
 
@@ -93,42 +80,6 @@ sequenceDiagram
 Login segue o mesmo caminho, trocando criação por verificação de senha. O token
 expira em 8h. Não há refresh token nesta fase.
 
-## Fluxo do chat
-
-```mermaid
-sequenceDiagram
-  participant C as Cliente autenticado
-  participant G as JwtAuthGuard
-  participant T as ThrottlerGuard
-  participant H as ChatController
-  participant S as ChatService
-  participant P as GeminiProvider
-  participant M as MockProvider
-
-  C->>G: POST /api/chat + Bearer
-  G-->>G: valida JWT
-  G->>T: permite
-  T->>H: payload válido (Zod)
-  H->>S: generate(messages)
-  alt LLM_PROVIDER=gemini e chave presente
-    S->>P: generate(messages)
-    alt sucesso
-      P-->>S: resposta Gemini
-    else quota, timeout, 404 ou erro
-      P-->>S: erro
-      S->>M: generate(messages)
-      M-->>S: resposta mock
-    end
-  else mock
-    S->>M: generate(messages)
-    M-->>S: resposta mock
-  end
-  S-->>H: {message, model, provider}
-  H-->>C: 200
-```
-
-Sem token, o guard retorna `401` antes de qualquer chamada ao provider.
-
 ## Modelo de dados
 
 ```mermaid
@@ -142,9 +93,6 @@ erDiagram
     datetime updated_at
   }
 ```
-
-Não há tabela de conversa. O chat é stateless: o histórico vem no body e o
-servidor não persiste mensagens.
 
 ## Dia 30 — casos, prazos e comunicação
 
@@ -172,17 +120,16 @@ Pontos que afetam a arquitetura:
 `packages/contracts` é a fonte da verdade dos formatos:
 
 - `registerSchema`, `loginSchema`, `authResponseSchema`
-- `chatRequestSchema`, `chatResponseSchema`
 - `healthResponseSchema`, `errorResponseSchema`
 
-Backend usa os schemas via `nestjs-zod`; frontend usa os mesmos tipos quando as
-telas forem implementadas. Nada de duplicar validação.
+Backend usa os schemas via `nestjs-zod`; o frontend consome os mesmos tipos e
+schemas. Nada de duplicar validação.
 
 ## Limites e decisões
 
 - O domínio não importa Prisma; repositórios fazem a tradução.
 - O controller não contém regra de negócio.
-- O provider de IA é uma porta; Gemini e mock são adaptadores.
+- Os extratores de IA são portas; Gemini e regra local são adaptadores.
 - Erros seguem um envelope único.
 - Sem roles, OAuth, refresh token, multi-tenancy ou microsserviços nesta fase.
 
@@ -191,7 +138,6 @@ telas forem implementadas. Nada de duplicar validação.
 - [0001 — Monorepo e pastas na raiz](./adr/0001-monorepo-pnpm.md)
 - [0002 — Nest, Prisma e Zod](./adr/0002-nest-prisma-zod.md)
 - [0003 — Auth JWT simples](./adr/0003-auth-jwt-simples.md)
-- [0004 — Chat Gemini com mock](./adr/0004-chat-gemini-mock.md)
 - [0005 — Frontend com shadcn sem telas](./adr/0005-frontend-shadcn.md)
 - [0006 — Clock derivado, sem cron](./adr/0006-clock-derivado-sem-cron.md)
 - [0007 — Canais: SMS/e-mail agora, WhatsApp como visão](./adr/0007-canais-comunicacao.md)

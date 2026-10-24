@@ -6,8 +6,8 @@
 - JWT com segredo de no mínimo 32 caracteres; expiração de 8h.
 - `GEMINI_API_KEY` somente no backend; nunca em `VITE_*`.
 - `.env` fora do git; apenas `.env.example` versionado.
-- Validação de entrada com Zod em auth e chat.
-- Rate limit global e limite mais rígido no chat.
+- Validação de entrada com Zod em auth e casos.
+- Rate limit global e limites próprios para extração e link público.
 - Erros não expõem stack trace, token ou conteúdo de mensagem.
 - Cookie `HttpOnly`, `SameSite=Lax` e `Secure` em produção.
 
@@ -15,21 +15,21 @@
 
 - `/health` para liveness, sem dependência.
 - `/health/ready` verifica o PostgreSQL e retorna `503` se estiver fora.
-- Chat cai para mock em falha do provedor, mantendo a demo viva.
-- Timeout configurável para o Gemini (`LLM_TIMEOUT_MS`).
+- Extração cai para a regra local em falha do provedor, mantendo a demo viva.
+- Timeout configurável para a extração Gemini (`REPORT_EXTRACTION_TIMEOUT_MS`).
 
 ## Manutenibilidade
 
 - Contratos Zod compartilhados em `packages/contracts`.
 - Domínio não importa Prisma; repositórios fazem a tradução.
-- Um módulo por responsabilidade: auth, chat, health, prisma.
+- Um módulo por responsabilidade: auth, casos, extração, health e prisma.
 - Testes unitários e e2e para os comportamentos críticos.
 - CI com lint, typecheck, testes e build.
 
 ## Performance
 
-- Chat limita histórico a 20 mensagens e 16.000 caracteres.
-- `GEMINI_MAX_OUTPUT_TOKENS` padrão em 512 para controlar custo/latência.
+- Laudo e intake têm limites de caracteres e timeout configurável.
+- `GEMINI_MODEL` configurável, com fallback para modelos alternativos e regra local.
 - Frontend com build Vite e code splitting disponível quando houver telas.
 
 ## Dia 30 — LGPD e dados pessoais
@@ -87,7 +87,7 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
   (`REPORT_EXTRACTION_TIMEOUT_MS`, padrão 8000 ms `[SUPOSIÇÃO]`). Ao estourar, cai para o
   mock (regra local), registrando o motivo.
 - **RNF-017** A saída do extrator é validada por Zod; saída inválida cai para o mock.
-- **RNF-018** A extração tem rate limit mais rígido que a API geral, como o chat.
+- **RNF-018** A extração tem rate limit mais rígido que a API geral.
 
 ## Dia 30 — Acessibilidade, responsividade e celular
 

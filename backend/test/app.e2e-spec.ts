@@ -41,14 +41,11 @@ describe('App (e2e)', () => {
       });
   });
 
-  it('rejects chat without authentication', async () => {
-    await request(app.getHttpServer())
-      .post('/api/chat')
-      .send({ messages: [{ role: 'user', content: 'oi' }] })
-      .expect(401);
+  it('rejects protected case routes without authentication', async () => {
+    await request(app.getHttpServer()).get('/api/cases').expect(401);
   });
 
-  it('registers, logs in and uses the authenticated chat', async () => {
+  it('registers, logs in and reads the authenticated user', async () => {
     await request(app.getHttpServer())
       .post('/api/auth/register')
       .send({ name: 'E2E User', email, password })
@@ -72,25 +69,5 @@ describe('App (e2e)', () => {
       .expect(({ body }) => {
         expect(body.email).toBe(email);
       });
-
-    await request(app.getHttpServer())
-      .post('/api/chat')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        messages: [{ role: 'user', content: 'Qual é o próximo passo?' }],
-      })
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body.provider).toBe('mock');
-        expect(body.message).toEqual(expect.any(String));
-      });
-  });
-
-  it('validates the chat payload with Zod', async () => {
-    await request(app.getHttpServer())
-      .post('/api/chat')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({ messages: [] })
-      .expect(400);
   });
 });

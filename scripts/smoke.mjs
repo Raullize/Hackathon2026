@@ -1,6 +1,6 @@
 const baseUrl = process.env.SMOKE_BASE_URL ?? 'http://localhost:3000/api';
-const email = `smoke-${Date.now()}-${Math.random().toString(16).slice(2)}@example.com`;
-const password = 'password123';
+const email = process.env.SMOKE_EMAIL ?? 'demo@careflow.dev';
+const password = process.env.SMOKE_PASSWORD ?? 'demo1234';
 
 async function call(path, init = {}) {
   const response = await fetch(`${baseUrl}${path}`, {
@@ -30,12 +30,6 @@ async function main() {
   assert(ready.response.ok, `health/ready falhou: ${ready.response.status}`);
   assert(ready.body?.database === 'up', 'banco não está up');
 
-  const register = await call('/auth/register', {
-    method: 'POST',
-    body: JSON.stringify({ name: 'Smoke User', email, password }),
-  });
-  assert(register.response.status === 201, `register: ${register.response.status}`);
-
   const login = await call('/auth/login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
@@ -43,26 +37,23 @@ async function main() {
   assert(login.response.ok, `login: ${login.response.status}`);
   const token = login.body?.accessToken;
   assert(typeof token === 'string' && token.length > 20, 'login sem accessToken');
+  const auth = { Authorization: `Bearer ${token}` };
 
-  const unauthorized = await call('/chat', {
-    method: 'POST',
-    body: JSON.stringify({ messages: [{ role: 'user', content: 'oi' }] }),
-  });
-  assert(unauthorized.response.status === 401, 'chat deveria exigir autenticação');
+  const cases = await call('/cases?scope=open', { headers: auth });
+  assert(cases.response.ok, `cases: ${cases.response.status}`);
+  assert(Array.isArray(cases.body?.cases), 'cases sem lista');
 
-  const chat = await call('/chat', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({
-      messages: [{ role: 'user', content: 'Qual é o próximo passo?' }],
-    }),
-  });
-  assert(chat.response.ok, `chat: ${chat.response.status}`);
-  assert(typeof chat.body?.message === 'string', 'chat sem message');
-  assert(chat.body?.provider === 'mock' || chat.body?.provider === 'gemini', 'provider inválido');
+  const alerts = await call('/alerts', { headers: auth });
+  assert(alerts.response.ok, `alerts: ${alerts.response.status}`);
+  assert(Array.isArray(alerts.body), 'alerts não é uma lista');
 
-  console.log('Smoke ok: health, ready, register, login, chat 401, chat autenticado.');
-  console.log(`Provider do chat: ${chat.body.provider}`);
+  const metrics = await call('/metrics', { headers: auth });
+  assert(metrics.response.ok, `metrics: ${metrics.response.status}`);
+  assert(typeof metrics.body?.today === 'string', 'metrics sem today');
+  assert(typeof metrics.body?.diagnoses30?.denominator === 'number', 'metrics sem diagnóstico');
+
+  console.log('Smoke ok: health, ready, login, casos, alertas e métricas.');
+  console.log(`Casos abertos: ${cases.body.cases.length}; alertas: ${alerts.body.length}.`);
 }
 
 main().catch((error) => {

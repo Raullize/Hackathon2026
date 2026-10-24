@@ -1,7 +1,7 @@
 # CareFlow — Backend
 
-API NestJS do starter: autenticação JWT, chat com Gemini, health checks e
-Swagger.
+API NestJS do CareFlow: autenticação JWT, casos, prazos, alertas, métricas,
+extração assistida por IA e link público da paciente.
 
 ## Stack
 
@@ -10,7 +10,7 @@ Swagger.
 - Zod + `nestjs-zod` (sem class-validator nos DTOs)
 - JWT (`@nestjs/jwt`), Argon2id
 - Swagger
-- Gemini via `@google/genai`, com mock fallback
+- Gemini via `@google/genai`, com fallback para a regra local
 - Jest + Supertest
 
 ## Como rodar
@@ -59,21 +59,22 @@ Swagger: http://localhost:3000/docs
 | POST | `/api/auth/login` | não | Login e token |
 | GET | `/api/auth/me` | sim | Usuário autenticado |
 | POST | `/api/auth/logout` | sim | Limpa cookie |
-| POST | `/api/chat` | sim | Chat com histórico |
+| GET | `/api/cases` | sim | Lista casos, com busca e paginação |
+| POST | `/api/cases` | sim | Cria caso |
+| GET | `/api/cases/:id` | sim | Detalhe e linha do tempo |
+| POST | `/api/cases/:id/events` | sim | Registra evento |
+| POST | `/api/cases/:id/report-extractions` | sim | Sugere campos do laudo |
+| POST | `/api/cases/:id/access-tokens` | sim | Gera link da paciente |
+| POST | `/api/case-intake/extractions` | sim | Sugere campos do pedido |
+| GET | `/api/alerts` | sim | Alertas calculados na leitura |
+| GET | `/api/metrics` | sim | Indicadores de prazo e qualidade |
+| GET | `/api/public/p/:token` | não | Visão pública da paciente |
 | GET | `/api/health` | não | Liveness |
 | GET | `/api/health/ready` | não | Readiness + PostgreSQL |
 
 Auth aceita `Authorization: Bearer <token>` ou o cookie `access_token`.
 
 ## Exemplos
-
-### Registrar
-
-```bash
-curl -X POST http://localhost:3000/api/auth/register \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Demo","email":"demo2@example.com","password":"password123"}'
-```
 
 ### Login
 
@@ -85,27 +86,17 @@ curl -X POST http://localhost:3000/api/auth/login \
 
 Guarde o `accessToken` retornado.
 
-### Chat sem token (401)
-
-```bash
-curl -i -X POST http://localhost:3000/api/chat \
-  -H 'Content-Type: application/json' \
-  -d '{"messages":[{"role":"user","content":"oi"}]}'
-```
-
-### Chat autenticado (200)
+### Casos
 
 ```bash
 TOKEN="cole-o-token-aqui"
 
-curl -X POST http://localhost:3000/api/chat \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"messages":[{"role":"user","content":"Qual é o próximo passo?"}]}'
-```
+curl 'http://localhost:3000/api/cases?scope=open' \
+  -H "Authorization: Bearer $TOKEN"
 
-Limites: até 20 mensagens, 4.000 caracteres por mensagem e 16.000 no total.
-O chat tem rate limit mais rígido que o restante da API.
+curl 'http://localhost:3000/api/cases?scope=closed&page=1&pageSize=8' \
+  -H "Authorization: Bearer $TOKEN"
+```
 
 ### Health
 
@@ -114,7 +105,7 @@ curl http://localhost:3000/api/health
 curl http://localhost:3000/api/health/ready
 ```
 
-## Chat e Gemini
+## IA e Gemini
 
 ```env
 LLM_PROVIDER=mock
@@ -122,28 +113,34 @@ LLM_PROVIDER=mock
 LLM_PROVIDER=gemini
 GEMINI_API_KEY=...
 GEMINI_MODEL=gemini-3.5-flash-lite
-GEMINI_MAX_OUTPUT_TOKENS=512
-GEMINI_TEMPERATURE=0.7
-LLM_TIMEOUT_MS=20000
+REPORT_EXTRACTION_TIMEOUT_MS=8000
 ```
 
-- Sem chave ou com `LLM_PROVIDER=mock`, responde com `provider: "mock"`.
+- Sem chave ou com `LLM_PROVIDER=mock`, a extração responde com `provider: "mock"`.
 - Com Gemini, tenta o modelo configurado e, se ele não existir ou a chave não
   tiver permissão, tenta `gemini-3.5-flash-lite`, `gemini-3.1-flash-lite` e
   `gemini-2.5-flash-lite` em sequência.
-- Em quota, timeout ou erro, cai para mock e registra um aviso sem expor a chave.
-- O prompt genérico fica em `src/chat/prompts/system.md`.
+- Em quota, timeout ou erro, cai para a regra local e registra um aviso sem expor
+  a chave.
+- A IA apenas sugere. A navegadora confirma o laudo e o intake.
 
 ## Estrutura
 
 ```
 src/
-├── auth/           # controller, service, repositório, guard, DTOs
-├── chat/           # controller, service, providers, prompt
-├── common/         # filtro de exceção, decorators e tipos
-├── config/         # validação de env com Zod
-├── health/         # liveness e readiness
-├── prisma/         # PrismaService global
+├── alerts/          # alertas calculados na leitura
+├── auth/            # controller, service, repositório, guard, DTOs
+├── case-intake/     # extração do pedido
+├── cases/           # casos, eventos, domínio de prazos
+├── clock/           # relógio America/Sao_Paulo
+├── common/          # filtro de exceção, decorators e tipos
+├── config/          # validação de env com Zod
+├── demo/            # relógio e seed fictício
+├── health/          # liveness e readiness
+├── metrics/         # indicadores
+├── patient-access/  # link público e tokens
+├── prisma/          # PrismaService global
+├── report-extraction/ # extração e confirmação de laudo
 ├── app.module.ts
 ├── bootstrap.ts
 └── main.ts
@@ -151,20 +148,21 @@ prisma/
 ├── schema.prisma
 ├── migrations/
 └── seed.ts
-test/               # e2e + setup
+test/               # e2e + setup + fixtures
 ```
 
 ## Decisões
 
 - Validação de entrada é Zod, compartilhada via `@careflow/contracts`.
 - Auth simples: um access token de 8h, sem refresh token.
-- Chat stateless; não há tabela de conversa nesta fase.
-- Erros seguem `{ statusCode, error, message, path, timestamp }`.
 - O domínio não importa Prisma: repositórios fazem a tradução.
+- Erros seguem `{ statusCode, error, message, path, timestamp }`.
+- Prazos, cores, alertas e métricas são calculados na leitura; não há cron.
 
 ## Troubleshooting
 
-- **401 no chat:** confira o header `Authorization` e se o token não expirou.
+- **401 em rotas autenticadas:** confira o header `Authorization` e se o token
+  não expirou.
 - **Banco indisponível:** `docker compose ps` e `docker compose logs db`.
 - **Migration pendente:** `pnpm db:deploy`.
 - **Modelo 404:** troque `GEMINI_MODEL` ou deixe o fallback agir.
