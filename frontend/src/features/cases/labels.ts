@@ -7,9 +7,27 @@ export const colorLabel: Record<string, string> = {
 };
 
 export const colorClasses: Record<string, string> = {
-  green: 'border-emerald-500/60 bg-emerald-50 text-emerald-950',
-  yellow: 'border-amber-500/70 bg-amber-50 text-amber-950',
-  red: 'border-rose-500/70 bg-rose-50 text-rose-950',
+  green: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+  yellow: 'border-amber-200 bg-amber-50 text-amber-800',
+  red: 'border-rose-200 bg-rose-50 text-rose-800',
+};
+
+export const colorAccentClasses: Record<string, string> = {
+  green: 'border-l-emerald-600',
+  yellow: 'border-l-amber-500',
+  red: 'border-l-rose-600',
+};
+
+export const colorDotClasses: Record<string, string> = {
+  green: 'bg-emerald-600',
+  yellow: 'bg-amber-500',
+  red: 'bg-rose-600',
+};
+
+export const colorBarClasses: Record<string, string> = {
+  green: 'bg-emerald-600',
+  yellow: 'bg-amber-500',
+  red: 'bg-rose-600',
 };
 
 export const statusLabel: Record<CaseStatus, string> = {

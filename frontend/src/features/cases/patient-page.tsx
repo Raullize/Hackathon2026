@@ -1,3 +1,4 @@
+import { Check, Route } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import type { PatientView } from '@careflow/contracts';
@@ -5,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch } from '@/lib/api-client';
 import { formatDateBr } from './calendar-utils';
+import { cn } from '@/lib/utils';
 
 export function PatientPage() {
   const { token } = useParams<{ token: string }>();
@@ -17,15 +19,15 @@ export function PatientPage() {
 
   if (query.isLoading) {
     return (
-      <main className="mx-auto max-w-lg px-4 py-8">
+      <div className="mx-auto max-w-lg px-4 py-8">
         <Skeleton className="h-40 w-full" />
-      </main>
+      </div>
     );
   }
 
   if (query.isError || !query.data) {
     return (
-      <main className="mx-auto max-w-lg px-4 py-8">
+      <div className="mx-auto max-w-lg px-4 py-8">
         <Card>
           <CardHeader>
             <CardTitle>Link indisponível</CardTitle>
@@ -34,20 +36,37 @@ export function PatientPage() {
             Este link expirou ou não está mais disponível. Procure a sua UBS.
           </CardContent>
         </Card>
-      </main>
+      </div>
     );
   }
 
   const view = query.data;
 
+  const progress =
+    view.day !== null && view.dayTotal
+      ? Math.min(100, Math.max(0, (view.day / view.dayTotal) * 100))
+      : 0;
+
   return (
     <main className="mx-auto max-w-lg space-y-4 px-4 py-8">
+      <div className="mb-6 flex items-center gap-2.5">
+        <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <Route aria-hidden="true" className="size-4" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold tracking-tight">CareFlow</p>
+          <p className="text-[11px] text-muted-foreground">
+            Acompanhamento da paciente
+          </p>
+        </div>
+      </div>
+
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          CareFlow
-        </p>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
           Seu acompanhamento
+        </p>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+          Próximo passo e direitos
         </h1>
       </div>
 
@@ -72,9 +91,20 @@ export function PatientPage() {
             <p>Local: {view.nextStep.location}</p>
           ) : null}
           {view.day !== null && view.dayTotal ? (
-            <p>
-              Dia {view.day} de {view.dayTotal}
-            </p>
+            <div className="pt-1">
+              <p className="text-sm font-medium tabular-nums">
+                Dia {view.day} de {view.dayTotal}
+              </p>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                <div
+                  className={cn(
+                    'h-full rounded-full',
+                    progress >= 80 ? 'bg-rose-600' : 'bg-primary',
+                  )}
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
           ) : null}
           {view.dueDate ? (
             <p className="text-muted-foreground">
@@ -89,9 +119,15 @@ export function PatientPage() {
           <CardTitle className="text-base">Seus direitos</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="list-disc space-y-1 pl-5 text-sm">
+          <ul className="space-y-2 text-sm">
             {view.rights.map((right) => (
-              <li key={right}>{right}</li>
+              <li key={right} className="flex gap-2">
+                <Check
+                  aria-hidden="true"
+                  className="mt-0.5 size-3.5 shrink-0 text-emerald-600"
+                />
+                <span>{right}</span>
+              </li>
             ))}
           </ul>
         </CardContent>

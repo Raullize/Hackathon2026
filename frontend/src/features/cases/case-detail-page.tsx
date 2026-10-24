@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
+import { ArrowLeft, Copy, Link2 } from 'lucide-react';
 import type {
   AccessTokenResponse,
   Alert,
@@ -45,6 +46,7 @@ import {
   alertReasonLabel,
   alertRecipientLabel,
   badgeLabel,
+  colorBarClasses,
   colorClasses,
   colorLabel,
   statusLabel,
@@ -189,22 +191,22 @@ export function CaseDetailPage() {
 
   if (detailQuery.isLoading) {
     return (
-      <main className="mx-auto w-full max-w-6xl space-y-4 px-4 py-6 md:px-6">
+      <div className="mx-auto w-full max-w-6xl space-y-5 px-4 py-6 md:px-8 md:py-8">
         <Skeleton className="h-10 w-64" />
         <Skeleton className="h-48 w-full" />
-      </main>
+      </div>
     );
   }
 
   if (detailQuery.isError || !detailQuery.data) {
     return (
-      <main className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-8 md:py-8">
         <Card>
           <CardContent className="p-6 text-sm text-destructive">
             Caso não encontrado ou API indisponível.
           </CardContent>
         </Card>
-      </main>
+      </div>
     );
   }
 
@@ -293,75 +295,108 @@ export function CaseDetailPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-4 px-4 py-6 md:px-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <Link className="text-sm text-muted-foreground hover:text-foreground" to="/">
-            ← Voltar ao calendário
-          </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-            {detail.fullName}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {detail.initials} · CNS {detail.cns} · {detail.ageYears} anos ·{' '}
-            {triggerLabel[detail.trigger]} · {statusLabel[detail.status]}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
+    <div className="mx-auto w-full max-w-6xl space-y-5 px-4 py-6 md:px-8 md:py-8">
+      <div>
+        <Link
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+          to="/"
+        >
+          <ArrowLeft aria-hidden="true" className="size-3.5" />
+          Voltar ao calendário
+        </Link>
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {detail.fullName}
+              </h1>
+              <Badge className={cn('border px-2 py-0.5 text-[11px]', colorClasses[color])}>
+                {colorLabel[color]}
+              </Badge>
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {detail.initials} · CNS {detail.cns} · {detail.ageYears} anos ·{' '}
+              {triggerLabel[detail.trigger]} · {statusLabel[detail.status]}
+            </p>
+          </div>
           <Button
             type="button"
             variant="outline"
             onClick={() => linkMutation.mutate()}
             disabled={linkMutation.isPending}
           >
+            <Link2 aria-hidden="true" />
             Gerar link da paciente
           </Button>
-          <Badge className={cn('border px-3 py-1', colorClasses[color])}>
-            {colorLabel[color]}
-          </Badge>
         </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_22rem]">
         <div className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Relógio</CardTitle>
-              <CardDescription>Prazo legal e próximo passo.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <p className="text-xs text-muted-foreground">Situação</p>
-                <p className="text-lg font-semibold">
-                  {detail.day !== null && detail.dayTotal
-                    ? `Dia ${detail.day} de ${detail.dayTotal}`
-                    : 'Encerrado'}
-                </p>
+            <CardContent className="p-5">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                    Situação do prazo
+                  </p>
+                  <p className="mt-1 text-3xl font-semibold tracking-tight tabular-nums">
+                    {detail.day !== null && detail.dayTotal
+                      ? `Dia ${detail.day}`
+                      : 'Encerrado'}
+                    {detail.dayTotal ? (
+                      <span className="ml-1 text-base font-normal text-muted-foreground">
+                        de {detail.dayTotal}
+                      </span>
+                    ) : null}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                    Vencimento
+                  </p>
+                  <p className="mt-1 text-lg font-medium tabular-nums">
+                    {formatDateBr(detail.dueDate)}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Vencimento</p>
-                <p className="text-lg font-semibold">
-                  {formatDateBr(detail.dueDate)}
+
+              {detail.day !== null && detail.dayTotal ? (
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className={cn('h-full rounded-full', colorBarClasses[color])}
+                    style={{
+                      width: `${Math.min(100, Math.max(0, (detail.day / detail.dayTotal) * 100))}%`,
+                    }}
+                  />
+                </div>
+              ) : null}
+
+              <div className="mt-5 border-t pt-4">
+                <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  Próximo passo
                 </p>
-              </div>
-              <div className="sm:col-span-2">
-                <p className="text-xs text-muted-foreground">Próximo passo</p>
-                <p className="font-medium">
+                <p className="mt-1 font-medium">
                   {detail.nextStep?.label ?? 'Sem próximo passo'}
                   {detail.nextStep?.scheduledFor
                     ? ` · ${formatDateBr(detail.nextStep.scheduledFor)}`
                     : ''}
                 </p>
                 {detail.nextStep?.location ? (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="mt-0.5 text-sm text-muted-foreground">
                     {detail.nextStep.location}
                   </p>
                 ) : null}
               </div>
+
               {detail.badges.length > 0 ? (
-                <div className="flex flex-wrap gap-1 sm:col-span-2">
+                <div className="mt-4 flex flex-wrap gap-1.5">
                   {detail.badges.map((badge) => (
-                    <Badge key={`${badge.type}-${badgeLabel(badge)}`} variant="outline">
+                    <Badge
+                      key={`${badge.type}-${badgeLabel(badge)}`}
+                      variant="outline"
+                      className="font-normal"
+                    >
                       {badgeLabel(badge)}
                     </Badge>
                   ))}
@@ -380,15 +415,23 @@ export function CaseDetailPage() {
                   Nenhum evento registrado.
                 </p>
               ) : (
-                <ol className="space-y-3">
+                <ol className="relative ml-1 border-l border-border">
                   {detail.timeline.map((event) => (
-                    <li key={event.id} className="border-l-2 pl-3">
-                      <p className="text-sm font-medium">
-                        {eventLabel[event.type] ?? event.type}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Ocorrido em {formatDateBr(event.occurredAt)} · registrado
-                        em {formatDateBr(event.recordedAt)}
+                    <li key={event.id} className="relative pb-5 pl-5 last:pb-0">
+                      <span
+                        aria-hidden="true"
+                        className="absolute -left-[3.5px] top-1.5 size-1.5 rounded-full bg-muted-foreground/50 ring-4 ring-card"
+                      />
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <p className="text-sm font-medium">
+                          {eventLabel[event.type] ?? event.type}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground tabular-nums">
+                          {formatDateBr(event.occurredAt)}
+                        </p>
+                      </div>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                        Registrado em {formatDateBr(event.recordedAt)}
                       </p>
                     </li>
                   ))}
@@ -437,7 +480,7 @@ export function CaseDetailPage() {
         </div>
 
         <div className="space-y-4">
-          <Card>
+          <Card className="lg:sticky lg:top-6">
             <CardHeader>
               <CardTitle>Ações</CardTitle>
               <CardDescription>
@@ -455,7 +498,7 @@ export function CaseDetailPage() {
                     <Label htmlFor="action">Ação</Label>
                     <select
                       id="action"
-                      className="w-full rounded-md border bg-background px-2 py-2 text-sm"
+                      className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
                       value={action}
                       onChange={(event) =>
                         setAction(event.target.value as CaseEventType | '')
@@ -529,7 +572,7 @@ export function CaseDetailPage() {
                       <Label htmlFor="treatmentType">Tratamento</Label>
                       <select
                         id="treatmentType"
-                        className="w-full rounded-md border bg-background px-2 py-2 text-sm"
+                        className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
                         value={treatmentType}
                         onChange={(event) =>
                           setTreatmentType(event.target.value as TreatmentType)
@@ -547,7 +590,7 @@ export function CaseDetailPage() {
                         <Label htmlFor="exceptionReason">Motivo</Label>
                         <select
                           id="exceptionReason"
-                          className="w-full rounded-md border bg-background px-2 py-2 text-sm"
+                          className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
                           value={exceptionReason}
                           onChange={(event) =>
                             setExceptionReason(
@@ -571,7 +614,7 @@ export function CaseDetailPage() {
                         <Label htmlFor="contactChannel">Canal</Label>
                         <select
                           id="contactChannel"
-                          className="w-full rounded-md border bg-background px-2 py-2 text-sm"
+                          className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
                           value={contactChannel}
                           onChange={(event) =>
                             setContactChannel(event.target.value as ContactChannel)
@@ -593,7 +636,7 @@ export function CaseDetailPage() {
                         <Label htmlFor="closeReason">Motivo</Label>
                         <select
                           id="closeReason"
-                          className="w-full rounded-md border bg-background px-2 py-2 text-sm"
+                          className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
                           value={closeReason}
                           onChange={(event) =>
                             setCloseReason(event.target.value as CloseReason)
@@ -676,7 +719,7 @@ export function CaseDetailPage() {
                       <Label htmlFor="confirmMalignancy">Resultado</Label>
                       <select
                         id="confirmMalignancy"
-                        className="w-full rounded-md border bg-background px-2 py-2 text-sm"
+                        className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm"
                         value={confirmMalignancy}
                         onChange={(event) =>
                           setConfirmMalignancy(event.target.value as Malignancy)
@@ -719,7 +762,7 @@ export function CaseDetailPage() {
                 </p>
               ) : (
                 detail.messages.map((message) => (
-                  <div key={message.id} className="rounded-md border p-2 text-xs">
+                  <div key={message.id} className="border-l-2 border-border pl-3 text-xs">
                     <p>{message.text}</p>
                     <p className="mt-1 text-muted-foreground">
                       {formatDateBr(message.occurredAt)} ·{' '}
@@ -742,7 +785,7 @@ export function CaseDetailPage() {
                 </p>
               ) : (
                 (detail.alerts as Alert[]).map((alert) => (
-                  <div key={alert.key} className="rounded-md border p-3 text-sm">
+                  <div key={alert.key} className="border-l-2 border-border pl-3 text-sm">
                     <p className="font-medium">{alertReasonLabel[alert.reason]}</p>
                     <p className="text-xs text-muted-foreground">
                       {alertRecipientLabel[alert.recipient]} · {alert.action}
@@ -797,6 +840,7 @@ export function CaseDetailPage() {
                       toast.success('Link copiado.');
                     }}
                   >
+                    <Copy aria-hidden="true" />
                     Copiar link
                   </Button>
                   <a
@@ -813,7 +857,7 @@ export function CaseDetailPage() {
           </Dialog>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

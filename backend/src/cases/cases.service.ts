@@ -148,14 +148,36 @@ export class CasesService {
     return this.toView(created, today);
   }
 
-  async list(scope: CaseScope, query?: string): Promise<CaseListResponse> {
+  async list(
+    scope: CaseScope,
+    query?: string,
+    page?: number,
+    pageSize?: number,
+  ): Promise<CaseListResponse> {
     const today = this.clock.today();
     const cases = await this.repository.findMany(scope);
     const filtered = query?.trim() ? filterCases(cases, query) : cases;
+    const total = filtered.length;
+
+    if (page === undefined && pageSize === undefined) {
+      return {
+        today,
+        cases: filtered.map((item) => this.toView(item, today)),
+        total,
+      };
+    }
+
+    const currentPage = page ?? 1;
+    const size = pageSize ?? 20;
+    const start = (currentPage - 1) * size;
+    const paged = filtered.slice(start, start + size);
 
     return {
       today,
-      cases: filtered.map((item) => this.toView(item, today)),
+      cases: paged.map((item) => this.toView(item, today)),
+      total,
+      page: currentPage,
+      pageSize: size,
     };
   }
 

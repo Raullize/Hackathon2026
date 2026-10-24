@@ -275,11 +275,16 @@ export const caseDetailSchema = caseViewSchema.extend({
 export const caseListResponseSchema = z.object({
   today: isoDateSchema,
   cases: z.array(caseViewSchema),
+  total: z.number().int().nonnegative().optional(),
+  page: z.number().int().positive().optional(),
+  pageSize: z.number().int().positive().optional(),
 });
 
 export const caseListQuerySchema = z.object({
   scope: z.enum(['open', 'closed']).default('open'),
   q: z.string().trim().max(80).optional(),
+  page: z.coerce.number().int().positive().optional(),
+  pageSize: z.coerce.number().int().min(1).max(50).optional(),
 });
 
 export const demoAdvanceSchema = z.object({

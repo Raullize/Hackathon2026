@@ -81,6 +81,9 @@ describe('calendar-utils', () => {
     expect(casesUrl('closed', 'Maria Silva')).toBe(
       '/cases?scope=closed&q=Maria+Silva',
     );
+    expect(casesUrl('closed', '', 2, 8)).toBe(
+      '/cases?scope=closed&page=2&pageSize=8',
+    );
   });
 
   it('formats dates for the UI', () => {

@@ -114,6 +114,44 @@ describe('Cases (e2e)', () => {
     expect(detail.body).not.toHaveProperty('birthDate');
   });
 
+  it('paginates closed cases', async () => {
+    const first = await createCase().expect(201);
+    const second = await createCase().expect(201);
+
+    for (const id of [first.body.id as string, second.body.id as string]) {
+      await request(app.getHttpServer())
+        .post(`/api/cases/${id}/events`)
+        .set(auth())
+        .send({
+          type: 'CASE_CLOSED_EXCEPTION',
+          occurredAt: '2026-10-24',
+          reason: 'DEFINITIVE_REFUSAL',
+        })
+        .expect(201);
+    }
+
+    const page1 = await request(app.getHttpServer())
+      .get('/api/cases?scope=closed&page=1&pageSize=1')
+      .set(auth())
+      .expect(200);
+
+    expect(page1.body).toMatchObject({
+      page: 1,
+      pageSize: 1,
+      total: expect.any(Number),
+    });
+    expect(page1.body.total).toBeGreaterThanOrEqual(2);
+    expect(page1.body.cases).toHaveLength(1);
+
+    const page2 = await request(app.getHttpServer())
+      .get('/api/cases?scope=closed&page=2&pageSize=1')
+      .set(auth())
+      .expect(200);
+
+    expect(page2.body.cases).toHaveLength(1);
+    expect(page2.body.cases[0].id).not.toBe(page1.body.cases[0].id);
+  });
+
   it('searches names without accents and by CNS digits', async () => {
     const created = await createCase({
       fullName: 'Sônia Acento da Silva',
