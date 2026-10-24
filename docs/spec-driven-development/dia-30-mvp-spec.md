@@ -29,14 +29,18 @@ aviso vem da conta das datas, não de um modelo de previsão.
 
 ### Escopo
 
-- Cadastro do caso pela navegadora, com dados fictícios.
+- Cadastro do caso pela navegadora, com dados fictícios. **A navegadora é a única
+  usuária do sistema.** O médico não usa o Dia 30: ele pede o exame pelo caminho de
+  sempre (e-SUS PEC, SISCAN, papel), com zero trabalho novo. A paciente só recebe
+  mensagem e link de leitura.
 - Motor de prazos: a função pura `computeCaseStatus(case, events, today)`, só no backend.
 - Linha do tempo append-only (`CaseEvent`), com correção auditável.
 - Calendário de 9 semanas, mais as colunas "Vencidos" e "Depois", a aba "Concluídos"
   e o detalhe do caso.
 - Extração do laudo: a IA sugere, a navegadora edita e confirma.
 - Alertas derivados na leitura, com a escada de destinatários.
-- Simulador de WhatsApp: mensagens geradas por evento, sem envio real.
+- Simulador de mensagens nos canais SMS e e-mail: textos gerados por evento, sem envio
+  real nesta fase.
 - Link público da paciente, só leitura.
 - Mini painel de métricas.
 - Modo demo: relógio deslocável, reset e seed.
@@ -44,7 +48,15 @@ aviso vem da conta das datas, não de um modelo de previsão.
 ### Fora de escopo
 
 - Integração com e-SUS, SISCAN, GERCON e RNDS (fases futuras em `OPERATIONS.md`).
-- Envio real de WhatsApp ou SMS.
+  - **RNDS:** padrão HL7 FHIR, via Portal de Serviços do DATASUS; exige credenciamento
+    do estabelecimento. `[DADO FALTANDO]` Modelo RNDS específico para laudo de mama
+    ainda não confirmado.
+  - **SISCAN e e-SUS PEC:** não há API pública de leitura confirmada; o LEDI do e-SUS
+    é apenas de envio ao SISAB. Importação por relatório/exportação é
+    `[SUPOSIÇÃO: viabilidade a confirmar]`.
+- Envio real nesta demo. A integração real prevista é por **SMS e e-mail**.
+- **WhatsApp:** não faz parte da integração implementada. Ele aparece apenas como
+  **visão/roadmap** no pitch final, junto de SMS e e-mail.
 - Roles e perfis: só a navegadora faz login. UBS, regulação, prestador, coordenação e
   2ª CRS aparecem apenas como **destinatários** dos alertas.
 - Entidade `Patient` separada do caso `[DECISÃO PENDENTE: fase 1]`.
@@ -62,7 +74,7 @@ aviso vem da conta das datas, não de um modelo de previsão.
 | Caso (`Case`) | Uma pessoa com suspeita de câncer de mama, do pedido dos exames até o fechamento |
 | Evento (`CaseEvent`) | Fato registrado na linha do tempo do caso. Append-only: nunca é editado nem apagado |
 | Gatilho (`trigger`) | O que abriu o caso: `BIRADS_5`, `BIRADS_4` ou `CLINICAL_SUSPICION` |
-| Dia zero (`requestedAt`) | Data do pedido dos exames, informada pela UBS ou pela navegadora. Não é a data do cadastro |
+| Dia zero (`requestedAt`) | Data do pedido dos exames, informada pela navegadora a partir do pedido que o médico/UBS fez no fluxo habitual. Não é a data do cadastro |
 | `reportDate` | Data escrita no laudo. Fecha o relógio de 30 dias e abre o de 60 |
 | `treatmentStartedAt` | Data do início do primeiro tratamento: cirurgia, quimioterapia ou radioterapia |
 | Relógio aberto | O prazo que está correndo agora: `D30` ou `D60`. Caso fechado não tem relógio aberto |
@@ -431,12 +443,26 @@ Clicar no card abre o detalhe, com a linha do tempo.
 - Contraste mínimo WCAG AA no texto dos cards e dos selos `[SUPOSIÇÃO]`.
 - Selos em texto, não só em ícone.
 
-### 8.6 Celular
+### 8.6 Responsividade e celular
 
-- Abaixo de 768px, a grade vira uma lista vertical agrupada por semana, na mesma ordem:
-  "Vencidos", as 9 semanas e "Depois".
-- O link da paciente é pensado primeiro para celular: uma coluna, texto grande, sem
-  rolagem horizontal.
+A aplicação é **responsiva em todos os fluxos**, não só no calendário. A demo precisa
+funcionar no notebook da banca e no celular.
+
+- **Mobile-first** para o link da paciente: uma coluna, texto legível, botões grandes e
+  sem rolagem horizontal.
+- **Breakpoints de referência:** 360px, 768px, 1024px e 1440px.
+- **Abaixo de 768px:** a grade do calendário vira lista vertical agrupada por semana,
+  na mesma ordem: "Vencidos", as 9 semanas e "Depois".
+- **Entre 768px e 1024px:** calendário com rolagem horizontal controlada e colunas
+  "Vencidos"/"Depois" fixas; detalhe e formulários empilhados.
+- **Acima de 1024px:** calendário de 9 semanas com rolagem horizontal; detalhe em duas
+  colunas quando houver espaço.
+- **Sem overflow horizontal** fora da rolagem intencional do calendário.
+- **Alvos de toque** com pelo menos 44×44px no celular.
+- **Formulários e diálogos** ocupam a largura disponível no celular, com labels
+  visíveis e teclado adequado por tipo de campo.
+- **Teste manual** em 360×640, 768×1024, 1280×800 e 1440×900, além de teclado e zoom.
+- Componentes shadcn/Tailwind devem ser usados com breakpoints, não com largura fixa.
 
 ### 8.7 Barra de demo
 
@@ -657,11 +683,17 @@ segunda devolve 409.
   examType: string,                 // ex.: "anatomopatológico"; até 80 caracteres
   reportDate: 'YYYY-MM-DD' | null,  // data escrita no laudo
   malignancy: 'malignant' | 'benign' | 'inconclusive',
-  confidence: 'high' | 'medium' | 'low',
+  confidence: 'high' | 'medium' | 'low', // rótulo heurístico, NÃO probabilidade
   evidenceQuote: string,            // trecho literal do laudo (já filtrado)
   provider: 'gemini' | 'mock',
 }
 ```
+
+> **Sobre `confidence`:** o Gemini não devolve uma confiança calibrada nativa. O
+> campo é um **rótulo qualitativo** gerado pelo modelo ou derivado pela regra local.
+> Ele não é uma probabilidade e não pode ser usado para decisão clínica automática.
+> O servidor pode recalcular ou rebaixar o rótulo quando o `evidenceQuote` não for
+> literal ou quando o texto for ambíguo. Ver ADR 0008.
 
 ### 11.2 Fluxo
 
@@ -724,12 +756,26 @@ PENDENTE]` (aviso de LGPD em `domain.md`).
 - `evidenceQuote`: a frase que contém a palavra-chave; sem palavra-chave, as primeiras
   120 letras do texto filtrado `[SUPOSIÇÃO]`.
 
+No mock, `confidence` é **derivado de regra** (`low`/`medium`), não de uma
+probabilidade estatística.
+
 ### 11.6 Gemini
 
 - Usa o cliente `@google/genai` que já existe e a mesma lista de modelos do ADR 0004.
 - Prompt em `backend/src/report-extraction/prompts/`, pedindo só o JSON do schema e um
   trecho literal.
 - Temperatura 0 na extração, fixa no código, para reduzir variação `[SUPOSIÇÃO]`.
+- **`confidence` não é uma probabilidade calibrada.** O Gemini não devolve um campo
+  nativo de confiança no `generateContent`. O SDK até expõe `avgLogprobs` e
+  `logprobsResult`, mas logprobs dependem do modelo; em 2026-10-23, o
+  `gemini-3.5-flash-lite` retornou `400 Logprobs is not enabled for this model`.
+  Portanto, o campo é um **rótulo qualitativo** pedido no JSON ou derivado pelo
+  servidor, e não pode ser usado para decisão clínica automática.
+- O servidor valida se `evidenceQuote` aparece literalmente no texto filtrado. Se não
+  aparecer, cai para o mock com `invalid_output`; também pode **rebaixar** o
+  `confidence` quando o trecho for ambíguo.
+- `confidence` é interno da navegadora: não é exibido para a paciente e não muda o
+  estado do caso.
 
 ### 11.7 LGPD
 
@@ -746,15 +792,20 @@ PENDENTE]` (aviso de LGPD em `domain.md`).
 - Calculadas na leitura, a partir dos eventos e do relógio, sem tabela.
 - Horário da mensagem: o `occurredAt` do evento que a gerou. O lembrete de silêncio
   leva a data em que o silêncio completou 7 dias.
-- Aparecem no detalhe do caso e no link da paciente, como um simulador de WhatsApp. Não
-  há envio real.
+- Aparecem no detalhe do caso e no link da paciente, como um **simulador de SMS e
+  e-mail**. Não há envio real nesta fase.
+- **Canais do MVP:** SMS e e-mail. **WhatsApp não faz parte da integração
+  implementada**; no pitch final ele aparece apenas como visão/roadmap, junto dos
+  outros dois canais.
+- A mensagem é a mesma nos dois canais; o que muda é o transporte. O protótipo mostra
+  a prévia e o canal, sem disparar nada.
 - As mensagens usam os valores do evento original, isto é, o que teria sido enviado.
   Uma correção não reescreve a mensagem antiga `[DECISÃO PENDENTE: gerar mensagem de
   correção]`.
 
 | Gatilho | Texto |
 | --- | --- |
-| `CASE_CREATED` | "Olá! A sua UBS registrou um pedido de exames para investigação da mama em {requestedAt}. Pela lei, você tem direito a fazer esses exames em até 30 dias, até {vencimento30}. Vamos avisar você de cada passo." |
+| `CASE_CREATED` | "Olá! A sua UBS fez um pedido de exames para investigação da mama em {requestedAt}. Pela lei, você tem direito a fazer esses exames em até 30 dias, até {vencimento30}. Vamos avisar você de cada passo." |
 | `EXAM_SCHEDULED` | "Seu exame ({examLabel}) está marcado para {scheduledFor}, em {location}." |
 | `REPORT_CONFIRMED` → `EXAM_TO_RESCHEDULE` | "Precisamos remarcar o seu exame. A equipe vai entrar em contato com a nova data. O seu prazo de 30 dias continua valendo: até {vencimento30}." |
 | `REPORT_CONFIRMED` → `DIAGNOSIS_CONFIRMED` | "Seu resultado está pronto, e a equipe vai entrar em contato. Você tem direito a iniciar o tratamento em até 60 dias, até {vencimento60}." |
@@ -924,6 +975,11 @@ riscos (seção 20).
 | `patient-access` | `GET /api/public/p/:token`, emissão e revogação de token | Throttle próprio |
 | `demo` | `/api/demo/*`, reset e seed | Registrado só com `DEMO_MODE=true` (por exemplo, com `ConditionalModule.registerWhen` do `@nestjs/config`, a confirmar na versão instalada) |
 
+- **Comunicação:** templates calculados no domínio; envio real por **SMS e e-mail**
+  fica fora do MVP. WhatsApp é apenas visão de pitch, não integração implementada
+  (ADR 0007).
+- **Confiança da extração:** `confidence` é rótulo heurístico, sem probabilidade
+  calibrada do Gemini (ADR 0008).
 - `computeCaseStatus` fica só no backend (`backend/src/cases/domain`). A API devolve o
   caso já calculado.
 - O `Clock`:
@@ -961,6 +1017,8 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 - Alertas: escada completa e chave estável.
 - Mensagens: todos os templates renderizados reprovam se tiverem uma palavra proibida.
 - Mock e filtro: os 3 laudos fictícios.
+- `confidence`: aceita só `high|medium|low`; nunca número; o mock deriva da regra; o
+  servidor pode rebaixar quando o trecho não é literal; não altera o estado do caso.
 - Métricas: fórmulas com numerador e denominador conhecidos.
 
 ### 18.2 Golden fixtures
@@ -986,6 +1044,8 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 - Duplo clique: duas confirmações seguidas → 201 e 409.
 - Link da paciente: inexistente e revogado devolvem o mesmo 404; a resposta não tem
   `fullName`, `cns` nem palavra proibida.
+- Extração: `confidence` inválido ou numérico → 400; JSON inválido → fallback mock com
+  `invalid_output`.
 
 ### 18.4 Frontend (Vitest + Testing Library)
 
@@ -993,14 +1053,20 @@ certo, e a falha é registrada em `docs/tasks/<KEY>/progress.txt`.
 - Ordem dentro da coluna (cor, dias restantes, gatilho).
 - Rótulos em texto ("No prazo", "Atenção", "Vencido") e `aria-label` do card.
 - Barra de demo só aparece com `GET /api/demo/status` em 200.
-- Sem Playwright (seria dependência nova).
+- Responsividade: o calendário usa lista vertical abaixo de 768px; detalhe e
+  formulários empilham; a página pública não tem overflow horizontal; alvos de toque
+  com 44px.
+- Sem Playwright (seria dependência nova). O layout real é validado no checklist manual.
 
 ### 18.5 Smoke e checklist manual
 
 - `scripts/smoke.mjs` estendido com a história inteira da demo pela API (precisa de
   `DEMO_MODE=true`).
-- Checklist manual da UI, com print, em `docs/deliveries/`: calendário, celular (<768px),
-  teclado, detalhe, confirmação do laudo, link da paciente em modo celular.
+- Checklist manual da UI, com print, em `docs/deliveries/`: calendário, teclado,
+  detalhe, confirmação do laudo e link da paciente.
+- **Responsividade:** validar em 360×640, 768×1024, 1280×800 e 1440×900; sem overflow
+  horizontal fora da rolagem intencional do calendário; botões com 44×44px; link da
+  paciente em uma coluna.
 
 ## 19. Plano de entrega
 
@@ -1071,8 +1137,8 @@ Se o tempo apertar, sai nesta ordem:
 ### `[DADO FALTANDO]`
 
 - Risco de câncer na suspeita clínica sem mamografia (ordem dos cards).
-- Onde Charqueadas faz mamografia e biópsia hoje, e se já tem navegadora
-  (`EVIDENCE.md`, seção 15).
+- Onde Charqueadas faz mamografia e biópsia hoje, quem exerce a navegação no município
+  e como a navegadora fica sabendo dos casos (`EVIDENCE.md`, seção 15).
 
 ### `[SUPOSIÇÃO]` a validar com a gestão
 

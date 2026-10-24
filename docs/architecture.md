@@ -145,6 +145,23 @@ erDiagram
 Não há tabela de conversa. O chat é stateless: o histórico vem no body e o
 servidor não persiste mensagens.
 
+## Dia 30 — casos, prazos e comunicação
+
+O recorte do produto está em
+[`spec-driven-development/dia-30-mvp-spec.md`](./spec-driven-development/dia-30-mvp-spec.md).
+Pontos que afetam a arquitetura:
+
+- **Máquina de estados:** cada caso muda por eventos (`POST /api/cases/:id/events`),
+  com matriz de transições e linha do tempo append-only.
+- **Clock derivado:** prazos, cores, selos, alertas e métricas são calculados na
+  leitura; não há cron (ADR 0006).
+- **Comunicação:** templates de SMS e e-mail; envio real fora do MVP. WhatsApp é
+  apenas visão de pitch, não integração implementada (ADR 0007).
+- **Extração de laudo:** `confidence` é rótulo heurístico; o Gemini não fornece
+  probabilidade calibrada nem logprobs no modelo usado (ADR 0008).
+- **Responsividade:** todos os fluxos devem funcionar de 360px a 1440px, com
+  calendário em lista no celular e link da paciente mobile-first.
+
 ## Contratos
 
 `packages/contracts` é a fonte da verdade dos formatos:
@@ -171,3 +188,6 @@ telas forem implementadas. Nada de duplicar validação.
 - [0003 — Auth JWT simples](./adr/0003-auth-jwt-simples.md)
 - [0004 — Chat Gemini com mock](./adr/0004-chat-gemini-mock.md)
 - [0005 — Frontend com shadcn sem telas](./adr/0005-frontend-shadcn.md)
+- [0006 — Clock derivado, sem cron](./adr/0006-clock-derivado-sem-cron.md)
+- [0007 — Canais: SMS/e-mail agora, WhatsApp como visão](./adr/0007-canais-comunicacao.md)
+- [0008 — Confiança da extração é heurística](./adr/0008-confianca-extracao.md)

@@ -6,7 +6,7 @@ tempo no tema, não em boilerplate.
 ## Stack
 
 - **Backend:** NestJS 11, TypeScript, Prisma 6, PostgreSQL 17, Zod, JWT, Swagger.
-- **Frontend:** React 19, Vite 8, TypeScript, Tailwind 4, shadcn/ui, React Router, TanStack Query.
+- **Frontend:** React 19, Vite 8, TypeScript, Tailwind 4, shadcn/ui, React Router, TanStack Query; responsivo de 360px a 1440px.
 - **IA:** Gemini via `@google/genai`, com fallback mock para demo/offline.
 - **Infra local:** Docker Compose apenas para o PostgreSQL.
 - **Qualidade:** Jest + Supertest, Vitest + Testing Library, ESLint e GitHub Actions.
@@ -97,6 +97,8 @@ limites variáveis; falhas de quota caem para mock.
 ## Documentação
 
 - [`docs/README.md`](docs/README.md) — índice.
+- [`docs/tema-saude-conectada.md`](docs/tema-saude-conectada.md) — análise do tema.
+- [`docs/spec-driven-development/dia-30-mvp-spec.md`](docs/spec-driven-development/dia-30-mvp-spec.md) — spec do recorte Dia 30.
 - [`docs/architecture.md`](docs/architecture.md) — arquitetura e fluxos.
 - [`docs/testing.md`](docs/testing.md) — estratégia de testes.
 - [`docs/demo-runbook.md`](docs/demo-runbook.md) — checklist de demo.

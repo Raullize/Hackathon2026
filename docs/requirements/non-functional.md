@@ -87,7 +87,7 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
 - **RNF-017** A saída do extrator é validada por Zod; saída inválida cai para o mock.
 - **RNF-018** A extração tem rate limit mais rígido que a API geral, como o chat.
 
-## Dia 30 — Acessibilidade e celular
+## Dia 30 — Acessibilidade, responsividade e celular
 
 - **RNF-019** A cor nunca aparece sozinha: sempre com rótulo em texto ("No prazo",
   "Atenção", "Vencido") e ícone.
@@ -97,6 +97,37 @@ Detalhes em [`../spec-driven-development/dia-30-mvp-spec.md`](../spec-driven-dev
 - **RNF-021** Contraste mínimo WCAG AA no texto de cards e selos `[SUPOSIÇÃO]`.
 - **RNF-022** Abaixo de 768px, o calendário vira uma lista vertical agrupada por semana.
   O link da paciente é pensado primeiro para celular, sem rolagem horizontal.
+- **RNF-023** A aplicação é responsiva de **360px a 1440px**, em todos os fluxos:
+  calendário, detalhe, formulários, confirmação de laudo, alertas e link da paciente.
+- **RNF-024** Sem overflow horizontal fora da rolagem intencional do calendário; alvos
+  de toque com pelo menos 44×44px; formulários e diálogos ocupam a largura do celular.
+- **RNF-025** Testar manualmente em 360×640, 768×1024, 1280×800 e 1440×900, além de
+  teclado e zoom; o checklist com print entra na entrega.
+
+## Dia 30 — Acesso e papéis
+
+- **RNF-030** **Só a navegadora tem login.** UBS, regulação, prestador, coordenação e
+  2ª CRS não acessam o painel; são destinatários de alerta e de cobrança. A paciente
+  acessa apenas o próprio caso por link de leitura.
+- **RNF-031** O médico **fica fora do Dia 30**. Ele pede o exame pelo caminho de sempre
+  (e-SUS PEC, SISCAN, papel); **zero trabalho novo para o médico**.
+
+## Dia 30 — Comunicação com a paciente
+
+- **RNF-026** Canais do MVP: **SMS e e-mail**. O envio é simulado na demo; a integração
+  real prevista é por esses dois canais.
+- **RNF-027** **WhatsApp não faz parte da integração implementada.** No pitch final ele
+  aparece apenas como visão/roadmap, junto de SMS e e-mail. A documentação interna e a
+  demo não devem afirmar que o WhatsApp já está integrado.
+
+## Dia 30 — Confiança da extração
+
+- **RNF-028** `confidence` é um rótulo heurístico (`high|medium|low`), não uma
+  probabilidade calibrada. O Gemini não fornece confiança nativa; logprobs não estão
+  habilitados no `gemini-3.5-flash-lite` (teste de 2026-10-23 retornou 400).
+- **RNF-029** `confidence` não é exibido para a paciente, não muda o estado do caso e
+  não é usado para decisão clínica automática. O servidor pode rebaixar o rótulo quando
+  o `evidenceQuote` for ambíguo.
 
 ## Desenvolvimento
 

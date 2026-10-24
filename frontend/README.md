@@ -79,6 +79,18 @@ fica em `components/`, `lib/` ou `packages/contracts`.
 Essas telas entram depois da definição do tema. A fundação e os componentes já
 estão prontos.
 
+## Responsividade
+
+A aplicação deve ser responsiva de **360px a 1440px**, em todos os fluxos:
+
+- calendário vira lista vertical abaixo de 768px;
+- link da paciente é mobile-first, em uma coluna, sem overflow horizontal;
+- formulários, diálogos e detalhe empilham no celular;
+- alvos de toque com pelo menos 44×44px;
+- usar breakpoints do Tailwind, não largura fixa.
+
+Validar em 360×640, 768×1024, 1280×800 e 1440×900.
+
 ## Testes
 
 ```bash

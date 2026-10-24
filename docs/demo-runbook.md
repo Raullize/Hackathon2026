@@ -14,6 +14,8 @@ depender de internet, do Gemini ou de dados criados na hora.
 - [ ] Login seed funciona: `demo@hackathon.dev` / `demo1234`.
 - [ ] Chat autenticado responde. Se Gemini falhar, `provider: "mock"` é aceitável.
 - [ ] Swagger abre em `http://localhost:3000/docs`.
+- [ ] Mensagens de **SMS/e-mail** aparecem simuladas na tela; WhatsApp é apenas visão.
+- [ ] Layout testado em desktop e em 360px de largura, sem overflow horizontal.
 - [ ] Vídeo de backup gravado e slides em PDF.
 - [ ] Notebook carregado; hotspot de celular como plano B.
 

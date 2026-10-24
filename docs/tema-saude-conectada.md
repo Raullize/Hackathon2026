@@ -131,7 +131,7 @@ O slide 7 sintetiza o que um sistema precisa entregar:
 | Pilar | Significado | Implicação prática |
 | --- | --- | --- |
 | **Identidade única** | A mesma pessoa reconhecida em toda a rede | Deduplicação e vínculo entre registros |
-| **Registro clínico compartilhado** | Problemas, exames, condutas e contexto disponíveis | Linha do tempo longitudinal e acesso por papel |
+| **Registro clínico compartilhado** | Problemas, exames, condutas e contexto disponíveis | Linha do tempo longitudinal; a navegadora opera e a paciente tem link de leitura |
 | **Regulação com retorno** | Encaminhar, priorizar e devolver o plano | Fluxo de referral + contrarreferência |
 | **Alertas e continuidade** | Pendências, alta e seguimento chegam a quem precisa agir | Notificações, fila de pendências e prazos |
 
@@ -226,6 +226,14 @@ Usos seguros e úteis:
 
 **Não usar para:** diagnóstico autônomo, prescrição, triagem clínica sem
 validação profissional ou decisão de prioridade sem regra auditável.
+
+### 8.7 Canais e responsividade
+
+- **Canais do MVP:** SMS e e-mail, com envio simulado na demo.
+- **WhatsApp:** não faz parte da integração implementada; no pitch final aparece
+  apenas como visão/roadmap, junto de SMS e e-mail.
+- **Responsividade:** todos os fluxos devem funcionar de 360px a 1440px; o link da
+  paciente é mobile-first e o calendário vira lista vertical no celular.
 
 ## 9. Recorte recomendado para 24h
 

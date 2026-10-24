@@ -51,6 +51,8 @@ seções 4 a 7, 9 e 18.
 - [ ] Contratos Zod em `packages/contracts` (datas `YYYY-MM-DD`, `CaseEventInput` como
   `discriminatedUnion('type')`, `CaseView`, `reportSuggestionSchema`) exportados e com
   build verde.
+- [ ] `reportSuggestionSchema.confidence` é enum `high|medium|low`, nunca número; a
+  spec e o ADR 0008 deixam claro que é heurística, não probabilidade do Gemini.
 - [ ] Suíte, lint, typecheck e build verdes; evidência em `docs/deliveries/`.
 
 ## Plano

@@ -41,5 +41,6 @@ problemas:
 - Cada leitura recalcula tudo. Com o volume do piloto (dezenas de casos `[SUPOSIÇÃO]`),
   isso é barato; com milhares de casos, avaliar cache ou visão materializada.
 - Alerta não é "enviado" por um job: ele aparece quando alguém abre a lista. Envio
-  ativo (WhatsApp, e-mail) fica para depois do MVP e vai precisar de agendamento.
+  ativo por **SMS e e-mail** fica para depois do MVP e vai precisar de agendamento.
+  **WhatsApp** é apenas visão de pitch, não integração implementada (ADR 0007).
 - O deslocamento guardado no banco vale para todos os usuários da instância de demo.
