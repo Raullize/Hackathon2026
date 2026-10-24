@@ -47,10 +47,22 @@ qualquer câncer.
 - **Paciente pelo WhatsApp:** mensagens claras sobre o prazo, o próximo passo e os
   direitos. Exemplo: "Dia 18 de 30. Próximo passo: biópsia em 25/10."
 - **IA sem clichê (não é chatbot):** nos bastidores, a IA lê o laudo em texto livre
-  (por exemplo, o resultado da biópsia) e devolve um JSON estruturado. Com isso, o
-  sistema muda o estado do caso e dispara os alertas.
-- **Avisar antes, não medir depois:** a ferramenta acompanha suspeita → exame → laudo
-  → tratamento e avisa os responsáveis antes do vencimento.
+  (por exemplo, o resultado da biópsia) e **sugere** um JSON estruturado. A navegadora
+  confere e confirma; só então o sistema muda o estado do caso e dispara os alertas.
+- **Antecipa o atraso, em vez de medir depois:** a ferramenta acompanha suspeita →
+  exame → laudo → tratamento e avisa os responsáveis antes do vencimento. O aviso vem
+  da conta das datas e dos prazos legais.
+
+> [!WARNING]
+> **Laudo enviado para IA externa.** O laudo é dado pessoal sensível de saúde (LGPD,
+> art. 11). Mandar o texto para um provedor de IA externo (hoje, o Gemini) é
+> compartilhar esse dado com terceiro.
+>
+> - Na demo: **só laudos fictícios**.
+> - Antes de usar com paciente real: tirar nome, CPF/CNS e outros identificadores do
+>   texto antes do envio, ou usar um provedor com contrato que cubra dado de saúde
+>   `[DECISÃO PENDENTE]`.
+> - A IA só sugere; a navegadora confirma.
 
 ## Público
 
@@ -70,11 +82,11 @@ Personas de trabalho, a validar na entrevista (regulamento, item 6.4).
 2. O caso vira um card no calendário, na semana do vencimento, com a cor do risco.
 3. Cada etapa concluída (exame agendado, exame feito, laudo pronto) atualiza o card e
    o próximo passo.
-4. O laudo chega em texto livre. A IA devolve um JSON (exame, resultado, malignidade,
-   data do laudo) e o sistema atualiza o caso.
-5. Laudo maligno: encerra o prazo de 30 dias (registrando se foi cumprido) e começa o
-   de 60 dias, contado da data do laudo. Laudo benigno: fecha o caso e devolve a
-   paciente para a UBS.
+4. O laudo chega em texto livre. A IA sugere um JSON (exame, resultado, malignidade,
+   data do laudo), e a navegadora confere e confirma.
+5. Com a confirmação: laudo maligno encerra o prazo de 30 dias (registrando se foi
+   cumprido) e começa o de 60 dias, contado da data do laudo. Laudo benigno fecha o
+   caso e devolve a paciente para a UBS.
 6. A paciente recebe a mensagem do novo passo (WhatsApp simulado na demo).
 7. Antes do vencimento, o alerta vai para quem precisa agir (escada de alerta em
    `OPERATIONS.md`).
@@ -96,6 +108,8 @@ Personas de trabalho, a validar na entrevista (regulamento, item 6.4).
 - **Descartado também volta:** caso benigno fecha com o resultado e volta para a UBS.
 - **Exceção com motivo:** recusa, ausência, contraindicação, pendência clínica,
   transporte ou falta de vaga ficam registrados e não escondem o atraso.
+- **A IA só sugere:** nenhum caso muda de estado pela leitura da IA sem a confirmação
+  da navegadora.
 - **Mensagens para a paciente não usam a palavra "câncer".**
 - **Demo só com dados fictícios.**
 
@@ -105,8 +119,8 @@ Personas de trabalho, a validar na entrevista (regulamento, item 6.4).
 | --- | --- | --- |
 | Frontend (React) | Calendário com um card por paciente, na semana do vencimento | React + Vite + shadcn configurados, ainda sem telas |
 | Backend (NestJS) | Motor de regras. Cron jobs (`@nestjs/schedule`) varrem o banco, simulam a passagem dos dias na demo, calculam os prazos e mudam os status | NestJS pronto. `@nestjs/schedule` não está instalado: é dependência nova, pedir OK antes |
-| IA | LLM recebe o laudo em texto livre e devolve JSON | Provedor Gemini com fallback mock já existe (ADR 0004) |
-| Banco | A proposta cita SQLite | O starter usa PostgreSQL + Prisma, com migrations e CI `[DECISÃO PENDENTE]` |
+| IA | LLM recebe o laudo em texto livre e sugere um JSON; a navegadora confirma | Provedor Gemini com fallback mock já existe (ADR 0004) |
+| Banco | PostgreSQL + Prisma (decidido) | Já configurado no starter, com migrations e CI |
 | Paciente | Disparos de WhatsApp simulados | Nada pronto |
 
 ## Fora de escopo do MVP
@@ -118,25 +132,23 @@ Personas de trabalho, a validar na entrevista (regulamento, item 6.4).
 
 ## Perguntas abertas
 
-- `[DECISÃO PENDENTE]` **Banco:** a proposta cita SQLite, mas o starter já tem
-  PostgreSQL + Prisma com migrations e CI. Recomendação: manter PostgreSQL e não
-  refazer a base.
-- `[DECISÃO PENDENTE]` **A IA decide sozinha?** A proposta muda o estado
-  automaticamente quando a IA lê malignidade. Recomendação: a IA sugere e a
-  navegadora confirma com um clique. Erro na leitura de um laudo de câncer é grave, e
-  a banca vai perguntar.
-- `[DECISÃO PENDENTE]` **Laudo em LLM externa:** é dado sensível de saúde (LGPD,
-  art. 11). Na demo, só dados fictícios. Fora da demo, anonimizar ou ter contrato que
-  cubra o dado.
-- `[DECISÃO PENDENTE]` **"Preditivo":** hoje o alerta vem da conta das datas, não de
-  um modelo de previsão. Ou o pitch diz "antecipa", ou o produto ganha algo de fato
-  preditivo.
-- `[DECISÃO PENDENTE]` **Frase do pitch:** "O SUS não tem relógio" continua boa com a
-  interface de calendário?
+- `[DECISÃO PENDENTE]` **Laudo fora da demo:** anonimizar antes de enviar para a IA
+  externa ou usar provedor com contrato para dado de saúde (ver o aviso na seção
+  Solução).
 - **Dia zero do prazo de 30 dias:** data do pedido dos exames ou da suspeita
   registrada? Combinar com a gestão.
 - `[DADO FALTANDO]` Onde Charqueadas faz mamografia e biópsia hoje, e se tem
   navegadora.
+
+## Decisões tomadas
+
+| Data | Decisão | Motivo |
+| --- | --- | --- |
+| 23/10/2026 | Calendário (Kanban) em vez de relógio regressivo | Contador regressivo gera ansiedade; calendário dá previsibilidade |
+| 23/10/2026 | Banco: PostgreSQL + Prisma | Já configurado no starter, com migrations e CI |
+| 23/10/2026 | A IA só sugere; a navegadora confirma antes de o caso mudar de estado | Erro na leitura de um laudo de câncer é grave |
+| 23/10/2026 | O Dia 30 "antecipa" o atraso; não usar "preditivo" | O aviso vem da conta das datas, não de um modelo de previsão |
+| 23/10/2026 | Não usar a frase "O SUS não tem relógio" | — |
 
 ## Métricas de sucesso
 
